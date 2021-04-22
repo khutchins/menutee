@@ -1,0 +1,19 @@
+{
+  "name": "com.khutchins.menutee",
+  "displayName": "Menutee",
+  "version": "0.0.1",
+  "unity": "2019.3",
+  "description": "A set of scripts that make generating and maintaining a simple menu through code straightforward.",
+  "type": "library",
+  "hideInEditor": false,
+  "samples": [
+    {
+      "displayName": "Menu Generation",
+      "description": "Sample implementation of menu generation.",
+      "path": "Samples~/Menu"
+    }
+  ],
+  "dependencies": {
+    "com.unity.textmeshpro": "2.0.1"
+  }
+}
