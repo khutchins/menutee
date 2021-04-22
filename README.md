@@ -9,7 +9,7 @@ A set of scripts that make generating and maintaining a simple menu through code
 Open Packages/manifest.json and add this to the list of dependencies:
 
 ```
-"com.khutchins.package.core": "https://github.com/khutchins/menutee.git",
+"com.khutchins.menutee": "https://github.com/khutchins/menutee.git",
 ```
 
 ## Usage
