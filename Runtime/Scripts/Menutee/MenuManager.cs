@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using System.Linq;
 
@@ -102,15 +100,12 @@ namespace Menutee {
 
 		private void Update() {
 			if (_disabled) return;
-			if (InputMediator.PauseDown()) {
+			if (InputMediator.MenuToggleDown()) {
 				ToggleMenu();
 			} else if (InputMediator.UICancelDown()) {
 				if (!IsAtRoot()) {
-					PopMenu();
+					PopPanel();
 				}
-			}
-			if (UnityEngine.Input.GetKeyDown(KeyCode.F5)) {
-				ScreenCapture.CaptureScreenshot("Screenshot" + System.DateTime.Now.ToString("__yyyy-MM-dd-HH-mm-ss") + ".png", 2);
 			}
 			if (_activeDefaultInput != null && EventSystem.currentSelectedGameObject == null && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
 				EventSystem.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
@@ -126,7 +121,7 @@ namespace Menutee {
 			ActivateMenu(key);
 		}
 
-		public void PushMenu(string key) {
+		public void PushPanel(string key) {
 			foreach (PanelManager panel in Panels) {
 				if (panel.Key == key) {
 					_panelStack.Push(key);
@@ -134,14 +129,14 @@ namespace Menutee {
 					return;
 				}
 			}
-			Debug.LogError("Cannot push menu " + key + "! Not in Panels array.");
+			Debug.LogErrorFormat("Cannot push menu {0}! Not in Panels array.", key);
 		}
 
 		private bool IsAtRoot() {
 			return _panelStack.Count == 0;
 		}
 
-		public void PopMenu() {
+		public void PopPanel() {
 			if (_panelStack.Count > 0) {
 				_panelStack.Pop();
 			}

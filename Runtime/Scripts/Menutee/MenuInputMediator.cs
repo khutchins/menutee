@@ -7,6 +7,6 @@ namespace Menutee {
 
 		public abstract bool UISubmitDown();
 		public abstract bool UICancelDown();
-		public abstract bool PauseDown();
+		public abstract bool MenuToggleDown();
 	}
 }

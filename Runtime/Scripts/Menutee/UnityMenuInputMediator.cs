@@ -8,7 +8,7 @@ namespace Menutee {
 		public string xAxis = "Horizontal";
 		public string yAxis = "Vertical";
 		public string uiInputCancel = "Cancel";
-		public string pause = "Pause";
+		public string menuToggle = "Jump";
 		public string submit = "Submit";
 
 		public override float UIX() {
@@ -27,8 +27,8 @@ namespace Menutee {
 			return UnityEngine.Input.GetButtonDown(submit);
 		}
 
-		public override bool PauseDown() {
-			return UnityEngine.Input.GetButtonDown(pause);
+		public override bool MenuToggleDown() {
+			return UnityEngine.Input.GetButtonDown(menuToggle);
 		}
 	}
 }
