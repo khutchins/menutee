@@ -1,6 +1,8 @@
 # Menutee
 
-A set of scripts that make generating and maintaining a simple menu through code straightforward. I've been using this in 2019.3 and higher, but it very well could work on earlier versions.
+A set of scripts that make it easy to generate and maintain a simple menu through code. I've been using this in 2019.3 and higher, but it very well could work on earlier versions.
+
+The name is combining the words Manatee and Menu together. I know it's a reach.
 
 ## Installation
 
