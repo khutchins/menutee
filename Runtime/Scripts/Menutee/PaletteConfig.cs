@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Menutee {
-	[CreateAssetMenu]
+	[CreateAssetMenu(menuName = "Menutee/Palette Config")]
 	public class PaletteConfig : ScriptableObject {
 		public Color NormalColor = Color.white;
 		public Color HighlightedColor = Color.white;

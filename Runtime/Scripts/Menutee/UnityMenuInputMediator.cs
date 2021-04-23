@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Menutee {
-	[CreateAssetMenu(menuName = "Menutee/UnityMenuInputMediator")]
+	[CreateAssetMenu(menuName = "Menutee/Menu Input Mediator - Unity")]
 	public class UnityMenuInputMediator : MenuInputMediator {
 		public string xAxis = "Horizontal";
 		public string yAxis = "Vertical";
