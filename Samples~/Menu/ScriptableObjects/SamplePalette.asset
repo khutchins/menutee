@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88faa1e1a95f1984ea6efc089485fc0f, type: 3}
-  m_Name: SPPalette
+  m_Name: SamplePalette
   m_EditorClassIdentifier: 
   NormalColor: {r: 1, g: 1, b: 1, a: 1}
   HighlightedColor: {r: 0.6226415, g: 0, b: 0.024631303, a: 1}

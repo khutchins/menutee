@@ -1,10 +1,7 @@
-﻿using KH;
-using KH.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
+using Menutee;
 
 /// <summary>
 /// Helper class with some common menu setups.
@@ -20,9 +17,6 @@ public static class MenuConfigHelper {
 	public readonly static string KEY_RESOLUTION = "resolution";
 	public readonly static string KEY_QUALITY = "quality";
 	public readonly static string KEY_FULLSCREEN = "fullscreen";
-
-	public readonly static string KEY_GASOLINE = "gas";
-	public readonly static string KEY_TOWER = "tower";
 
 	/// <summary>
 	/// Standard resolution dropdown. Filters out Hz values.
@@ -54,7 +48,7 @@ public static class MenuConfigHelper {
 			}).Build();
 	}
 
-	public static PanelConfig.Builder StandardOptionsPanel(string key, MenuHelper menuHelper, GameObject buttonPrefab, 
+	public static PanelConfig.Builder StandardOptionsPanel(string key, MenuManager menuHelper, GameObject buttonPrefab, 
 			GameObject sliderPrefab, GameObject dropdownPrefab, GameObject togglePrefab) {
 
 		PanelConfig.Builder builder = new PanelConfig.Builder(key);
@@ -62,7 +56,7 @@ public static class MenuConfigHelper {
 		builder.AddPanelObject(new ButtonConfig.Builder("back", buttonPrefab)
 			.SetDisplayText("Back")
 			.SetButtonPressedHandler(delegate (ButtonManager manager) {
-				menuHelper.PopMenu();
+				menuHelper.PopPanel();
 			}));
 		builder.AddPanelObject(new SliderConfig.Builder("sliderlook", sliderPrefab, 0.1f, 3f, 1f)
 			.SetDisplayText("Look Speed")
@@ -72,7 +66,7 @@ public static class MenuConfigHelper {
 		builder.AddPanelObject(new SliderConfig.Builder("slidervolume", sliderPrefab, 0f, 1f, 1f)
 			.SetDisplayText("Volume")
 			.SetSliderUpdatedHandler(delegate (SliderManager manager, float newValue) {
-				// Handle sensitivity
+				// Handle volume
 			}));
 		builder.AddPanelObject(new DropdownConfig.Builder("quality", dropdownPrefab)
 			.SetDisplayText("Quality")
