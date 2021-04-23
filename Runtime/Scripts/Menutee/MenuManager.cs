@@ -8,8 +8,9 @@ namespace Menutee {
 
 		private bool _active;
 
-		[Tooltip("Background element.")]
-		public GameObject BG;
+		[Tooltip("The canvas element. If this is not set, this script will try to get the canvas from the game object it is on.")]
+		public Canvas Canvas;
+
 		[HideInInspector]
 		public PanelManager[] Panels;
 		public MenuConfig MenuConfig;
@@ -24,8 +25,17 @@ namespace Menutee {
 		private bool _disabled;
 		private string _activeKey;
 
+		private void Awake() {
+			if (Canvas == null) {
+				Canvas = GetComponent<Canvas>();
+			}
+		}
+
 		private void Start() {
 			SetMenuUp(false);
+
+			// This needs to be checked on Start to guarantee
+			// that MenuStack has had time to register its singleton.
 			if (MenuStack.Shared == null) {
 				Debug.LogError("No MenuStack in scene. Menu disabled.");
 				_disabled = true;
@@ -34,10 +44,10 @@ namespace Menutee {
 				Debug.LogError("No input mediator set on MenuManager. Menu disabled.");
 				_disabled = true;
 				return;
+			} else if (Canvas == null) {
+				Debug.LogError("No canvas element set or found in MenuManager. Menu disabled.");
 			}
 
-			// Read Closeable in Start so that other scripts
-			// can set it in Awake.
 			if (!MenuConfig.Closeable) {
 				MenuStack.Shared.PushAndShowMenu(this);
 			}
@@ -49,7 +59,7 @@ namespace Menutee {
 
 		public void SetMenuUp(bool newUp) {
 			_active = newUp;
-			BG.SetActive(_active);
+			Canvas.enabled = newUp;
 			ActivateMenu(_active ? MenuConfig.MainPanelKey : null);
 		}
 

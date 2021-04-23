@@ -1,15 +1,13 @@
 ﻿using Menutee;
 using UnityEngine;
 
-public class MainMenu : MenuGenerator {
+public class SampleMainMenu : MenuGenerator {
 
 	public readonly static string MENU_KEY_MAIN = "Main";
 	public readonly static string MENU_KEY_OPTIONS = "Options";
-	public readonly static string MENU_KEY_CREDITS = "Credits";
 
 	public readonly static string KEY_RESUME = "resume";
 	public readonly static string KEY_OPTIONS = "options";
-	public readonly static string KEY_CREDITS = "credits";
 	public readonly static string KEY_EXIT = "exit";
 	public readonly static string KEY_BACK = "back";
 
@@ -30,9 +28,6 @@ public class MainMenu : MenuGenerator {
 				}),
 				new ButtonConfig(KEY_OPTIONS, ButtonPrefab, "Options", null, delegate(ButtonManager manager) {
 					_manager.PushPanel(MENU_KEY_OPTIONS);
-				}),
-				new ButtonConfig(KEY_CREDITS, ButtonPrefab, "Credits", null, delegate(ButtonManager manager) {
-					_manager.PushPanel(MENU_KEY_CREDITS);
 				}),
 				new ButtonConfig(KEY_EXIT, ButtonPrefab, "Exit", null, delegate(ButtonManager manager) {
 					_manager.ExitGame();

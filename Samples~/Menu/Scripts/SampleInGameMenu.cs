@@ -1,7 +1,7 @@
 ﻿using Menutee;
 using UnityEngine.SceneManagement;
 
-public class InGameMenu : MenuGenerator {
+public class SampleInGameMenu : MenuGenerator {
 
 	public readonly static string MENU_KEY_MAIN = "Main";
 	public readonly static string MENU_KEY_OPTIONS = "Options";
