@@ -60,7 +60,7 @@ namespace Menutee {
 		public void SetMenuUp(bool newUp) {
 			_active = newUp;
 			Canvas.enabled = newUp;
-			ActivateMenu(_active ? MenuConfig.MainPanelKey : null);
+			ActivatePanel(_active ? MenuConfig.MainPanelKey : null);
 		}
 
 		public void SetMenuOnTop(bool newOnTop) {
@@ -73,7 +73,7 @@ namespace Menutee {
 			MenuStack.Shared.ToggleMenu(this);
 		}
 
-		private void ActivateMenu(string key) {
+		private void ActivatePanel(string key) {
 			ActivateMenu(key, MenuConfig.PanelConfigs.Where(p => p.Key == key).FirstOrDefault());
 		}
 
@@ -123,23 +123,23 @@ namespace Menutee {
 		}
 
 		/// <summary>
-		/// Goes to a menu, bypassing the stack. Used by push and pop after
+		/// Goes to a panel, bypassing the stack. Used by push and pop after
 		/// modifying the stack. Only use if you know what you're doing.
 		/// </summary>
-		/// <param name="key">Key of the menu to go to.</param>
-		protected void GoToMenu(string key) {
-			ActivateMenu(key);
+		/// <param name="key">Key of the panel to go to.</param>
+		protected void GoToPanel(string key) {
+			ActivatePanel(key);
 		}
 
 		public void PushPanel(string key) {
 			foreach (PanelManager panel in Panels) {
 				if (panel.Key == key) {
 					_panelStack.Push(key);
-					GoToMenu(key);
+					GoToPanel(key);
 					return;
 				}
 			}
-			Debug.LogErrorFormat("Cannot push menu {0}! Not in Panels array.", key);
+			Debug.LogErrorFormat("Cannot push panel {0}! Not in Panels array.", key);
 		}
 
 		private bool IsAtRoot() {
@@ -151,9 +151,9 @@ namespace Menutee {
 				_panelStack.Pop();
 			}
 			if (_panelStack.Count == 0) {
-				GoToMenu(MenuConfig.MainPanelKey);
+				GoToPanel(MenuConfig.MainPanelKey);
 			} else {
-				GoToMenu(_panelStack.Last());
+				GoToPanel(_panelStack.Last());
 			}
 		}
 
