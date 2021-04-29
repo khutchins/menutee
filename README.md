@@ -1,8 +1,27 @@
 # Menutee
 
-A set of scripts that make it easy to generate and maintain a simple menu through code. I've been using this in 2019.3 and higher, but it very well could work on earlier versions.
+A set of scripts that make it easy to generate and maintain a simple menu through code. I've been using this in 2019.3 and higher, but it very well could work on earlier versions. 
 
 The name is combining the words Manatee and Menu together. I know it's a reach.
+
+
+## Overview
+
+[Here's](https://khutchins.itch.io/the-abyss-of-dastroreth) an example of it in action (the main menu and in-game menus all use Menutee).
+
+The menu generation component of this library is meant for getting a menu quickly running for jam games and projects where you just don't want to have to do a menu. It is somewhat flexible, but certain things are just not possible with how it is at the moment.
+
+### Capabilities
+
+* Buttons, sliders, dropdowns, and toggles are supported out of the box.
+* All menu elements are customizable (my example primarily looks ugly because I lack an eye for art).
+* Additional UI element types can be added without modifying the library code.
+* Supports using a scriptable object for setting the palette, so you can easily tweak all the colors in one location.
+
+### Limitations
+
+* Does not easily support a combination of horizontal and vertical layouts. If you want to have two buttons next to each other in a vertical menu, it's probably possible if you set the navigation directions directly, but it may be easier to implement the menu directly at that point.
+* Doesn't support animations. It's possible (maybe even straightforward) to add this, but I haven't gotten the motivation to do it in a robust way.
 
 ## Installation
 
