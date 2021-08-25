@@ -21,22 +21,24 @@ namespace Menutee {
 
 		public abstract GameObject Create(GameObject parent);
 
-		public abstract class Builder {
+		public abstract class Builder<TObject, TBuilder> where TObject : PanelObjectConfig where TBuilder : Builder<TObject, TBuilder> {
 			protected string _key;
 			protected System.Action<GameObject> _creationCallback;
 			protected GameObject _prefab;
+			protected readonly TBuilder _builderInstance;
 
 			public Builder(string key, GameObject prefab) {
 				_key = key;
 				_prefab = prefab;
+				_builderInstance = (TBuilder)this;
 			}
 
-			public Builder SetCreationCallback(System.Action<GameObject> creationCallback) {
+			public TBuilder SetCreationCallback(System.Action<GameObject> creationCallback) {
 				_creationCallback = creationCallback;
-				return this;
+				return _builderInstance;
 			}
 
-			public abstract PanelObjectConfig Build();
+			public abstract TObject Build();
 		}
 	}
 }

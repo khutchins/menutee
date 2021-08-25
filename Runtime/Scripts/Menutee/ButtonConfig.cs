@@ -26,7 +26,7 @@ namespace Menutee {
 			return go;
 		}
 
-		public new class Builder : PanelObjectConfig.Builder {
+		public class Builder : Builder<ButtonConfig, Builder> {
 			private string _displayText;
 			private ButtonPressedHandler _handler;
 
@@ -35,15 +35,15 @@ namespace Menutee {
 
 			public Builder SetDisplayText(string displayText) {
 				_displayText = displayText;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetButtonPressedHandler(ButtonPressedHandler handler) {
 				_handler = handler;
-				return this;
+				return _builderInstance;
 			}
 
-			public override PanelObjectConfig Build() {
+			public override ButtonConfig Build() {
 				return new ButtonConfig(_key, _prefab, _displayText, _creationCallback, _handler);
 			}
 		}

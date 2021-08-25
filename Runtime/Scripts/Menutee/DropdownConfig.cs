@@ -30,7 +30,7 @@ namespace Menutee {
 			return go;
 		}
 
-		public new class Builder : PanelObjectConfig.Builder {
+		public class Builder : Builder<DropdownConfig, Builder> {
 			private string _displayText;
 			private List<string> _optionStrings = new List<string>();
 			private int _defaultIndex;
@@ -41,17 +41,17 @@ namespace Menutee {
 
 			public Builder SetDisplayText(string displayText) {
 				_displayText = displayText;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetDropdownChosenHandler(DropdownChosenHandler handler) {
 				_handler = handler;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder AddOptionStrings(IEnumerable<string> options) {
 				_optionStrings.AddRange(options);
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder AddOptionString(string option, bool defaultOption = false) {
@@ -60,15 +60,15 @@ namespace Menutee {
 				if (defaultOption) {
 					_defaultIndex = newIdx;
 				}
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetDefaultOptionIndex(int idx) {
 				_defaultIndex = idx;
-				return this;
+				return _builderInstance;
 			}
 
-			public override PanelObjectConfig Build() {
+			public override DropdownConfig Build() {
 				return new DropdownConfig(_key, _prefab, _displayText, _optionStrings.ToArray(), _defaultIndex, _creationCallback, _handler);
 			}
 		}

@@ -29,7 +29,7 @@ namespace Menutee {
 			return go;
 		}
 
-		public new class Builder : PanelObjectConfig.Builder {
+		public class Builder : Builder<ToggleConfig, Builder> {
 			private string _displayText;
 			private TogglePressedHandler _handler;
 			private bool _isOn;
@@ -39,20 +39,20 @@ namespace Menutee {
 
 			public Builder SetDisplayText(string displayText) {
 				_displayText = displayText;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetIsOn(bool isOn) {
 				_isOn = isOn;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetTogglePressedHandler(TogglePressedHandler handler) {
 				_handler = handler;
-				return this;
+				return _builderInstance;
 			}
 
-			public override PanelObjectConfig Build() {
+			public override ToggleConfig Build() {
 				return new ToggleConfig(_key, _prefab, _displayText, _isOn, _creationCallback, _handler);
 			}
 		}

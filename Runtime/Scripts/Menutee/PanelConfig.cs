@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -70,13 +71,9 @@ namespace Menutee {
 				return this;
 			}
 
-			public Builder AddPanelObject(PanelObjectConfig.Builder configBuilder, bool defaultObject = false) {
-				PanelObjectConfig config = configBuilder.Build();
-				_panelObjectConfigs.Add(config);
-				if (defaultObject) {
-					_defaultSelectableKey = config.Key;
-				}
-				return this;
+			public Builder AddPanelObject<T, U>(PanelObjectConfig.Builder<T, U> configBuilder, bool defaultObject = false)
+					where T : PanelObjectConfig where U : PanelObjectConfig.Builder<T, U> {
+				return AddPanelObject(configBuilder.Build(), defaultObject);
 			}
 
 			public Builder InsertPanelObject(PanelObjectConfig config, int index, bool defaultObject = false) {
@@ -87,13 +84,9 @@ namespace Menutee {
 				return this;
 			}
 
-			public Builder InsertPanelObject(PanelObjectConfig.Builder configBuilder, int index, bool defaultObject = false) {
-				PanelObjectConfig config = configBuilder.Build();
-				_panelObjectConfigs.Insert(index, config);
-				if (defaultObject) {
-					_defaultSelectableKey = config.Key;
-				}
-				return this;
+			public Builder InsertPanelObject<T, U>(PanelObjectConfig.Builder<T, U> configBuilder, int index, bool defaultObject = false) 
+					where T : PanelObjectConfig where U : PanelObjectConfig.Builder<T, U> {
+				return InsertPanelObject(configBuilder.Build(), index, defaultObject);
 			}
 
 			public Builder SetPrefabOverride(GameObject prefabOverride) {

@@ -4,12 +4,11 @@ A set of scripts that make it easy to generate and maintain a simple menu throug
 
 The name is combining the words Manatee and Menu together. I know it's a reach.
 
-
 ## Overview
 
 [Here's](https://khutchins.itch.io/the-abyss-of-dastroreth) an example of it in action (the main menu and in-game menus all use Menutee).
 
-The menu generation component of this library is meant for getting a menu quickly running for jam games and projects where you just don't want to have to do a menu. It is somewhat flexible, but certain things are just not possible with how it is at the moment.
+The menu generation component of this library is meant for getting a menu quickly running for jam games and projects where you just don't want to have to do a menu. It is somewhat flexible, but certain things are not possible with how it is at the moment.
 
 ### Capabilities
 

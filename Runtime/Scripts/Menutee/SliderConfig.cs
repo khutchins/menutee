@@ -34,7 +34,7 @@ namespace Menutee {
 			return go;
 		}
 
-		public new class Builder : PanelObjectConfig.Builder {
+		public class Builder : Builder<SliderConfig, Builder> {
 			private string _displayText;
 			private SliderUpdatedHandler _handler;
 			private float _minValue;
@@ -49,15 +49,15 @@ namespace Menutee {
 
 			public Builder SetDisplayText(string displayText) {
 				_displayText = displayText;
-				return this;
+				return _builderInstance;
 			}
 
 			public Builder SetSliderUpdatedHandler(SliderUpdatedHandler handler) {
 				_handler = handler;
-				return this;
+				return _builderInstance;
 			}
 
-			public override PanelObjectConfig Build() {
+			public override SliderConfig Build() {
 				return new SliderConfig(_key, _prefab, _displayText, _minValue, _maxValue, _defaultValue, _creationCallback, _handler);
 			}
 		}
