@@ -22,6 +22,7 @@ namespace Menutee {
 
 		private bool _disabled;
 		private string _activeKey;
+		private PanelManager _activeManager;
 		private GameObject _cachedSelection;
 
 		private void Awake() {
@@ -68,6 +69,7 @@ namespace Menutee {
 			} else if(_cachedSelection != null) {
 				EventSystem.current.SetSelectedGameObject(_cachedSelection);
 			}
+			_activeManager?.SetPanelActive(newOnTop);
 			Canvas.enabled = newOnTop;
 		}
 
@@ -111,6 +113,7 @@ namespace Menutee {
 					action.Invoke(oldKey, _activeKey);
 				}
 			}
+			_activeManager = active;
 		}
 
 		private void Update() {
