@@ -71,3 +71,7 @@ Create a new Palette Config by using the right click menu `Create -> Menutee -> 
 The MenuStack script (which the in-game menus rely on) will attempt to manage your game's time scale and cursor visibility/lock mode for you. If you're seeing the incorrect behavior initially, go to where the MenuStack script is set (on the MenuStack prefab, if you've been following the instructions), and you can tweak the default cursor visibility and lock mode.
 
 If you don't want MenuStack to manage cursor settings or time settings, you can enable or disable this behavior on the same script.
+
+### Inputs Not Working
+
+If inputs aren't working in the menu, make sure that you both have an EventSystem and StandaloneInputModule in the scene.

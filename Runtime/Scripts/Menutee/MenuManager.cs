@@ -16,14 +16,13 @@ namespace Menutee {
 		public MenuConfig MenuConfig;
 
 		protected Stack<string> _panelStack = new Stack<string>();
-
-		public EventSystem EventSystem;
 		private UIElementManager _activeDefaultInput;
 
 		public MenuInputMediator InputMediator;
 
 		private bool _disabled;
 		private string _activeKey;
+		private GameObject _cachedSelection;
 
 		private void Awake() {
 			if (Canvas == null) {
@@ -64,6 +63,12 @@ namespace Menutee {
 		}
 
 		public void SetMenuOnTop(bool newOnTop) {
+			if (!newOnTop) {
+				_cachedSelection = EventSystem.current.currentSelectedGameObject;
+			} else if(_cachedSelection != null) {
+				EventSystem.current.SetSelectedGameObject(_cachedSelection);
+			}
+			Canvas.enabled = newOnTop;
 		}
 
 		void ToggleMenu() {
@@ -79,7 +84,7 @@ namespace Menutee {
 
 		private void ActivateMenu(string key, PanelConfig config) {
 			PanelManager active = null;
-			EventSystem.SetSelectedGameObject(null);
+			EventSystem.current.SetSelectedGameObject(null);
 			string oldKey = _activeKey;
 
 			if (key == null) {
@@ -95,7 +100,7 @@ namespace Menutee {
 			if (active != null) {
 				_activeDefaultInput = active.DefaultInput;
 				if (_activeDefaultInput != null && _activeDefaultInput.SelectableObject != null) {
-					EventSystem.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
+					EventSystem.current.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
 				}
 			} else {
 				_activeDefaultInput = null;
@@ -117,8 +122,8 @@ namespace Menutee {
 					PopPanel();
 				}
 			}
-			if (_activeDefaultInput != null && EventSystem.currentSelectedGameObject == null && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
-				EventSystem.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
+			if (_activeDefaultInput != null && EventSystem.current.currentSelectedGameObject == null && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+				EventSystem.current.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
 			}
 		}
 
