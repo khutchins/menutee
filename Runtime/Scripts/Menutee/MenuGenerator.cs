@@ -77,6 +77,12 @@ namespace Menutee {
 			// Hook up navigation with elements with selectable objects.
 			if (config.Navigation == PanelConfig.NavigationType.Custom) {
 				config.NavigationCallback?.Invoke(selectableObjects);
+			} else if (config.Navigation == PanelConfig.NavigationType.AutomaticUnity) {
+				foreach (Selectable selectable in selectableObjects) {
+					Navigation navigation = new Navigation();
+					navigation.mode = config.NavigationMode;
+					selectable.navigation = navigation;
+				}
 			} else {
 				for (int i = 0; i < selectableObjects.Count; i++) {
 					// Make new one to avoid potential property strangeness.

@@ -11,7 +11,8 @@ namespace Menutee {
 		public enum NavigationType {
 			Vertical,
 			Horizontal,
-			Custom
+			Custom,
+			AutomaticUnity
 		};
 
 		/// <summary>
@@ -23,19 +24,21 @@ namespace Menutee {
 		public readonly bool HorizontalMenu;
 		public readonly GameObject PrefabOverride;
 		public readonly NavigationType Navigation;
+		public readonly Navigation.Mode NavigationMode;
 		public readonly System.Action<List<Selectable>> NavigationCallback;
 
 		public readonly PanelObjectConfig[] PanelObjects;
 		[HideInInspector]
 		public readonly GameObject[] SupplementalObjects;
 
-		public PanelConfig(string key, string defaultSelectableKey, PanelObjectConfig[] panelObjects, GameObject[] supplementalObjects = null, NavigationType navigation = NavigationType.Vertical, System.Action<List<Selectable>> navigationCallback = null, GameObject prefabOverride = null) {
+		public PanelConfig(string key, string defaultSelectableKey, PanelObjectConfig[] panelObjects, GameObject[] supplementalObjects = null, NavigationType navigation = NavigationType.Vertical, System.Action<List<Selectable>> navigationCallback = null, GameObject prefabOverride = null, Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
 			SupplementalObjects = supplementalObjects;
 			Navigation = navigation;
 			NavigationCallback = navigationCallback;
+			NavigationMode = mode;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -47,6 +50,7 @@ namespace Menutee {
 			private string _key;
 			private string _defaultSelectableKey;
 			private NavigationType _navigation;
+			private Navigation.Mode _navigationMode;
 			private System.Action<List<Selectable>> _navigationCallback;
 
 			public Builder(string key) {
@@ -120,13 +124,22 @@ namespace Menutee {
 				return this;
 			}
 
+			/// <summary>
+			/// Selectables will navigate using Unity's automatic navigation mode. This is not recommended, as it tends to give unnatural results.
+			/// </summary>
+			public Builder SetAutomaticUnityNavigation(Navigation.Mode mode) {
+				_navigation = NavigationType.AutomaticUnity;
+				_navigationMode = mode;
+				return this;
+			}
+
 			public PanelConfig Build() {
 				if (_defaultSelectableKey == null) {
 					_defaultSelectableKey = _panelObjectConfigs[0].Key;
 				}
 				return new PanelConfig(_key, _defaultSelectableKey, 
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(), 
-					_navigation, _navigationCallback, _prefabOverride);
+					_navigation, _navigationCallback, _prefabOverride, _navigationMode);
 			}
 		}
 	}
