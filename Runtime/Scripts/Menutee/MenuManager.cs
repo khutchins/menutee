@@ -58,6 +58,11 @@ namespace Menutee {
 		}
 
 		public void SetMenuUp(bool newUp) {
+			// Menu is closed.
+			if (!newUp) {
+				_cachedSelection = null;
+				_panelStack.Clear();
+			}
 			_active = newUp;
 			Canvas.enabled = newUp;
 			ActivatePanel(_active ? MenuConfig.MainPanelKey : null);
@@ -66,6 +71,7 @@ namespace Menutee {
 		public void SetMenuOnTop(bool newOnTop) {
 			if (!newOnTop) {
 				_cachedSelection = EventSystem.current.currentSelectedGameObject;
+				EventSystem.current.SetSelectedGameObject(null);
 			} else if(_cachedSelection != null) {
 				EventSystem.current.SetSelectedGameObject(_cachedSelection);
 			}
