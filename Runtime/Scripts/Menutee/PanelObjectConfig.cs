@@ -11,11 +11,13 @@ namespace Menutee {
 		/// </summary>
 		public readonly string Key;
 		public readonly Action<GameObject> CreationCallback;
+		public readonly PaletteConfig PaletteConfig;
 		public readonly GameObject Prefab;
 
-		public PanelObjectConfig(string key, GameObject prefab, Action<GameObject> creationCallback) {
+		public PanelObjectConfig(string key, GameObject prefab, Action<GameObject> creationCallback, PaletteConfig paletteConfig) {
 			Key = key;
 			CreationCallback = creationCallback;
+			PaletteConfig = paletteConfig;
 			Prefab = prefab;
 		}
 
@@ -25,12 +27,18 @@ namespace Menutee {
 			protected string _key;
 			protected System.Action<GameObject> _creationCallback;
 			protected GameObject _prefab;
+			protected PaletteConfig _paletteConfig;
 			protected readonly TBuilder _builderInstance;
 
 			public Builder(string key, GameObject prefab) {
 				_key = key;
 				_prefab = prefab;
 				_builderInstance = (TBuilder)this;
+			}
+
+			public TBuilder SetPaletteConfigOverride(PaletteConfig config) {
+				_paletteConfig = config;
+				return _builderInstance;
 			}
 
 			public TBuilder SetCreationCallback(System.Action<GameObject> creationCallback) {
