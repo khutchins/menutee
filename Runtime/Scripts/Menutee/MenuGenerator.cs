@@ -63,7 +63,7 @@ namespace Menutee {
 			foreach (PanelObjectConfig objConfig in config.PanelObjects) {
 				GameObject go = objConfig.Create(panel);
 				UIElementManager elementManager = go.GetComponentInChildren<UIElementManager>();
-				elementManager.SetColors(menuConfig.PaletteConfig);
+				elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
 				if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
 					selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
 				}
