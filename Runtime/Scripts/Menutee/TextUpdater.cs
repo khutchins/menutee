@@ -21,7 +21,8 @@ namespace Menutee {
 		}
 
 		public void UpdateTextFromNumber(float num) {
-			Text.text = string.Format("{0:0.00}", num);
+			string format = Slider.wholeNumbers ? "{0:0}" : "{0:0.00}";
+			Text.text = string.Format(format, num);
 		}
 	}
 }
