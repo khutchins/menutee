@@ -68,6 +68,13 @@ public static class MenuConfigHelper {
 			.SetSliderUpdatedHandler(delegate (SliderManager manager, float newValue) {
 				// Handle volume
 			}));
+		builder.AddPanelObject(new SliderConfig.Builder("fov", sliderPrefab, 40f, 130f, 80f)
+			.SetDisplayText("FOV")
+			.SetUseWholeNumbers(true)
+			.SetSliderUpdatedHandler(delegate (SliderManager manager, float newValue) {
+				// This won't update it across scenes, you'll need to do that yourself.
+				Camera.main.fieldOfView = newValue;
+			}));
 		builder.AddPanelObject(new DropdownConfig.Builder("quality", dropdownPrefab)
 			.SetDisplayText("Quality")
 			.AddOptionStrings(QualitySettings.names)

@@ -8,14 +8,16 @@ namespace Menutee {
 		public float MinValue;
 		public float MaxValue;
 		public float DefaultValue;
+		public bool UseWholeNumbers;
 		public SliderUpdatedHandler Handler;
 
-		public SliderConfig(string key, GameObject prefab, string displayText, float minValue, float maxValue, float defaultValue, System.Action<GameObject> creationCallback, SliderUpdatedHandler handler, PaletteConfig paletteOverride = null) 
+		public SliderConfig(string key, GameObject prefab, string displayText, bool useWholeNumbers, float minValue, float maxValue, float defaultValue, System.Action<GameObject> creationCallback, SliderUpdatedHandler handler, PaletteConfig paletteOverride = null) 
 				: base(key, prefab, creationCallback, paletteOverride) {
 			DisplayText = displayText;
 			MinValue = minValue;
 			MaxValue = maxValue;
 			DefaultValue = defaultValue;
+			UseWholeNumbers = useWholeNumbers;
 			Handler = handler;
 		}
 
@@ -29,6 +31,7 @@ namespace Menutee {
 				manager.SetRange(MinValue, MaxValue);
 				manager.SetValue(DefaultValue);
 				manager.SetText(DisplayText);
+				manager.Slider.wholeNumbers = UseWholeNumbers;
 				manager.SliderUpdated += Handler;
 			}
 			return go;
@@ -37,6 +40,7 @@ namespace Menutee {
 		public class Builder : Builder<SliderConfig, Builder> {
 			private string _displayText;
 			private SliderUpdatedHandler _handler;
+			private bool _useWholeNumbers;
 			private float _minValue;
 			private float _maxValue;
 			private float _defaultValue;
@@ -57,8 +61,13 @@ namespace Menutee {
 				return _builderInstance;
 			}
 
+			public Builder SetUseWholeNumbers(bool useWholeNumbers) {
+				_useWholeNumbers = useWholeNumbers;
+				return _builderInstance;
+			}
+
 			public override SliderConfig Build() {
-				return new SliderConfig(_key, _prefab, _displayText, _minValue, _maxValue, _defaultValue, _creationCallback, _handler, _paletteConfig);
+				return new SliderConfig(_key, _prefab, _displayText, _useWholeNumbers, _minValue, _maxValue, _defaultValue, _creationCallback, _handler, _paletteConfig);
 			}
 		}
 	}
