@@ -8,8 +8,8 @@ namespace Menutee {
 		public readonly bool IsOn;
 		public readonly TogglePressedHandler Handler;
 
-		public ToggleConfig(string key, GameObject prefab, string displayText, bool isOn, System.Action<GameObject> creationCallback, TogglePressedHandler handler, PaletteConfig paletteOverride = null) 
-				: base(key, prefab, creationCallback, paletteOverride) {
+		public ToggleConfig(InitObject configInit, string displayText, bool isOn, TogglePressedHandler handler) 
+				: base(configInit) {
 			DisplayText = displayText;
 			IsOn = isOn;
 			Handler = handler;
@@ -53,7 +53,7 @@ namespace Menutee {
 			}
 
 			public override ToggleConfig Build() {
-				return new ToggleConfig(_key, _prefab, _displayText, _isOn, _creationCallback, _handler, _paletteConfig);
+				return new ToggleConfig(BuildInitObject(), _displayText, _isOn, _handler);
 			}
 		}
 	}

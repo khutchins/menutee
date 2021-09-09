@@ -23,13 +23,13 @@ public class SampleMainMenu : MenuGenerator {
 		// the builder you can specify it while adding the panel config.
 		MenuConfig config = new MenuConfig(false, false, MENU_KEY_MAIN, PaletteConfig, new PanelConfig[] {
 			new PanelConfig(MENU_KEY_MAIN, KEY_RESUME, new PanelObjectConfig[] {
-				new ButtonConfig(KEY_RESUME, ButtonPrefab, "Play Game", null, delegate(ButtonManager manager) {
+				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_RESUME, ButtonPrefab), "Play Game", delegate(ButtonManager manager) {
 					Debug.Log("Play game pressed.");
 				}),
-				new ButtonConfig(KEY_OPTIONS, ButtonPrefab, "Options", null, delegate(ButtonManager manager) {
+				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_OPTIONS, ButtonPrefab), "Options", delegate(ButtonManager manager) {
 					_manager.PushPanel(MENU_KEY_OPTIONS);
 				}),
-				new ButtonConfig(KEY_EXIT, ButtonPrefab, "Exit", null, delegate(ButtonManager manager) {
+				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_EXIT, ButtonPrefab), "Exit",  delegate(ButtonManager manager) {
 					_manager.ExitGame();
 				})
 			}),
