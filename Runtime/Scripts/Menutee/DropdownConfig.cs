@@ -8,8 +8,8 @@ namespace Menutee {
 		public readonly int DefaultIndex;
 		public readonly DropdownChosenHandler Handler;
 
-		public DropdownConfig(string key, GameObject prefab, string displayText, string[] optionStrings, int defaultIndex, System.Action<GameObject> creationCallback, DropdownChosenHandler handler, PaletteConfig paletteOverride = null) 
-				: base(key, prefab, creationCallback, paletteOverride) {
+		public DropdownConfig(InitObject configInit, string displayText, string[] optionStrings, int defaultIndex, DropdownChosenHandler handler) 
+				: base(configInit) {
 			DisplayText = displayText;
 			OptionStrings = optionStrings;
 			DefaultIndex = defaultIndex;
@@ -69,7 +69,7 @@ namespace Menutee {
 			}
 
 			public override DropdownConfig Build() {
-				return new DropdownConfig(_key, _prefab, _displayText, _optionStrings.ToArray(), _defaultIndex, _creationCallback, _handler, _paletteConfig);
+				return new DropdownConfig(BuildInitObject(), _displayText, _optionStrings.ToArray(), _defaultIndex, _handler);
 			}
 		}
 	}

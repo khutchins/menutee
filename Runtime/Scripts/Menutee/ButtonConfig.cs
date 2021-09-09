@@ -7,8 +7,8 @@ namespace Menutee {
 		public readonly string DisplayText;
 		public readonly ButtonPressedHandler Handler;
 
-		public ButtonConfig(string key, GameObject prefab, string displayText, System.Action<GameObject> creationCallback, ButtonPressedHandler handler, PaletteConfig paletteOverride = null) 
-				: base(key, prefab, creationCallback, paletteOverride) {
+		public ButtonConfig(InitObject configInit, string displayText, ButtonPressedHandler handler) 
+				: base(configInit) {
 			DisplayText = displayText;
 			Handler = handler;
 		}
@@ -44,7 +44,7 @@ namespace Menutee {
 			}
 
 			public override ButtonConfig Build() {
-				return new ButtonConfig(_key, _prefab, _displayText, _creationCallback, _handler, _paletteConfig);
+				return new ButtonConfig(BuildInitObject(), _displayText, _handler);
 			}
 		}
 	}

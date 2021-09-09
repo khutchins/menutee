@@ -14,14 +14,28 @@ namespace Menutee {
 		public readonly PaletteConfig PaletteConfig;
 		public readonly GameObject Prefab;
 
-		public PanelObjectConfig(string key, GameObject prefab, Action<GameObject> creationCallback, PaletteConfig paletteConfig) {
-			Key = key;
-			CreationCallback = creationCallback;
-			PaletteConfig = paletteConfig;
-			Prefab = prefab;
+		public PanelObjectConfig(InitObject initObject) {
+			Key = initObject.Key;
+			CreationCallback = initObject.CreationCallback;
+			PaletteConfig = initObject.PaletteConfig;
+			Prefab = initObject.Prefab;
 		}
 
 		public abstract GameObject Create(GameObject parent);
+
+		public class InitObject {
+			public readonly string Key;
+			public readonly Action<GameObject> CreationCallback;
+			public readonly PaletteConfig PaletteConfig;
+			public readonly GameObject Prefab;
+
+			public InitObject(string key, GameObject prefab, Action<GameObject> creationCallback = null, PaletteConfig paletteConfig = null) {
+				Key = key;
+				CreationCallback = creationCallback;
+				PaletteConfig = paletteConfig;
+				Prefab = prefab;
+			}
+		}
 
 		public abstract class Builder<TObject, TBuilder> where TObject : PanelObjectConfig where TBuilder : Builder<TObject, TBuilder> {
 			protected string _key;
@@ -44,6 +58,10 @@ namespace Menutee {
 			public TBuilder SetCreationCallback(System.Action<GameObject> creationCallback) {
 				_creationCallback = creationCallback;
 				return _builderInstance;
+			}
+
+			public InitObject BuildInitObject() {
+				return new InitObject(_key, _prefab, _creationCallback, _paletteConfig);
 			}
 
 			public abstract TObject Build();

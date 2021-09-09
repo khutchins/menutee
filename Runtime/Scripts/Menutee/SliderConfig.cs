@@ -11,8 +11,8 @@ namespace Menutee {
 		public bool UseWholeNumbers;
 		public SliderUpdatedHandler Handler;
 
-		public SliderConfig(string key, GameObject prefab, string displayText, bool useWholeNumbers, float minValue, float maxValue, float defaultValue, System.Action<GameObject> creationCallback, SliderUpdatedHandler handler, PaletteConfig paletteOverride = null) 
-				: base(key, prefab, creationCallback, paletteOverride) {
+		public SliderConfig(InitObject configInit, string displayText, bool useWholeNumbers, float minValue, float maxValue, float defaultValue, SliderUpdatedHandler handler) 
+				: base(configInit) {
 			DisplayText = displayText;
 			MinValue = minValue;
 			MaxValue = maxValue;
@@ -67,7 +67,7 @@ namespace Menutee {
 			}
 
 			public override SliderConfig Build() {
-				return new SliderConfig(_key, _prefab, _displayText, _useWholeNumbers, _minValue, _maxValue, _defaultValue, _creationCallback, _handler, _paletteConfig);
+				return new SliderConfig(BuildInitObject(), _displayText, _useWholeNumbers, _minValue, _maxValue, _defaultValue, _handler);
 			}
 		}
 	}
