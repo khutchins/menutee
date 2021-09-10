@@ -172,6 +172,7 @@ MonoBehaviour:
   TogglePrefab: {fileID: 4890371746114118091, guid: 96b68dec654245243a56a9eee63176b7, type: 3}
   DropdownPrefab: {fileID: 4890371746114118091, guid: f95c08f0bcf251b43a9fa33c8a67bca8, type: 3}
   PaletteConfig: {fileID: 11400000, guid: 21ce7c8e4af15eb48b222dfcfc95930d, type: 2}
+  TextPrefab: {fileID: 8820340555082134616, guid: 8356aa6accd87af42a06b4b73f7e5afe, type: 3}
 --- !u!1 &2683550713557049950
 GameObject:
   m_ObjectHideFlags: 0

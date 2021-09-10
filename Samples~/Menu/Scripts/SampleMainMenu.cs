@@ -13,6 +13,9 @@ public class SampleMainMenu : MenuGenerator {
 
 	private MenuManager _manager;
 
+	[Tooltip("Prefab for a menu element that just contains text.")]
+	public GameObject TextPrefab;
+
 	void Awake() {
 		_manager = GetComponent<MenuManager>();
 
@@ -21,11 +24,14 @@ public class SampleMainMenu : MenuGenerator {
 		// want to conditionally show options or configure some optional parameters in the
 		// constructor. You also need to manually specify the default object, whereas with
 		// the builder you can specify it while adding the panel config.
+		//
+		// It's recommended that use the Builder. See SampleInGameMenu for an example.
 		MenuConfig config = new MenuConfig(false, false, MENU_KEY_MAIN, PaletteConfig, new PanelConfig[] {
 			new PanelConfig(MENU_KEY_MAIN, KEY_RESUME, new PanelObjectConfig[] {
 				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_RESUME, ButtonPrefab), "Play Game", delegate(ButtonManager manager) {
 					Debug.Log("Play game pressed.");
 				}),
+				new TextConfig(new PanelObjectConfig.InitObject("other_text", TextPrefab), "Just Some Text"),
 				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_OPTIONS, ButtonPrefab), "Options", delegate(ButtonManager manager) {
 					_manager.PushPanel(MENU_KEY_OPTIONS);
 				}),
