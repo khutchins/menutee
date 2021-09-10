@@ -62,15 +62,24 @@ namespace Menutee {
 
 			foreach (PanelObjectConfig objConfig in config.PanelObjects) {
 				GameObject go = objConfig.Create(panel);
+
 				UIElementManager elementManager = go.GetComponentInChildren<UIElementManager>();
-				elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
-				if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
-					selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
+				// UIElementManager can be null, for instance for an element with no interaction
+				// (e.g. just text).
+				if (elementManager != null) {
+					elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
+					if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
+						selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
+					}
 				}
 				objConfig.CreationCallback?.Invoke(go);
 				dict[objConfig.Key] = go;
 				if (objConfig.Key == config.DefaultSelectableKey) {
-					manager.DefaultInput = elementManager;
+					if (elementManager != null) {
+						manager.DefaultInput = elementManager;
+					} else {
+						Debug.LogWarningFormat("Attempting to set the default selectable to non-selectable object {0}. Either add a UIElementManager subclass to the object, or change the default object.", go);
+					}
 				}
 			}
 
