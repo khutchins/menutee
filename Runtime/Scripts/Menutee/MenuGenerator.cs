@@ -42,7 +42,10 @@ namespace Menutee {
 			GameObject prefab = config.PrefabOverride == null ? PanelPrefab : config.PrefabOverride;
 			GameObject panel = Instantiate(prefab, parent.transform);
 			panel.name = config.Key;
-			PanelManager manager = panel.AddComponent<PanelManager>();
+			PanelManager manager = panel.GetComponent<PanelManager>();
+			if (manager == null) {
+				manager = panel.AddComponent<PanelManager>();
+			}
 			manager.Key = config.Key;
 			PanelDictionary.Add(config.Key, panel);
 
@@ -61,7 +64,7 @@ namespace Menutee {
 			List<Selectable> selectableObjects = new List<Selectable>();
 
 			foreach (PanelObjectConfig objConfig in config.PanelObjects) {
-				GameObject go = objConfig.Create(panel);
+				GameObject go = objConfig.Create(manager.Parent == null ? panel : manager.Parent);
 
 				UIElementManager elementManager = go.GetComponentInChildren<UIElementManager>();
 				// UIElementManager can be null, for instance for an element with no interaction
