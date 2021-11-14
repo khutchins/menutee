@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Menutee {
 	public class MenuConfig {
-		public readonly bool Closeable;
+		public readonly bool Toggleable;
+		public readonly bool StartsOpen;
 		public readonly bool MenuPausesGame;
 		public readonly string MainPanelKey;
 		public readonly PaletteConfig PaletteConfig;
@@ -12,8 +13,9 @@ namespace Menutee {
 
 		public readonly Color NormalColor;
 
-		public MenuConfig(bool closeable, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null) {
-			Closeable = closeable;
+		public MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null) {
+			Toggleable = toggleable;
+			StartsOpen = startsOpen;
 			MenuPausesGame = menuPausesGame;
 			MainPanelKey = mainPanelKey;
 			PaletteConfig = paletteConfig;
@@ -22,17 +24,29 @@ namespace Menutee {
 		}
 
 		public class Builder {
-			private bool _closeable;
+			private bool _toggleable;
+			private bool _startsOpen;
 			private bool _menuPausesGame;
 			private string _mainPanelKey = null;
 			private PaletteConfig _paletteConfig;
 			private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
 			private List<System.Action<string, string>> _panelChangeCallbacks = new List<System.Action<string, string>>();
 
-			public Builder(bool closeable, bool menuPausesGame, PaletteConfig paletteConfig) {
-				_closeable = closeable;
+			public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig) {
+				_toggleable = toggleableAndStartsClosed;
+				_startsOpen = !toggleableAndStartsClosed;
 				_menuPausesGame = menuPausesGame;
 				_paletteConfig = paletteConfig;
+			}
+
+			public Builder SetStartsOpen(bool startsOpen) {
+				_startsOpen = startsOpen;
+				return this;
+			}
+
+			public Builder SetToggleable(bool toggleable) {
+				_toggleable = toggleable;
+				return this;
 			}
 
 			public Builder AddPanelConfig(PanelConfig config, bool mainPanel = false) {
@@ -83,7 +97,7 @@ namespace Menutee {
 				if (_mainPanelKey == null) {
 					_mainPanelKey = _panelConfigs[0].Key;
 				}
-				return new MenuConfig(_closeable, _menuPausesGame, _mainPanelKey, _paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks);
+				return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey, _paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks);
 			}
 		}
 	}

@@ -48,7 +48,7 @@ namespace Menutee {
 				Debug.LogError("No canvas element set or found in MenuManager. Menu disabled.");
 			}
 
-			if (!MenuConfig.Closeable) {
+			if (MenuConfig.StartsOpen) {
 				MenuStack.Shared.PushAndShowMenu(this);
 			}
 		}
@@ -80,7 +80,7 @@ namespace Menutee {
 		}
 
 		void ToggleMenu() {
-			if (!MenuConfig.Closeable || _disabled) {
+			if (!MenuConfig.Toggleable || _disabled) {
 				return;
 			}
 			MenuStack.Shared.ToggleMenu(this);

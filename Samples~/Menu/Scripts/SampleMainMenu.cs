@@ -26,7 +26,7 @@ public class SampleMainMenu : MenuGenerator {
 		// the builder you can specify it while adding the panel config.
 		//
 		// It's recommended that use the Builder. See SampleInGameMenu for an example.
-		MenuConfig config = new MenuConfig(false, false, MENU_KEY_MAIN, PaletteConfig, new PanelConfig[] {
+		MenuConfig config = new MenuConfig(false, true, false, MENU_KEY_MAIN, PaletteConfig, new PanelConfig[] {
 			new PanelConfig(MENU_KEY_MAIN, KEY_RESUME, new PanelObjectConfig[] {
 				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_RESUME, ButtonPrefab), "Play Game", delegate(ButtonManager manager) {
 					Debug.Log("Play game pressed.");
