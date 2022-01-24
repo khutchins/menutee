@@ -134,7 +134,7 @@ namespace Menutee {
 			}
 
 			public PanelConfig Build() {
-				if (_defaultSelectableKey == null) {
+				if (_defaultSelectableKey == null && _panelObjectConfigs.Count > 0) {
 					_defaultSelectableKey = _panelObjectConfigs[0].Key;
 				}
 				return new PanelConfig(_key, _defaultSelectableKey, 
