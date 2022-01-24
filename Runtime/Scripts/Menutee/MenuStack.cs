@@ -13,6 +13,9 @@ namespace Menutee {
         public float timeScale;
         public bool pauseGame;
 
+        /// <summary>
+        /// Standard pause menu: Confined and visible cursor, timescale of 0, paused game.
+        /// </summary>
         public static MenuAttributes StandardPauseMenu() {
             MenuAttributes attributes = new MenuAttributes();
             attributes.cursorLockMode = CursorLockMode.Confined;
@@ -22,6 +25,9 @@ namespace Menutee {
             return attributes;
 		}
 
+        /// <summary>
+        /// Standard pause menu: Locked and invisible cursor, uses existing time scale, unpaused game.
+        /// </summary>
         public static MenuAttributes StandardInGame() {
             MenuAttributes attributes = new MenuAttributes();
             attributes.cursorLockMode = CursorLockMode.Locked;
@@ -31,6 +37,9 @@ namespace Menutee {
             return attributes;
         }
 
+        /// <summary>
+        /// Standard non-pause menu: Confined and visible cursor, uses existing time scale, unpaused game.
+        /// </summary>
         public static MenuAttributes StandardNonPauseMenu() {
             MenuAttributes attributes = new MenuAttributes();
             attributes.cursorLockMode = CursorLockMode.Confined;
