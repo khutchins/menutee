@@ -25,10 +25,22 @@ namespace Menutee {
 		public Dictionary<string, Dictionary<string, GameObject>> PanelObjectDictionary = new Dictionary<string, Dictionary<string, GameObject>>();
 
 		public void CreateMenu(MenuManager helper, MenuConfig.Builder menuConfigBuilder) {
+			if (menuConfigBuilder == null) {
+				Debug.LogError("MenuConfig.Builder passed in CreateMenu is null. Menu generation will not proceed.");
+				return;
+			}
 			CreateMenu(helper, menuConfigBuilder.Build());
 		}
 
 		public void CreateMenu(MenuManager helper, MenuConfig menuConfig) {
+			if (helper == null) {
+				Debug.LogError("MenuManager passed in CreateMenu is null. Menu generation will not proceed.");
+				return;
+			}
+			if (menuConfig == null) {
+				Debug.LogError("MenuConfig passed in CreateMenu is null. Menu generation will not proceed.");
+				return;
+			}
 			helper.MenuConfig = menuConfig;
 			List<PanelManager> panels = new List<PanelManager>();
 			foreach (PanelConfig panel in menuConfig.PanelConfigs) {
