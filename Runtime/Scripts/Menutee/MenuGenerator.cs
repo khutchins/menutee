@@ -44,13 +44,13 @@ namespace Menutee {
 			helper.MenuConfig = menuConfig;
 			List<PanelManager> panels = new List<PanelManager>();
 			foreach (PanelConfig panel in menuConfig.PanelConfigs) {
-				PanelManager manager = CreatePanel(Parent, panel, menuConfig);
+				PanelManager manager = CreatePanel(helper, Parent, panel, menuConfig);
 				panels.Add(manager);
 			}
 			helper.Panels = panels.ToArray();
 		}
 
-		public PanelManager CreatePanel(GameObject parent, PanelConfig config, MenuConfig menuConfig) {
+		public PanelManager CreatePanel(MenuManager menuManager, GameObject parent, PanelConfig config, MenuConfig menuConfig) {
 			GameObject prefab = config.PrefabOverride == null ? PanelPrefab : config.PrefabOverride;
 			GameObject panel = Instantiate(prefab, parent.transform);
 			panel.name = config.Key;
@@ -59,6 +59,7 @@ namespace Menutee {
 				manager = panel.AddComponent<PanelManager>();
 			}
 			manager.Key = config.Key;
+			manager.Manager = menuManager;
 			PanelDictionary.Add(config.Key, panel);
 
 			if (config.SupplementalObjects != null) {
@@ -71,8 +72,6 @@ namespace Menutee {
 			}
 
 			Dictionary<string, GameObject> dict = new Dictionary<string, GameObject>();
-
-			// Use this to set up nav menu. Right now it assumes layout is vertical.
 			List<Selectable> selectableObjects = new List<Selectable>();
 
 			foreach (PanelObjectConfig objConfig in config.PanelObjects) {
@@ -91,40 +90,37 @@ namespace Menutee {
 				dict[objConfig.Key] = go;
 				if (objConfig.Key == config.DefaultSelectableKey) {
 					if (elementManager != null) {
-						manager.DefaultInput = elementManager;
+						manager.DefaultInput = elementManager.SelectableObject;
 					} else {
 						Debug.LogWarningFormat("Attempting to set the default selectable to non-selectable object {0}. Either add a UIElementManager subclass to the object, or change the default object.", go);
 					}
 				}
 			}
 
+			// Set the default selectable to the callback value, if it exists and
+			// returns a valid object.
+			GameObject callbackSelectable = config.DefaultSelectableCallback?.Invoke(manager, new List<Selectable>(selectableObjects));
+			if (callbackSelectable != null) {
+				manager.DefaultInput = callbackSelectable;
+			}
+
 			// Hook up navigation with elements with selectable objects.
 			if (config.Navigation == PanelConfig.NavigationType.Custom) {
-				config.NavigationCallback?.Invoke(selectableObjects);
+				// Create new lists here just in case I end up wanting to use them later or
+				// they declare two navigation callbacks and stomp all over the list with
+				// the first.
+				config.NavigationCallback?.Invoke(new List<Selectable>(selectableObjects));
+				config.PanelNavigationCallback?.Invoke(manager, new List<Selectable>(selectableObjects));
 			} else if (config.Navigation == PanelConfig.NavigationType.AutomaticUnity) {
 				foreach (Selectable selectable in selectableObjects) {
 					Navigation navigation = new Navigation();
 					navigation.mode = config.NavigationMode;
 					selectable.navigation = navigation;
 				}
+			} else if (config.Navigation == PanelConfig.NavigationType.Horizontal) {
+				MenuGenerator.SetHorizontalNavigation(selectableObjects);
 			} else {
-				for (int i = 0; i < selectableObjects.Count; i++) {
-					// Make new one to avoid potential property strangeness.
-					Navigation navigation = new Navigation();
-					navigation.mode = Navigation.Mode.Explicit;
-					if (config.Navigation == PanelConfig.NavigationType.Horizontal) {
-						navigation.selectOnUp = null;
-						navigation.selectOnDown = null;
-						navigation.selectOnLeft = i > 0 ? selectableObjects[i - 1] : null;
-						navigation.selectOnRight = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : null;
-					} else {
-						navigation.selectOnUp = i > 0 ? selectableObjects[i - 1] : null;
-						navigation.selectOnDown = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : null;
-						navigation.selectOnLeft = null;
-						navigation.selectOnRight = null;
-					}
-					selectableObjects[i].navigation = navigation;
-				}
+				MenuGenerator.SetVerticalNavigation(selectableObjects);
 			}
 
 			PanelObjectDictionary[config.Key] = dict;
@@ -133,6 +129,44 @@ namespace Menutee {
 
 		protected GameObject CreatePanelObject(GameObject panel, PanelObjectConfig config) {
 			return config.Create(panel);
+		}
+
+		/// <summary>
+		/// Helper method for setting horizontal navigation on a list
+		/// of selectables. Useful if you have some non-dynamic button
+		/// on the panel you want to nav to without writing the for loop
+		/// yourself.
+		/// </summary>
+		public static void SetHorizontalNavigation(List<Selectable> selectableObjects) {
+			for (int i = 0; i < selectableObjects.Count; i++) {
+				// Make new one to avoid potential property strangeness.
+				Navigation navigation = new Navigation();
+				navigation.mode = Navigation.Mode.Explicit;
+				navigation.selectOnUp = null;
+				navigation.selectOnDown = null;
+				navigation.selectOnLeft = i > 0 ? selectableObjects[i - 1] : null;
+				navigation.selectOnRight = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : null;
+				selectableObjects[i].navigation = navigation;
+			}
+		}
+
+		/// <summary>
+		/// Helper method for setting vertical navigation on a list
+		/// of selectables. Useful if you have some non-dynamic button
+		/// on the panel you want to nav to without writing the for loop
+		/// yourself.
+		/// </summary>
+		public static void SetVerticalNavigation(List<Selectable> selectableObjects) {
+			for (int i = 0; i < selectableObjects.Count; i++) {
+				// Make new one to avoid potential property strangeness.
+				Navigation navigation = new Navigation();
+				navigation.mode = Navigation.Mode.Explicit;
+				navigation.selectOnUp = i > 0 ? selectableObjects[i - 1] : null;
+				navigation.selectOnDown = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : null;
+				navigation.selectOnLeft = null;
+				navigation.selectOnRight = null;
+				selectableObjects[i].navigation = navigation;
+			}
 		}
 	}
 }

@@ -22,10 +22,11 @@ public class SampleMainMenu : MenuGenerator {
 		// This is an example of how you can create a MenuConfig object without a builder.
 		// It works fine for when you're using the default options, but gets trickier if you
 		// want to conditionally show options or configure some optional parameters in the
-		// constructor. You also need to manually specify the default object, whereas with
-		// the builder you can specify it while adding the panel config.
+		// constructor. I will not be considering order when adding extra parameters to the
+		// constructor, as I don't want to make a breaking change.
 		//
-		// It's recommended that use the Builder. See SampleInGameMenu for an example.
+		// It's strongly recommended that you use the Builder.
+		// See SampleInGameMenu for an example.
 		MenuConfig config = new MenuConfig(false, true, false, MENU_KEY_MAIN, PaletteConfig, new PanelConfig[] {
 			new PanelConfig(MENU_KEY_MAIN, KEY_RESUME, new PanelObjectConfig[] {
 				new ButtonConfig(new PanelObjectConfig.InitObject(KEY_RESUME, ButtonPrefab), "Play Game", delegate(ButtonManager manager) {

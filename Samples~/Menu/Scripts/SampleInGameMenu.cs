@@ -44,7 +44,6 @@ public class SampleInGameMenu : MenuGenerator {
 					})), true);
 
 		builder.AddPanelConfig(MenuConfigHelper.StandardOptionsPanel(MENU_KEY_OPTIONS, _manager, ButtonPrefab, SliderPefab, DropdownPrefab, TogglePrefab));
-
 		CreateMenu(_manager, builder);
 	}
 }
