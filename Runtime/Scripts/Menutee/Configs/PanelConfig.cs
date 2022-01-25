@@ -25,13 +25,24 @@ namespace Menutee {
 		public readonly GameObject PrefabOverride;
 		public readonly NavigationType Navigation;
 		public readonly Navigation.Mode NavigationMode;
-		public readonly System.Action<List<Selectable>> NavigationCallback;
+		public readonly Action<List<Selectable>> NavigationCallback;
+		public readonly Action<PanelManager, List<Selectable>> PanelNavigationCallback;
+		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
 		public readonly PanelObjectConfig[] PanelObjects;
 		[HideInInspector]
 		public readonly GameObject[] SupplementalObjects;
 
-		public PanelConfig(string key, string defaultSelectableKey, PanelObjectConfig[] panelObjects, GameObject[] supplementalObjects = null, NavigationType navigation = NavigationType.Vertical, System.Action<List<Selectable>> navigationCallback = null, GameObject prefabOverride = null, Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit) {
+		public PanelConfig(string key, 
+				string defaultSelectableKey, 
+				PanelObjectConfig[] panelObjects, 
+				GameObject[] supplementalObjects = null, 
+				NavigationType navigation = NavigationType.Vertical,
+				Action<List<Selectable>> navigationCallback = null, 
+				GameObject prefabOverride = null, 
+				Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit,
+				Action<PanelManager, List<Selectable>> panelNavigationCallback = null,
+				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -39,6 +50,8 @@ namespace Menutee {
 			Navigation = navigation;
 			NavigationCallback = navigationCallback;
 			NavigationMode = mode;
+			PanelNavigationCallback = panelNavigationCallback;
+			DefaultSelectableCallback = defaultSelectableCallback;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -51,7 +64,9 @@ namespace Menutee {
 			private string _defaultSelectableKey;
 			private NavigationType _navigation;
 			private Navigation.Mode _navigationMode;
-			private System.Action<List<Selectable>> _navigationCallback;
+			private Action<List<Selectable>> _navigationCallback;
+			private Action<PanelManager, List<Selectable>> _panelNavigationCallback;
+			private Func<PanelManager, List<Selectable>, GameObject> _defaultSelectableCallback;
 
 			public Builder(string key) {
 				_key = key;
@@ -93,13 +108,30 @@ namespace Menutee {
 				return InsertPanelObject(configBuilder.Build(), index, defaultObject);
 			}
 
+			/// <summary>
+			/// Overrides the panel prefab to use the one set here. Otherwise, it will
+			/// use the one set in the MenuGenerator instance.
+			/// </summary>
+			/// <param name="prefabOverride">Prefab to use for the panel.</param>
 			public Builder SetPrefabOverride(GameObject prefabOverride) {
 				_prefabOverride = prefabOverride;
 				return this;
 			}
 
 			/// <summary>
+			/// Calls to get the default selectable object at creation time. Allows
+			/// non-programmatically generated selectables to be the default. If unset,
+			/// will use the one specified when adding or inserting a panel object, or the
+			/// first element if none was set.
+			/// </summary>
+			public Builder SetDefaultSelectableCallback(Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback) {
+				_defaultSelectableCallback = defaultSelectableCallback;
+				return this;
+			}
+
+			/// <summary>
 			/// Specifies that navigation between selectable elements will use the left/right inputs.
+			/// This will not alter visual appearance, as that is determined by the panel prefab.
 			/// </summary>
 			public Builder SetHorizontalNavigation() {
 				_navigation = NavigationType.Horizontal;
@@ -108,6 +140,7 @@ namespace Menutee {
 
 			/// <summary>
 			/// Specifies that navigation between selectable elements will use the up/down inputs.
+			/// This will not alter visual appearance, as that is determined by the panel prefab.
 			/// </summary>
 			public Builder SetVerticalNavigation() {
 				_navigation = NavigationType.Vertical;
@@ -118,9 +151,21 @@ namespace Menutee {
 			/// Allows the selectables to have their navigation specified by the provided callback.
 			/// The selectable list is the order in which the panel objects were added, ignoring unselectable elements.
 			/// </summary>
-			public Builder SetCustomNavigation(System.Action<List<Selectable>> navigationCallback) {
+			public Builder SetCustomNavigation(Action<List<Selectable>> navigationCallback) {
 				_navigation = NavigationType.Custom;
 				_navigationCallback = navigationCallback;
+				return this;
+			}
+
+			/// <summary>
+			/// Allows the selectables to have their navigation specified by the provided callback.
+			/// PanelManager is a reference to the created panel, and will allow you to read non-dynamic elements
+			/// to include in the navigation.
+			/// The selectable list is the order in which the panel objects were added, ignoring unselectable elements.
+			/// </summary>
+			public Builder SetCustomNavigation(Action<PanelManager, List<Selectable>> navigationCallback) {
+				_navigation = NavigationType.Custom;
+				_panelNavigationCallback = navigationCallback;
 				return this;
 			}
 
@@ -139,7 +184,8 @@ namespace Menutee {
 				}
 				return new PanelConfig(_key, _defaultSelectableKey, 
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(), 
-					_navigation, _navigationCallback, _prefabOverride, _navigationMode);
+					_navigation, _navigationCallback, _prefabOverride, _navigationMode, 
+					_panelNavigationCallback, _defaultSelectableCallback);
 			}
 		}
 	}

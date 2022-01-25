@@ -16,7 +16,7 @@ namespace Menutee {
 		public MenuConfig MenuConfig;
 
 		protected Stack<string> _panelStack = new Stack<string>();
-		private UIElementManager _activeDefaultInput;
+		private GameObject _activeDefaultInput;
 
 		public MenuInputMediator InputMediator;
 
@@ -107,8 +107,8 @@ namespace Menutee {
 			}
 			if (active != null) {
 				_activeDefaultInput = active.DefaultInput;
-				if (_activeDefaultInput != null && _activeDefaultInput.SelectableObject != null) {
-					EventSystem.current.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
+				if (_activeDefaultInput != null) {
+					EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
 				}
 			} else {
 				_activeDefaultInput = null;
@@ -132,7 +132,7 @@ namespace Menutee {
 				}
 			}
 			if (_activeDefaultInput != null && EventSystem.current.currentSelectedGameObject == null && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
-				EventSystem.current.SetSelectedGameObject(_activeDefaultInput.SelectableObject);
+				EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
 			}
 		}
 
