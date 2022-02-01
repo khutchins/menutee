@@ -27,6 +27,7 @@ namespace Menutee {
 		public readonly Navigation.Mode NavigationMode;
 		public readonly Action<List<Selectable>> NavigationCallback;
 		public readonly Action<PanelManager, List<Selectable>> PanelNavigationCallback;
+		public readonly Action<GameObject, PanelManager> CreationCallback;
 		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
 		public readonly PanelObjectConfig[] PanelObjects;
@@ -42,7 +43,8 @@ namespace Menutee {
 				GameObject prefabOverride = null, 
 				Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit,
 				Action<PanelManager, List<Selectable>> panelNavigationCallback = null,
-				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null) {
+				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null,
+				Action<GameObject, PanelManager> creationCallback = null) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -52,6 +54,7 @@ namespace Menutee {
 			NavigationMode = mode;
 			PanelNavigationCallback = panelNavigationCallback;
 			DefaultSelectableCallback = defaultSelectableCallback;
+			CreationCallback = creationCallback;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -67,6 +70,7 @@ namespace Menutee {
 			private Action<List<Selectable>> _navigationCallback;
 			private Action<PanelManager, List<Selectable>> _panelNavigationCallback;
 			private Func<PanelManager, List<Selectable>, GameObject> _defaultSelectableCallback;
+			private Action<GameObject, PanelManager> _creationCallback;
 
 			public Builder(string key) {
 				_key = key;
@@ -115,6 +119,17 @@ namespace Menutee {
 			/// <param name="prefabOverride">Prefab to use for the panel.</param>
 			public Builder SetPrefabOverride(GameObject prefabOverride) {
 				_prefabOverride = prefabOverride;
+				return this;
+			}
+
+			/// <summary>
+			/// A callback that is called after panel creation. Note that this callback
+			/// will occur after the objects in the panel have been created. Useful for
+			/// hooking up content of the panel outside of the generated content, like
+			/// a title.
+			/// </summary>
+			public Builder SetCreationCallback(Action<GameObject, PanelManager> creationCallback) {
+				_creationCallback = creationCallback;
 				return this;
 			}
 
@@ -185,7 +200,7 @@ namespace Menutee {
 				return new PanelConfig(_key, _defaultSelectableKey, 
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(), 
 					_navigation, _navigationCallback, _prefabOverride, _navigationMode, 
-					_panelNavigationCallback, _defaultSelectableCallback);
+					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback);
 			}
 		}
 	}

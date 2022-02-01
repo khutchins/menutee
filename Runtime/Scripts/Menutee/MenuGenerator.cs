@@ -124,6 +124,7 @@ namespace Menutee {
 			}
 
 			PanelObjectDictionary[config.Key] = dict;
+			config.CreationCallback?.Invoke(panel, manager);
 			return manager;
 		}
 
