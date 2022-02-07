@@ -23,7 +23,7 @@ namespace Menutee {
             attributes.timeScale = 0f;
             attributes.pauseGame = true;
             return attributes;
-		}
+        }
 
         /// <summary>
         /// Standard pause menu: Locked and invisible cursor, uses existing time scale, unpaused game.
@@ -54,7 +54,7 @@ namespace Menutee {
         MenuAttributes GetMenuAttributes();
         void SetMenuUp(bool newUp);
         void SetMenuOnTop(bool isTop);
-	}
+    }
 
     public class MenuStack : MonoBehaviour {
         public static MenuStack Shared;
@@ -102,19 +102,19 @@ namespace Menutee {
         public void ToggleMenu(IMenu menu) {
             if (!_menuStack.Contains(menu)) {
                 PushAndShowMenu(menu);
-			} else if (_menuStack.Count > 0 && _menuStack.Peek() == menu) {
+            } else if (_menuStack.Count > 0 && _menuStack.Peek() == menu) {
                 PopAndCloseMenu(menu);
-			}
-		}
+            }
+        }
 
         public bool PushAndShowMenu(IMenu menu) {
             if (menu == null) {
                 Debug.LogWarning("Attempting to push a null menu!");
                 return false;
             } else if (_menuStack.Contains(menu)) {
-                Debug.LogWarning("Attempting to push menu already in stack.");
+                Debug.LogWarningFormat("Attempting to push menu {0} already in stack.", menu);
                 return false;
-			}
+            }
 
             CacheCurrentMenuAttributes();
             SetTopStatusOfTopOfStack(false);
@@ -128,19 +128,19 @@ namespace Menutee {
         private void SetTopStatusOfTopOfStack(bool newStatus) {
             if (_menuStack.Count == 0) return;
             _menuStack.Peek().SetMenuOnTop(newStatus);
-		}
+        }
 
         public void PopAndPushNewMenu(IMenu current, IMenu newMenu) {
             PopAndCloseMenu(current);
             PushAndShowMenu(newMenu);
-		}
+        }
 
         public bool PopAndCloseMenu(IMenu menu) {
             if (_menuStack.Count == 0) {
-                Debug.LogWarning("Attempting to pop menu but stack is empty!");
+                Debug.LogWarningFormat("Attempting to pop menu {0} but stack is empty!", menu);
                 return false;
             } else if (_menuStack.Peek() != menu) {
-                Debug.LogWarning("Attempting to pop menu not on top of stack!");
+                Debug.LogWarningFormat("Attempting to pop menu {0} not on top of stack!", menu);
                 return false;
             }
             PopAndApplyMenuAttributes();
@@ -151,34 +151,34 @@ namespace Menutee {
                 SetTopStatusOfTopOfStack(true);
             }
             return true;
-		}
+        }
 
         public int StackSize() {
             return _menuStack.Count;
-		}
+        }
 
         public bool IsMenuInStack(IMenu menu) {
             return _menuStack.Contains(menu);
-		}
+        }
 
         public bool IsMenuAtTop(IMenu menu) {
             return _menuStack.Peek() == menu;
-		}
+        }
 
         public bool IsMenuUp(IMenu thisMenu) {
-            foreach(IMenu menu in _menuStack) {
+            foreach (IMenu menu in _menuStack) {
                 if (thisMenu == menu) return true;
-			}
+            }
             return false;
-		}
+        }
 
         void UpdatePaused(bool newState) {
             if (newState != _paused) {
                 _paused = newState;
                 if (_paused) OnPause?.Invoke();
                 else OnUnpause?.Invoke();
-			}
-		}
+            }
+        }
 
         void CacheCurrentMenuAttributes() {
             MenuAttributes attributes = new MenuAttributes();
