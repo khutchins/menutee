@@ -139,7 +139,9 @@ namespace Menutee {
 		}
 
 		void Update() {
-			if (_isOnTop && RestoreDefaultOnInputIfNoneSelected && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+			if (_isOnTop && RestoreDefaultOnInputIfNoneSelected 
+				&& EventSystem.current.currentSelectedGameObject == null 
+				&& (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
 				EventSystem.current.SetSelectedGameObject(DefaultSelectedGameObject);
 			}
 		}
