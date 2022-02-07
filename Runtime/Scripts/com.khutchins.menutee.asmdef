@@ -1,9 +1,8 @@
 {
     "name": "com.khutchins.menutee",
+    "rootNamespace": "",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:14165214884ae4a619bfb290f28194a7",
-        "GUID:29492541a59d04a81b47a7f225e8a22d"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
