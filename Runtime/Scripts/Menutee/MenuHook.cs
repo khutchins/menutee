@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Menutee {
-    public class MenuHook : MonoBehaviour, IMenu {
+	public class MenuHook : MonoBehaviour, IMenu {
 
 		public enum SelectedBehavior {
 			None,
@@ -33,6 +33,10 @@ namespace Menutee {
 		public bool UseDefaultOnPush;
 		[Tooltip("Behavior to use when the menu is popped back to.")]
 		public SelectedBehavior BehaviorOnPop = SelectedBehavior.Restore;
+		[Tooltip("Whether or not the default selected game object should be restored if no objects are selected, a direction is pressed, and this menu is on top.")]
+		public bool RestoreDefaultOnInputIfNoneSelected = false;
+		[Tooltip("Input mediator to use to detect input if restore default on input is enabled.")]
+		public MenuInputMediator InputMediator;
 
 		[Header("Hooks")]
 		[Tooltip("If this is true, OnMenuClose callbacks will be called on startup if it doesn't start shown.")]
@@ -49,6 +53,7 @@ namespace Menutee {
 		public UnityEvent OnMenuNotTop;
 
 		private GameObject _cachedSelection;
+		private bool _isOnTop = false;
 
 		void Awake() {
 			if (Canvas != null) Canvas.enabled = false;
@@ -92,6 +97,7 @@ namespace Menutee {
 			if (newOnTop) OnMenuTop?.Invoke();
 			else OnMenuNotTop?.Invoke();
 
+			_isOnTop = newOnTop;
 			if (!newOnTop) {
 				_cachedSelection = EventSystem.current.currentSelectedGameObject;
 			} else {
@@ -132,5 +138,10 @@ namespace Menutee {
 			MenuStack.Shared.PopAndCloseMenu(this);
 		}
 
+		void Update() {
+			if (_isOnTop && RestoreDefaultOnInputIfNoneSelected && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+				EventSystem.current.SetSelectedGameObject(DefaultSelectedGameObject);
+			}
+		}
 	}
 }
