@@ -162,7 +162,7 @@ namespace Menutee {
         }
 
         public bool IsMenuAtTop(IMenu menu) {
-            return _menuStack.Peek() == menu;
+            return _menuStack.Count > 0 && _menuStack.Peek() == menu;
         }
 
         public bool IsMenuUp(IMenu thisMenu) {
