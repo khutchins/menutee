@@ -171,6 +171,17 @@ namespace Menutee {
 			}
 		}
 
+		/// <summary>
+		/// Pops the current panel if not at root, otherwise hides the menu.
+		/// </summary>
+		public void PopPanelOrExitMenu() {
+			if (IsAtRoot()) {
+				ExitMenu();
+            } else {
+				PopPanel();
+            }
+        }
+
 		public void ExitMenu() {
 			if (!_active)
 				return;
