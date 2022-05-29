@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 2683550713146456091}
   - component: {fileID: 2683550713146456090}
   - component: {fileID: 2683550713146456084}
-  - component: {fileID: 5242026765853910282}
+  - component: {fileID: 304095271}
   m_Layer: 5
   m_Name: ExampleInGameMenu
   m_TagString: Untagged
@@ -153,7 +153,7 @@ MonoBehaviour:
   Canvas: {fileID: 0}
   Panels: []
   InputMediator: {fileID: 11400000, guid: cdd9a3a9b4d24954689b8b4dffd99725, type: 2}
---- !u!114 &5242026765853910282
+--- !u!114 &304095271
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,17 +162,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2683550713146456089}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39c22e702ff9f124fbd4035c5ab28ada, type: 3}
+  m_Script: {fileID: 11500000, guid: 94228a12e2bc0f34197867301d27c648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2683550711860310350}
-  PanelPrefab: {fileID: 2417477311400138043, guid: d06a7509982e991409fb84ab38fc2d63, type: 3}
-  ButtonPrefab: {fileID: 8820340555082134616, guid: 5be40208b4a7b3744ba2d3e6073ef83f, type: 3}
-  SliderPefab: {fileID: 4890371746114118091, guid: 9def6e7d78b940a438a2b18ea3b8ac3f, type: 3}
-  TogglePrefab: {fileID: 4890371746114118091, guid: 96b68dec654245243a56a9eee63176b7, type: 3}
-  DropdownPrefab: {fileID: 4890371746114118091, guid: f95c08f0bcf251b43a9fa33c8a67bca8, type: 3}
-  PaletteConfig: {fileID: 11400000, guid: 21ce7c8e4af15eb48b222dfcfc95930d, type: 2}
-  ControlMenu: {fileID: 0}
+  PanelPrefab: {fileID: 2417477311400138043, guid: 3dd219850f3c67549a09a02801bd51ac, type: 3}
+  ButtonPrefab: {fileID: 8820340555082134616, guid: 0f4513f92eccaac4bb3f336e2222134c, type: 3}
+  SliderPrefab: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+  TogglePrefab: {fileID: 4890371746114118091, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+  DropdownPrefab: {fileID: 4890371746114118091, guid: 82333ecec6538c249ad83939c7c3a313, type: 3}
+  PaletteConfig: {fileID: 11400000, guid: 086e1285eb84304469c64810d62db912, type: 2}
 --- !u!1 &2683550713557049950
 GameObject:
   m_ObjectHideFlags: 0

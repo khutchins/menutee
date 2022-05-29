@@ -16,6 +16,9 @@ public class SampleInGameMenu : MenuGenerator {
 		// It's more verbose, but it lets you easily change the different
 		// values in explicit ways.
 		MenuConfig.Builder builder = new MenuConfig.Builder(true, true, PaletteConfig);
+		MenuAttributes noLock = MenuAttributes.StandardPauseMenu();
+		noLock.cursorLockMode = UnityEngine.CursorLockMode.None;
+		builder.SetMenuAttributes(noLock);
 
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
 			.AddPanelObject(
@@ -43,7 +46,7 @@ public class SampleInGameMenu : MenuGenerator {
 						_manager.ExitGame();
 					})), true);
 
-		builder.AddPanelConfig(MenuConfigHelper.StandardOptionsPanel(MENU_KEY_OPTIONS, _manager, ButtonPrefab, SliderPefab, DropdownPrefab, TogglePrefab));
+		builder.AddPanelConfig(MenuConfigHelper.StandardOptionsPanel(MENU_KEY_OPTIONS, _manager, ButtonPrefab, SliderPrefab, DropdownPrefab, TogglePrefab));
 		CreateMenu(_manager, builder);
 	}
 }

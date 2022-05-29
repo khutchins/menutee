@@ -54,7 +54,7 @@ namespace Menutee {
 		}
 
 		public MenuAttributes GetMenuAttributes() {
-			return MenuConfig.MenuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu();
+			return MenuConfig.MenuAttributes;
 		}
 
 		public void SetMenuUp(bool newUp) {
@@ -87,10 +87,10 @@ namespace Menutee {
 		}
 
 		private void ActivatePanel(string key) {
-			ActivateMenu(key, MenuConfig.PanelConfigs.Where(p => p.Key == key).FirstOrDefault());
+			ActivatePanel(key, MenuConfig.PanelConfigs.Where(p => p.Key == key).FirstOrDefault());
 		}
 
-		private void ActivateMenu(string key, PanelConfig config) {
+		private void ActivatePanel(string key, PanelConfig config) {
 			PanelManager active = null;
 			EventSystem.current.SetSelectedGameObject(null);
 			string oldKey = _activeKey;
@@ -170,6 +170,17 @@ namespace Menutee {
 				GoToPanel(_panelStack.Last());
 			}
 		}
+
+		/// <summary>
+		/// Pops the current panel if not at root, otherwise hides the menu.
+		/// </summary>
+		public void PopPanelOrExitMenu() {
+			if (IsAtRoot()) {
+				ExitMenu();
+            } else {
+				PopPanel();
+            }
+        }
 
 		public void ExitMenu() {
 			if (!_active)
