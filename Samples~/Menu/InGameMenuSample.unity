@@ -218,13 +218,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5242026765853910282, guid: 95dcf5366c4ab7b4c81fe126a9861442, type: 3}
-      propertyPath: SliderPrefab
-      value: 
-      objectReference: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
-    m_RemovedComponents:
-    - {fileID: 4580024585881174822, guid: 95dcf5366c4ab7b4c81fe126a9861442, type: 3}
-    - {fileID: 4285112343451173865, guid: 95dcf5366c4ab7b4c81fe126a9861442, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95dcf5366c4ab7b4c81fe126a9861442, type: 3}
 --- !u!1 &1002370783
 GameObject:
