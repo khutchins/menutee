@@ -40,7 +40,7 @@ public class SampleMainMenu : MenuGenerator {
 					_manager.ExitGame();
 				})
 			}),
-			MenuConfigHelper.StandardOptionsPanel(MENU_KEY_OPTIONS, _manager, ButtonPrefab, SliderPefab, DropdownPrefab, TogglePrefab).Build(),
+			MenuConfigHelper.StandardOptionsPanel(MENU_KEY_OPTIONS, _manager, ButtonPrefab, SliderPrefab, DropdownPrefab, TogglePrefab).Build(),
 		});
 
 		CreateMenu(_manager, config);

@@ -508,5 +508,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9071715251733167779, guid: e4ae461ee190c324da94961b119ef3e1, type: 3}
+      propertyPath: SliderPrefab
+      value: 
+      objectReference: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4ae461ee190c324da94961b119ef3e1, type: 3}

@@ -620,7 +620,7 @@ MonoBehaviour:
   Parent: {fileID: 2683550713665848706}
   PanelPrefab: {fileID: 2417477311400138043, guid: d06a7509982e991409fb84ab38fc2d63, type: 3}
   ButtonPrefab: {fileID: 8820340555082134616, guid: 5be40208b4a7b3744ba2d3e6073ef83f, type: 3}
-  SliderPefab: {fileID: 4890371746114118091, guid: 9def6e7d78b940a438a2b18ea3b8ac3f, type: 3}
+  SliderPrefab: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
   TogglePrefab: {fileID: 4890371746114118091, guid: 96b68dec654245243a56a9eee63176b7, type: 3}
   DropdownPrefab: {fileID: 4890371746114118091, guid: f95c08f0bcf251b43a9fa33c8a67bca8, type: 3}
   PaletteConfig: {fileID: 11400000, guid: 21ce7c8e4af15eb48b222dfcfc95930d, type: 2}

@@ -13,7 +13,7 @@ namespace Menutee {
 		[Tooltip("Panel prefab that menu prefabs are placed in.")]
 		public GameObject PanelPrefab;
 		public GameObject ButtonPrefab;
-		public GameObject SliderPefab;
+		public GameObject SliderPrefab;
 		public GameObject TogglePrefab;
 		public GameObject DropdownPrefab;
 
