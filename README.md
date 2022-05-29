@@ -75,6 +75,10 @@ Often you'll want to use the unity event callbacks on the object itself to call 
 
 If you hook up the Canvas property, it will automatically show and hide the canvas for you (note that this won't disable interaction, so you might run into problems. I'm trying to find a good way to solve this, maybe canvas groups, I need to research that more). Similarly, you can configure it to automatically set the default selected game object when it's pushed to or popped back to.
 
+##### MenuWithCustomBackSample
+
+This example has a menu with buttons that exist outside of the programmatic generation. One instance where this is useful is having a custom panel with a static back button. These custom elements can be set as the default selectable by using `.SetDefaultSelectableCallback` on the PanelConfig builder. Similarly, you can hook up the navigation by using the using `.SetCustomNavigation` method. MenuGenerator has `SetHorizontalNavigation` and `SetVerticalNavigation` convenience methods that automate the UI hookup process. See the `SampleMenuWithCustomBack` script to look at how they're implemented.
+
 ### Add & Customize Prefabs
 
 Copy the MenuStack prefab and SampleInGameMenu prefab to your own project. Using SampleInGameMenu.cs as a base, create a replacement (or copy the script out of the Samples folder and edit it directly), and replace the menu options with ones that fit your own game.
