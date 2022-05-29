@@ -16,6 +16,9 @@ public class SampleInGameMenu : MenuGenerator {
 		// It's more verbose, but it lets you easily change the different
 		// values in explicit ways.
 		MenuConfig.Builder builder = new MenuConfig.Builder(true, true, PaletteConfig);
+		MenuAttributes noLock = MenuAttributes.StandardPauseMenu();
+		noLock.cursorLockMode = UnityEngine.CursorLockMode.None;
+		builder.SetMenuAttributes(noLock);
 
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
 			.AddPanelObject(

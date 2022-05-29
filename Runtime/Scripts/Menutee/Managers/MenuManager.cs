@@ -54,7 +54,7 @@ namespace Menutee {
 		}
 
 		public MenuAttributes GetMenuAttributes() {
-			return MenuConfig.MenuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu();
+			return MenuConfig.MenuAttributes;
 		}
 
 		public void SetMenuUp(bool newUp) {
