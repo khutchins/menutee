@@ -182,9 +182,13 @@ namespace Menutee {
             }
         }
 
+		public void ShowMenu() {
+			if (_active) return;
+			ToggleMenu();
+        }
+
 		public void ExitMenu() {
-			if (!_active)
-				return;
+			if (!_active) return;
 			ToggleMenu();
 		}
 
