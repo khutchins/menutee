@@ -7,19 +7,19 @@ namespace Menutee {
 	public class TextVersion : MonoBehaviour {
 
 		public TextMeshProUGUI Text;
+		[Tooltip("Format for version string. e.g. 'v{0}' for 'v1.0.0'. If null or empty, uses the format 'v. {0}'.")]
+		public string Format;
 
-		// Start is called before the first frame update
 		void Start() {
 			if (Text != null) {
-				Text.SetText("v. " + Application.version);
+				string format = Format;
+				if (format == null || format.Length == 0) {
+					format = "v. {0}";
+				}
+				Text.SetText(string.Format(format, Application.version));
 			} else {
 				Debug.LogWarning("No text attached to TextVersion!");
 			}
-		}
-
-		// Update is called once per frame
-		void Update() {
-
 		}
 	}
 }
