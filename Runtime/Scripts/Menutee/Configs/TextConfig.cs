@@ -15,7 +15,7 @@ namespace Menutee {
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
 			go.name = Key;
-			TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+			TextMeshProUGUI text = go.GetComponentInChildren<TextMeshProUGUI>();
 			if (text == null) {
 				Debug.LogWarning("No text on TextConfig object!");
 			} else {
