@@ -60,6 +60,7 @@ namespace Menutee {
 			}
 			manager.Key = config.Key;
 			manager.Manager = menuManager;
+			manager.Config = config;
 			PanelDictionary.Add(config.Key, panel);
 
 			if (config.SupplementalObjects != null) {
@@ -73,6 +74,7 @@ namespace Menutee {
 
 			Dictionary<string, GameObject> dict = new Dictionary<string, GameObject>();
 			List<Selectable> selectableObjects = new List<Selectable>();
+			List<UIElementManager> panelElements = new List<UIElementManager>();
 
 			foreach (PanelObjectConfig objConfig in config.PanelObjects) {
 				GameObject go = objConfig.Create(manager.Parent == null ? panel : manager.Parent);
@@ -81,6 +83,8 @@ namespace Menutee {
 				// UIElementManager can be null, for instance for an element with no interaction
 				// (e.g. just text).
 				if (elementManager != null) {
+					panelElements.Add(elementManager);
+					elementManager.PanelObjectConfig = objConfig;
 					elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
 					if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
 						selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
@@ -96,6 +100,7 @@ namespace Menutee {
 					}
 				}
 			}
+			manager.ElementManagers = panelElements.ToArray();
 
 			// Set the default selectable to the callback value, if it exists and
 			// returns a valid object.

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 namespace Menutee {
 	public class UIElementManager : MonoBehaviour {
 		public GameObject SelectableObject;
+		public PanelObjectConfig PanelObjectConfig;
 
 		public virtual void SetColors(PaletteConfig config) {
 			if (config != null) {
