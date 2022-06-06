@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,6 +26,7 @@ namespace Menutee {
 		public readonly Action<List<Selectable>> NavigationCallback;
 		public readonly Action<PanelManager, List<Selectable>> PanelNavigationCallback;
 		public readonly Action<GameObject, PanelManager> CreationCallback;
+		public readonly Action<GameObject, PanelManager> OnDisplayCallback;
 		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
 		public readonly PanelObjectConfig[] PanelObjects;
@@ -44,7 +43,8 @@ namespace Menutee {
 				Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit,
 				Action<PanelManager, List<Selectable>> panelNavigationCallback = null,
 				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null,
-				Action<GameObject, PanelManager> creationCallback = null) {
+				Action<GameObject, PanelManager> creationCallback = null,
+				Action<GameObject, PanelManager> onDisplayCallback = null) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -55,6 +55,7 @@ namespace Menutee {
 			PanelNavigationCallback = panelNavigationCallback;
 			DefaultSelectableCallback = defaultSelectableCallback;
 			CreationCallback = creationCallback;
+			OnDisplayCallback = onDisplayCallback;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -71,6 +72,7 @@ namespace Menutee {
 			private Action<PanelManager, List<Selectable>> _panelNavigationCallback;
 			private Func<PanelManager, List<Selectable>, GameObject> _defaultSelectableCallback;
 			private Action<GameObject, PanelManager> _creationCallback;
+			private Action<GameObject, PanelManager> _onDisplayCallback;
 
 			public Builder(string key) {
 				_key = key;
@@ -132,6 +134,15 @@ namespace Menutee {
 				_creationCallback = creationCallback;
 				return this;
 			}
+
+			/// <summary>
+			/// A callback that is called whenever a panel is active. First argument
+			/// is the panel's gameobject, the second is the PanelManager itself.
+			/// </summary>
+			public Builder SetOnDisplayCallback(Action<GameObject, PanelManager> onDisplayCallback) {
+				_onDisplayCallback = onDisplayCallback;
+				return this;
+            }
 
 			/// <summary>
 			/// Calls to get the default selectable object at creation time. Allows
@@ -200,7 +211,8 @@ namespace Menutee {
 				return new PanelConfig(_key, _defaultSelectableKey, 
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(), 
 					_navigation, _navigationCallback, _prefabOverride, _navigationMode, 
-					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback);
+					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback,
+					_onDisplayCallback);
 			}
 		}
 	}

@@ -13,10 +13,24 @@ namespace Menutee {
         [HideInInspector]
         public GameObject[] OtherObjects;
         [HideInInspector]
+        public UIElementManager[] ElementManagers;
+        [HideInInspector]
         public MenuManager Manager;
+        [HideInInspector]
+        public PanelConfig Config;
 
         public void SetPanelActive(bool active) {
             gameObject.SetActive(active);
+            if (active) {
+                if (Config != null && Config.OnDisplayCallback != null) {
+                    Config.OnDisplayCallback(this.gameObject, this);
+                }
+                foreach (var manager in ElementManagers) {
+                    if (manager.PanelObjectConfig != null && manager.PanelObjectConfig.OnDisplayCallback != null) {
+                        manager.PanelObjectConfig.OnDisplayCallback(manager.gameObject, manager);
+                    }
+                }
+            }
             if (OtherObjects != null) {
                 foreach (GameObject obj in OtherObjects) {
                     obj.SetActive(active);
