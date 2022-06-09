@@ -64,8 +64,7 @@ namespace Menutee {
 				_panelStack.Clear();
 			}
 			_active = newUp;
-			Canvas.enabled = newUp;
-			ActivatePanel(_active ? MenuConfig.MainPanelKey : null);
+			SetMenuIsUp(newUp, _active ? MenuConfig.MainPanelKey : null);
 		}
 
 		public void SetMenuOnTop(bool newOnTop) {
@@ -75,8 +74,17 @@ namespace Menutee {
 			} else if(_cachedSelection != null) {
 				EventSystem.current.SetSelectedGameObject(_cachedSelection);
 			}
-			_activeManager?.SetPanelActive(newOnTop);
-			Canvas.enabled = newOnTop;
+			SetOnTop(newOnTop);
+		}
+
+		protected virtual void SetMenuIsUp(bool isUp, string newKey) {
+			Canvas.enabled = isUp;
+			ActivatePanel(newKey, true);
+		}
+
+		protected virtual void SetOnTop(bool isOnTop) {
+			_activeManager?.SetPanelActive(isOnTop);
+			Canvas.enabled = isOnTop;
 		}
 
 		void ToggleMenu() {
@@ -86,25 +94,23 @@ namespace Menutee {
 			MenuStack.Shared.ToggleMenu(this);
 		}
 
-		private void ActivatePanel(string key) {
-			ActivatePanel(key, MenuConfig.PanelConfigs.Where(p => p.Key == key).FirstOrDefault());
+		protected virtual void DoToggle() {
+			MenuStack.Shared.ToggleMenu(this);
 		}
 
-		private void ActivatePanel(string key, PanelConfig config) {
-			PanelManager active = null;
+		protected virtual void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush) {
+			EnablePanel(newPanel);
+			DisableOtherPanels(newPanel);
+		}
+
+		protected void EnablePanel(PanelManager panel) {
 			EventSystem.current.SetSelectedGameObject(null);
 			string oldKey = _activeKey;
+			_activeKey = panel != null ? panel.Key : null;
 
-			if (key == null) {
-				_activeKey = null;
-			}
-			foreach (PanelManager manager in Panels) {
-				manager.SetPanelActive(key == manager.Key);
-				if (key == manager.Key) {
-					active = manager;
-					_activeKey = key;
-				}
-			}
+			PanelManager active = panel;
+			active?.SetPanelActive(true);
+
 			if (active != null) {
 				_activeDefaultInput = active.DefaultInput;
 				if (_activeDefaultInput != null) {
@@ -113,13 +119,29 @@ namespace Menutee {
 			} else {
 				_activeDefaultInput = null;
 			}
+			_activeManager = active;
 
 			if (oldKey != _activeKey) {
 				foreach (System.Action<string, string> action in MenuConfig.PanelChangeCallbacks) {
 					action.Invoke(oldKey, _activeKey);
 				}
 			}
-			_activeManager = active;
+		}
+
+		protected void DisableOtherPanels(PanelManager active) {
+			foreach (PanelManager manager in Panels) {
+				if (active != manager) {
+					manager.SetPanelActive(false);
+                }
+			}
+		}
+
+		private PanelManager PanelForKey(string key) {
+			return Panels.Where(x => x.Key == key).FirstOrDefault();
+		}
+
+		protected void ActivatePanel(string key, bool fromPush) {
+			ActivatePanel(PanelForKey(_activeKey), PanelForKey(key), fromPush);
 		}
 
 		private void Update() {
@@ -141,15 +163,16 @@ namespace Menutee {
 		/// modifying the stack. Only use if you know what you're doing.
 		/// </summary>
 		/// <param name="key">Key of the panel to go to.</param>
-		protected void GoToPanel(string key) {
-			ActivatePanel(key);
+		/// <param name="fromPush">Whether the panel is from a push or a pop. Used for animations.</param>
+		protected void GoToPanel(string key, bool fromPush) {
+			ActivatePanel(key, fromPush);
 		}
 
 		public void PushPanel(string key) {
 			foreach (PanelManager panel in Panels) {
 				if (panel.Key == key) {
 					_panelStack.Push(key);
-					GoToPanel(key);
+					GoToPanel(key, true);
 					return;
 				}
 			}
@@ -165,9 +188,9 @@ namespace Menutee {
 				_panelStack.Pop();
 			}
 			if (_panelStack.Count == 0) {
-				GoToPanel(MenuConfig.MainPanelKey);
+				GoToPanel(MenuConfig.MainPanelKey, false);
 			} else {
-				GoToPanel(_panelStack.Last());
+				GoToPanel(_panelStack.Last(), false);
 			}
 		}
 
