@@ -11,24 +11,35 @@ namespace Menutee {
 		public string menuToggle = "Jump";
 		public string submit = "Submit";
 
+		private float GetAxis(string name) {
+			if (string.IsNullOrEmpty(name)) return 0;
+			return Input.GetAxis(name);
+		}
+
+		private bool GetButtonDown(string name) {
+			if (string.IsNullOrEmpty(name)) return false;
+			return Input.GetButtonDown(name);
+		}
+
 		public override float UIX() {
-			return UnityEngine.Input.GetAxisRaw(xAxis);
+			return GetAxis(xAxis);
 		}
 
 		public override float UIY() {
-			return UnityEngine.Input.GetAxisRaw(yAxis);
+			return GetAxis(yAxis);
 		}
 
+
 		public override bool UICancelDown() {
-			return UnityEngine.Input.GetButtonDown(uiInputCancel);
+			return GetButtonDown(uiInputCancel);
 		}
 
 		public override bool UISubmitDown() {
-			return UnityEngine.Input.GetButtonDown(submit);
+			return GetButtonDown(submit);
 		}
 
 		public override bool MenuToggleDown() {
-			return UnityEngine.Input.GetButtonDown(menuToggle);
+			return GetButtonDown(menuToggle);
 		}
 	}
 }
