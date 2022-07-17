@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Linq;
+using System;
+using System.Collections;
 
 namespace Menutee {
 	public class MenuManager : MonoBehaviour, IMenu {
@@ -55,6 +57,21 @@ namespace Menutee {
 
 		public MenuAttributes GetMenuAttributes() {
 			return MenuConfig.MenuAttributes;
+		}
+
+		/// <summary>
+		/// Delays actions in the helper for a frame, since some things *COUGH* audio mixers *COUGH*
+		/// don't handle being set in awake properly. Useful for calling things from creation callbacks
+		/// for objects.
+		/// </summary>
+		/// <param name="doer">Thing to do after a frame.</param>
+		public void RunGenericActionAfterFrame(Action doer) {
+			StartCoroutine(GenericCoroutine(doer));
+        }
+
+		private IEnumerator GenericCoroutine(Action doer) {
+			yield return null;
+			doer?.Invoke();
 		}
 
 		public void SetMenuUp(bool newUp) {
