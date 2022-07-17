@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -17,6 +18,8 @@ namespace Menutee {
 
         public TextMeshProUGUI Text;
         public TextMeshProUGUI OptionText;
+
+        public UnityEvent<int> OptionChanged;
 
         public bool Loops { get; set; }
         private int _index;
@@ -75,10 +78,17 @@ namespace Menutee {
             OptionUpdateInternal(newIndex);
         }
 
-        void OptionUpdateInternal(int newIndex) {
+        public void SelectOptionWithoutNotify(int newIndex) {
+            OptionUpdateInternal(newIndex, false);
+        }
+
+        void OptionUpdateInternal(int newIndex, bool notify = true) {
             _index = newIndex;
             UpdateDisplay();
-            OptionSelected?.Invoke(this, _index, _options[_index]);
+            if (notify) {
+                OptionSelected?.Invoke(this, _index, _options[_index]);
+                OptionChanged?.Invoke(newIndex);
+            }
         }
 
         private void UpdateDisplay() {
