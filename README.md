@@ -6,7 +6,7 @@ The name is combining the words Manatee and Menu together. I know it's a reach.
 
 ## Overview
 
-[Here's](https://khutchins.itch.io/the-abyss-of-dastroreth) an example of it in action (the main menu and in-game menus all use Menutee).
+[Here](https://khutchins.itch.io/the-abyss-of-dastroreth) and [here](https://khutchins.itch.io/lowercase-freecell) are two different examples of it in action (all menus in both projects use Menutee).
 
 The menu generation component of this library is meant for getting a menu quickly running for jam games and projects where you just don't want to have to do a menu. It is somewhat flexible, but certain things are not possible with how it is at the moment.
 
@@ -20,7 +20,7 @@ The menu generation component of this library is meant for getting a menu quickl
 ### Limitations
 
 * Does not easily support a combination of horizontal and vertical layouts. If you want to have two buttons next to each other in a vertical menu, it's probably possible if you set the navigation directions directly, but it may be easier to implement the menu directly at that point.
-* Doesn't support animations. It's possible (maybe even straightforward) to add this, but I haven't gotten the motivation to do it in a robust way.
+* Doesn't have full animation support. Simple slides in and out and transitions between menus are possible, but it's not supported in a robust way.
 
 ## Installation
 
