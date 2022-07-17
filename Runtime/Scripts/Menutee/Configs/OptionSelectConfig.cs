@@ -87,4 +87,55 @@ namespace Menutee {
 			}
 		}
 	}
+
+	public static class OptionSelectToggleConfig {
+
+		public static void SetOn(OptionSelectManager manager, bool on) {
+			manager.SelectOption(on ? 1 : 0);
+        }
+
+		public class Builder : PanelObjectConfig.Builder<OptionSelectConfig, Builder> {
+			private string _displayText;
+			private string _onText;
+			private string _offText;
+			private bool _isOn;
+			private bool _loops = true;
+			private OptionSelectedHandler _handler;
+
+			public Builder(string key, GameObject prefab, string offText, string onText, bool isOn) : base(key, prefab) {
+				_onText = onText;
+				_offText = offText;
+				_isOn = isOn;
+			}
+
+			public Builder SetDisplayText(string displayText) {
+				_displayText = displayText;
+				return _builderInstance;
+			}
+
+			/// <summary>
+			/// Whether or not clicking left from the first option will go to the last option and vice versa.
+			/// Default is true.
+			/// </summary>
+			/// <param name="loops">Whether or not selected object can loop.</param>
+			public Builder SetLoops(bool loops) {
+				_loops = loops;
+				return _builderInstance;
+			}
+
+			public Builder SetToggleManager(System.Action<OptionSelectManager, bool> handler) {
+				_handler = (OptionSelectManager manager, int index, string option) => {
+					bool on = index == 1;
+					handler?.Invoke(manager, on);
+				};
+				return _builderInstance;
+			}
+
+			public override OptionSelectConfig Build() {
+				return new OptionSelectConfig(BuildInitObject(), _displayText, new string[] { _offText, _onText }, _isOn ? 1 : 0, _handler, _loops);
+			}
+		}
+	}
+
+	
 }
