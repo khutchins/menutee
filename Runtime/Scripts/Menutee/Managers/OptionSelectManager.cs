@@ -18,6 +18,7 @@ namespace Menutee {
         public TextMeshProUGUI Text;
         public TextMeshProUGUI OptionText;
 
+        public bool Loops { get; set; }
         private int _index;
         private string[] _options;
         private bool _selected;
@@ -55,10 +56,12 @@ namespace Menutee {
         }
 
         private void ChooseLeft() {
+            if (_index <= 0 && !Loops) return;
             OptionUpdateInternal((_index - 1 + _options.Length) % _options.Length);
         }
 
         private void ChooseRight() {
+            if (_index >= _options.Length - 1 && !Loops) return;
             OptionUpdateInternal((_index + 1) % _options.Length);
         }
 

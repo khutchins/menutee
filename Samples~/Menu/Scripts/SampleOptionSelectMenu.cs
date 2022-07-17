@@ -36,6 +36,22 @@ public class SampleOptionSelectMenu : MenuGenerator {
 			Debug.Log($"Selected {optionString}");
 		}));
 
+		panel.AddPanelObject(new OptionSelectConfig.Builder("something_else", OptionSelectPrefab)
+		.SetDisplayText("No Loop")
+		.SetLoops(false)
+		.AddOptionString("1", false)
+		.AddOptionString("2", false)
+		.AddOptionString("3", true)
+		.SetOptionSelectedHandler(delegate (OptionSelectManager manager, int newIndex, string optionString) {
+			Debug.Log($"Selected {optionString}");
+		}));
+
+		panel.AddPanelObject(new OptionSelectToggleConfig.Builder("item123", OptionSelectPrefab, "Off", "On", true)
+		.SetDisplayText("Toggle")
+		.SetToggleManager((OptionSelectManager manager, bool toggle) => {
+			Debug.Log($"Is on? {toggle}");
+		}));
+
 		builder.AddPanelConfig(panel);
 		CreateMenu(_manager, builder);
 	}
