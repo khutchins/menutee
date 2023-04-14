@@ -30,13 +30,16 @@ NOTE: You should always back up your project before installing a new package.
 
 ### Add to Package Manager
 
-Open the package manager (Window -> Package Manager), and hit the plus button (+) in the top right, then "add package from git URL". In that field, enter `https://github.com/khutchins/menutee.git` and click Add.
+Open the package manager (Window -> Package Manager), and hit the plus button (+) in the top right, then "add package from git URL".
+
+In that field, first enter `https://github.com/khutchins/ratferences.git` and click Add, then do the same with `https://github.com/khutchins/menutee.git`.
 
 ### Modify manifest.json
 
-Open Packages/manifest.json and add this to the list of dependencies (omitting the comma if it's at the end):
+Open Packages/manifest.json and add these to the list of dependencies (omitting the comma if it's at the end):
 
 ```
+"com.khutchins.ratferences": "https://github.com/khutchins/ratferences.git",
 "com.khutchins.menutee": "https://github.com/khutchins/menutee.git",
 ```
 
