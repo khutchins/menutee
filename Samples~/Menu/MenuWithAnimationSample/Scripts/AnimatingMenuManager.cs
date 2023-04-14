@@ -54,7 +54,7 @@ namespace Menutee.Samples {
         IEnumerator AnimateSlidePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush, Action finished = null) {
             // Enable the new panel, as both panels will be visible
             // for the duration of the animation.
-            EnablePanel(newPanel);
+            EnablePanel(newPanel, fromPush);
 
             if (oldPanel != null && newPanel != null) {
                 RectTransform oldRect = oldPanel.GetComponent<RectTransform>();

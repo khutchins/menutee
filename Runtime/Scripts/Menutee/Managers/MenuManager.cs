@@ -18,6 +18,7 @@ namespace Menutee {
 		public MenuConfig MenuConfig;
 
 		protected Stack<string> _panelStack = new Stack<string>();
+		protected Stack<GameObject> _selectedStack = new Stack<GameObject>();
 		private GameObject _activeDefaultInput;
 
 		public MenuInputMediator InputMediator;
@@ -116,11 +117,11 @@ namespace Menutee {
 		}
 
 		protected virtual void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush) {
-			EnablePanel(newPanel);
+			EnablePanel(newPanel, fromPush);
 			DisableOtherPanels(newPanel);
 		}
 
-		protected void EnablePanel(PanelManager panel) {
+		protected void EnablePanel(PanelManager panel, bool fromPush) {
 			EventSystem.current.SetSelectedGameObject(null);
 			string oldKey = _activeKey;
 			_activeKey = panel != null ? panel.Key : null;
@@ -129,10 +130,21 @@ namespace Menutee {
 			active?.SetPanelActive(true);
 
 			if (active != null) {
+				// Cache the default so that we have something to default to if
+				// nothing is selected.
 				_activeDefaultInput = active.DefaultInput;
-				if (_activeDefaultInput != null) {
-					EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
-				}
+
+				// If pushing or something is wrong with the selected stack, use the default.
+				if (fromPush || _selectedStack.Count == 0 || _selectedStack.Peek() == null) {
+					if (_activeDefaultInput != null) {
+						EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+					}
+				} 
+				// Otherwise, restore the previous selection.
+				else {
+					GameObject selected = _selectedStack.Pop();
+					EventSystem.current.SetSelectedGameObject(selected);
+                }
 			} else {
 				_activeDefaultInput = null;
 			}
@@ -188,6 +200,7 @@ namespace Menutee {
 		public void PushPanel(string key) {
 			foreach (PanelManager panel in Panels) {
 				if (panel.Key == key) {
+					_selectedStack.Push(EventSystem.current.currentSelectedGameObject);
 					_panelStack.Push(key);
 					GoToPanel(key, true);
 					return;

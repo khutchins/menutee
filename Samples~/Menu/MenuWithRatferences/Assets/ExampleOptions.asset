@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d46790ce6ef738542bcf80b4afc20518, type: 3}
+  m_Name: ExampleOptions
+  m_EditorClassIdentifier: 
+  Option1: {fileID: 11400000, guid: cea81a62d9363c64e8ac43e55d6a9c4a, type: 2}
+  Option2: {fileID: 11400000, guid: 37a1413a95dd24e4ebd940402567aeed, type: 2}
+  Option3: {fileID: 11400000, guid: b47a655ae3a16f643878363bb44363b9, type: 2}
+  SFXVolume: {fileID: 11400000, guid: 85a1677bc4f00f045a132eaa3aa2b41e, type: 2}
+  MusicVolume: {fileID: 11400000, guid: 22ea8e96b9d805e4baaea657a27f2f15, type: 2}
