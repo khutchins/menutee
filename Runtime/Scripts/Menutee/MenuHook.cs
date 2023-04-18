@@ -31,6 +31,8 @@ namespace Menutee {
 		public GameObject DefaultSelectedGameObject;
 		[Tooltip("GameObject to use when the menu is pushed.")]
 		public bool UseDefaultOnPush;
+		[Tooltip("Whether or not the selected game object should be cleared when this menu is not on top or disappears.")]
+		public bool ClearSelectedOnNotOnTop = false;
 		[Tooltip("Behavior to use when the menu is popped back to.")]
 		public SelectedBehavior BehaviorOnPop = SelectedBehavior.Restore;
 		[Tooltip("Whether or not the default selected game object should be restored if no objects are selected, a direction is pressed, and this menu is on top.")]
@@ -100,6 +102,9 @@ namespace Menutee {
 			_isOnTop = newOnTop;
 			if (!newOnTop) {
 				_cachedSelection = EventSystem.current.currentSelectedGameObject;
+				if (ClearSelectedOnNotOnTop) {
+					EventSystem.current.SetSelectedGameObject(null);
+				}
 			} else {
 				// If cached selection is not null, it means that this is from a pop, not a push.
 				if (_cachedSelection != null) {
