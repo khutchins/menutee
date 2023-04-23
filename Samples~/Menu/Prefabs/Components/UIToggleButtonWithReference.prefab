@@ -7,9 +7,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4125111143764591566}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UpdateValue
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ratferences.ValueReceptor`2[[System.Boolean, mscorlib
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714143231752253292, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4890371746114118091, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
       propertyPath: m_Name
-      value: UIToggleButton
+      value: UIToggleButtonWithReference
       objectReference: {fileID: 0}
     - target: {fileID: 6360726032631354130, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
       propertyPath: m_Pivot.x
@@ -109,3 +137,45 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+--- !u!1 &2697210488825306803 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4890371746114118091, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
+  m_PrefabInstance: {fileID: 7399552277215641464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4125111143764591566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2697210488825306803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aac9d9b7c8249d4ba332d7e2343f223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Reference: {fileID: 0}
+--- !u!114 &744462101024705830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2697210488825306803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9a4c0d9869fcf4ba48b50cfb6885f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _reference: {fileID: 0}
+  TriggerOnStart: 0
+  TriggerOnEnable: 0
+  Event:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrue:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFalse:
+    m_PersistentCalls:
+      m_Calls: []

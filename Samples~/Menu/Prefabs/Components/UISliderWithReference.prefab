@@ -21,7 +21,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
       propertyPath: m_Name
-      value: UISlider
+      value: UISliderWithReference
+      objectReference: {fileID: 0}
+    - target: {fileID: 5721741102776867592, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5721741102776867592, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3120613003078046418}
+    - target: {fileID: 5721741102776867592, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UpdateValue
+      objectReference: {fileID: 0}
+    - target: {fileID: 5721741102776867592, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ratferences.ValueReceptor`2[[System.Single, mscorlib
       objectReference: {fileID: 0}
     - target: {fileID: 6360726032631354130, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
       propertyPath: m_Pivot.x
@@ -117,3 +133,62 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+--- !u!1 &8218858260647860497 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+  m_PrefabInstance: {fileID: 3589746291985250522}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3120613003078046418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218858260647860497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29d8076f448eec47b856c9f505cf0ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Reference: {fileID: 0}
+--- !u!114 &121655647873452397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218858260647860497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 662616b00bd4efc4ea20f336dae765af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _reference: {fileID: 0}
+  TriggerOnStart: 0
+  TriggerOnEnable: 0
+  Event:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9130733837591651282}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
+        m_MethodName: SetValueWithoutNotify
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &9130733837591651282 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5721741102776867592, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
+  m_PrefabInstance: {fileID: 3589746291985250522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
