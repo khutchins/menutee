@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -148,6 +149,30 @@ namespace Menutee {
 				&& EventSystem.current.currentSelectedGameObject == null 
 				&& (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
 				EventSystem.current.SetSelectedGameObject(DefaultSelectedGameObject);
+			}
+		}
+
+		public IEnumerator WaitForClose() {
+			yield return new AwaitMenuClose(this).WaitForClose();
+        }
+
+		private class AwaitMenuClose {
+			public bool Finished { get => _finished; }
+			public IEnumerator WaitForClose() {
+				while (!Finished) yield return null;
+            }
+
+			MenuHook _menu;
+			UnityAction _action;
+			bool _finished;
+
+			public AwaitMenuClose(MenuHook menu) {
+				this._menu = menu;
+				_action = new UnityAction(() => {
+					_finished = true;
+					_menu.OnMenuClose.RemoveListener(_action);
+				});
+				_menu.OnMenuClose.AddListener(_action);
 			}
 		}
 	}
