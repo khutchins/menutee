@@ -2,41 +2,37 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 namespace Menutee {
     public class HighlightTextWhenSelected : MonoBehaviour, ISelectHandler, IDeselectHandler {
 
         public Color SelectColor = Color.white;
-        public Text Text;
-        public TextMeshProUGUI TMP;
+        [FormerlySerializedAs("TMP")]
+        public TMP_Text Text;
 
         private Color _baseColor;
+        private bool _cached;
 
-        // Start is called before the first frame update
-        void Start() {
-            if (Text != null) {
-                _baseColor = Text.color;
-            } else if (TMP != null) {
-                _baseColor = TMP.color;
-            }
+        void MaybeCacheColor() {
+            if (_cached || Text == null) return;
+            // This caching doesn't happen on Awake because I want other scripts to be
+            // able to change the base color at runtime before this script starts up.
+            _baseColor = Text.color;
+            _cached = true;
         }
 
-        //Do this when the selectable UI object is selected.
         public void OnSelect(BaseEventData eventData) {
+            MaybeCacheColor();
             if (Text != null) {
                 Text.color = SelectColor;
-            }
-            if (TMP != null) {
-                TMP.color = SelectColor;
             }
         }
 
         public void OnDeselect(BaseEventData data) {
+            MaybeCacheColor();
             if (Text != null) {
                 Text.color = _baseColor;
-            }
-            if (TMP != null) {
-                TMP.color = _baseColor;
             }
         }
     }
