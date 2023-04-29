@@ -59,12 +59,12 @@ namespace Menutee {
         }
 
         private void ChooseLeft() {
-            if (_index <= 0 && !Loops) return;
+            if (!CanChooseLeft) return;
             OptionUpdateInternal((_index - 1 + _options.Length) % _options.Length);
         }
 
         private void ChooseRight() {
-            if (_index >= _options.Length - 1 && !Loops) return;
+            if (!CanChooseRight) return;
             OptionUpdateInternal((_index + 1) % _options.Length);
         }
 
@@ -91,8 +91,18 @@ namespace Menutee {
             }
         }
 
+        private bool CanChooseLeft {
+            get => Loops || _index > 0;
+        }
+
+        private bool CanChooseRight {
+            get => Loops || _index < _options.Length - 1;
+        }
+
         private void UpdateDisplay() {
             OptionText.text = _options[_index];
+            LeftButton.gameObject.SetActive(CanChooseLeft);
+            RightButton.gameObject.SetActive(CanChooseRight);
         }
 
         public override void SetColors(PaletteConfig config) {

@@ -7,9 +7,10 @@ namespace Menutee {
 		public readonly string[] OptionStrings;
 		public readonly int DefaultIndex;
 		public readonly bool Loops;
+		public readonly bool HidesArrowIfLastOption;
 		public readonly OptionSelectedHandler Handler;
 
-		public OptionSelectConfig(InitObject configInit, string displayText, string[] optionStrings, int defaultIndex, OptionSelectedHandler handler, bool loops = true) 
+		public OptionSelectConfig(InitObject configInit, string displayText, string[] optionStrings, int defaultIndex, OptionSelectedHandler handler, bool loops = true, bool hidesArrowIfLastOption = true) 
 				: base(configInit) {
 			DisplayText = displayText;
 			OptionStrings = optionStrings;
@@ -38,6 +39,7 @@ namespace Menutee {
 			private List<string> _optionStrings = new List<string>();
 			private int _defaultIndex;
 			private bool _loops = true;
+			private bool _hidesArrowIfLastOption = true;
 			private OptionSelectedHandler _handler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
@@ -57,6 +59,17 @@ namespace Menutee {
 				_loops = loops;
 				return _builderInstance;
             }
+
+			/// <summary>
+			/// Whether or not the arrows will be hidden if the player cannot select an option in that direction.
+			/// If Loops is set, the arrows will never disappear, as that cannot happen.
+			/// Default is true.
+			/// </summary>
+			/// <param name="loops">Whether or not selected object can loop.</param>
+			public Builder SetHidesArrowIfLastOption(bool hidesArrowIfLastOption) {
+				_hidesArrowIfLastOption = hidesArrowIfLastOption;
+				return _builderInstance;
+			}
 
 			public Builder SetOptionSelectedHandler(OptionSelectedHandler handler) {
 				_handler = handler;
@@ -83,7 +96,7 @@ namespace Menutee {
 			}
 
 			public override OptionSelectConfig Build() {
-				return new OptionSelectConfig(BuildInitObject(), _displayText, _optionStrings.ToArray(), _defaultIndex, _handler, _loops);
+				return new OptionSelectConfig(BuildInitObject(), _displayText, _optionStrings.ToArray(), _defaultIndex, _handler, _loops, _hidesArrowIfLastOption);
 			}
 		}
 	}
@@ -100,6 +113,7 @@ namespace Menutee {
 			private string _offText;
 			private bool _isOn;
 			private bool _loops = true;
+			private bool _hidesArrowIfLastOption = true;
 			private OptionSelectedHandler _handler;
 
 			public Builder(string key, GameObject prefab, string offText, string onText, bool isOn) : base(key, prefab) {
@@ -123,6 +137,17 @@ namespace Menutee {
 				return _builderInstance;
 			}
 
+			/// <summary>
+			/// Whether or not the arrows will be hidden if the player cannot select an option in that direction.
+			/// If Loops is set, the arrows will never disappear, as that cannot happen.
+			/// Default is true.
+			/// </summary>
+			/// <param name="loops">Whether or not selected object can loop.</param>
+			public Builder SetHidesArrowIfLastOption(bool hidesArrowIfLastOption) {
+				_hidesArrowIfLastOption = hidesArrowIfLastOption;
+				return _builderInstance;
+			}
+
 			public Builder SetToggleManager(System.Action<OptionSelectManager, bool> handler) {
 				_handler = (OptionSelectManager manager, int index, string option) => {
 					bool on = index == 1;
@@ -132,7 +157,7 @@ namespace Menutee {
 			}
 
 			public override OptionSelectConfig Build() {
-				return new OptionSelectConfig(BuildInitObject(), _displayText, new string[] { _offText, _onText }, _isOn ? 1 : 0, _handler, _loops);
+				return new OptionSelectConfig(BuildInitObject(), _displayText, new string[] { _offText, _onText }, _isOn ? 1 : 0, _handler, _loops, _hidesArrowIfLastOption);
 			}
 		}
 	}
