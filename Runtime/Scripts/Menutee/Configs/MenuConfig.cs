@@ -6,6 +6,7 @@ namespace Menutee {
 		public readonly bool Toggleable;
 		public readonly bool StartsOpen;
 		public readonly bool MenuPausesGame;
+		public readonly bool NoDefaultSelection;
 		public readonly string MainPanelKey;
 		public readonly MenuAttributes MenuAttributes;
 		public readonly PaletteConfig PaletteConfig;
@@ -14,13 +15,14 @@ namespace Menutee {
 
 		public readonly Color NormalColor;
 
-		public MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null, MenuAttributes? menuAttributesOverride = null) {
+		MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null, MenuAttributes? menuAttributesOverride = null, bool noDefaultSelection = false) {
 			Toggleable = toggleable;
 			StartsOpen = startsOpen;
 			MenuPausesGame = menuPausesGame;
 			MainPanelKey = mainPanelKey;
 			PaletteConfig = paletteConfig;
 			PanelConfigs = panelConfigs;
+			NoDefaultSelection = noDefaultSelection;
 			MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value 
 				: (menuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu());
 			PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<string, string>>();
@@ -30,6 +32,7 @@ namespace Menutee {
 			private bool _toggleable;
 			private bool _startsOpen;
 			private bool _menuPausesGame;
+			private bool _noDefaultSelection;
 			private string _mainPanelKey = null;
 			private MenuAttributes? _menuAttributesOverride = null;
 			private PaletteConfig _paletteConfig;
@@ -52,6 +55,16 @@ namespace Menutee {
 				_toggleable = toggleable;
 				return this;
 			}
+
+			/// <summary>
+			/// If true, no item will be selected by default.
+			/// </summary>
+			/// <param name="noDefaultSelection"></param>
+			/// <returns></returns>
+			public Builder SetNoDefaultSelection( bool noDefaultSelection) {
+				_noDefaultSelection = noDefaultSelection;
+				return this;
+            }
 
 			public Builder AddPanelConfig(PanelConfig config, bool mainPanel = false) {
 				_panelConfigs.Add(config);
@@ -107,7 +120,8 @@ namespace Menutee {
 					_mainPanelKey = _panelConfigs[0].Key;
 				}
 				return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey, 
-					_paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks, _menuAttributesOverride);
+					_paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks, _menuAttributesOverride,
+					_noDefaultSelection);
 			}
 		}
 	}

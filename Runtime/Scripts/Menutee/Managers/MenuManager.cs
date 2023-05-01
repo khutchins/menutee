@@ -134,8 +134,13 @@ namespace Menutee {
 				// nothing is selected.
 				_activeDefaultInput = active.DefaultInput;
 
+				if (MenuConfig.NoDefaultSelection) {
+					// No selection updated on push or pop if disabled.
+					// Above clears the selected game object, so no action
+					// is required here.
+				}
 				// If pushing or something is wrong with the selected stack, use the default.
-				if (fromPush || _selectedStack.Count == 0 || _selectedStack.Peek() == null) {
+				else if (fromPush || _selectedStack.Count == 0 || _selectedStack.Peek() == null) {
 					if (_activeDefaultInput != null) {
 						EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
 					}
