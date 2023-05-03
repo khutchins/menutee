@@ -56,6 +56,10 @@ Click on the import button next  to Samples -> Menu Generation. You should then 
 
 #### Samples
 
+##### MenuWithRatferences
+
+This scene shows what a fully-featured menu using my SO reference library, Ratferences, to bind options to a savable references. This is currently the standard for how I generate menus in my newer games.
+
 ##### InGameMenuSample
 
 This scene shows an example of what an in-game menu could look like. SampleInGameMenu.cs is the script that drives the creation of the menu. The builder, MenuConfig.Builder, allows the menu to be built in a more or less readable way. The first argument to MenuConfig.Builder's constructor is whether the menu is closeable, and the second is whether or not the menu pauses the game. For an in-game menu, likely both of those should be true.
@@ -63,12 +67,6 @@ This scene shows an example of what an in-game menu could look like. SampleInGam
 After that, panels (groupings of menu options that are displayed at a given time) are added to the MenuConfig builder object. Each panel has a set of PanelObjects, which are built using various subclasses of PanelObjectConfig, like ButtonConfig or SliderConfig.
 
 Once the MenuConfig object is built, pass it to CreateMenu() and the menu itself will be constructed.
-
-##### MainMenuSample
-
-Main menu sample shows an example configuration for a main menu. In contrast to the in-game menu, the menu is not closeable nor does it pause the game. Instead of using a builder pattern, it takes all of the arguments directly into the MenuConfig constructor. I personally find this less flexible and readable, but it's an option of you prefer it. Note that you have to pass in the key for the default menu explicitly, as opposed to the builder, which allows you to specify it when adding a panel.
-
-The main menu script and in-game menu scripts are different for sample purposes, but you may want to have the contents of the menus be the same except for some minor differences. If that's the case, you can generally share the same builder but with some different flags set based on whether it's for the main or in-game menu.
 
 ##### MenuHookSample
 
