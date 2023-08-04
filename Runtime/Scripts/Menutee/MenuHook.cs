@@ -57,6 +57,8 @@ namespace Menutee {
 
 		private GameObject _cachedSelection;
 		private bool _isOnTop = false;
+		private float _lastTimeOnTop;
+		private float _lastTimeOpen;
 
 		void Awake() {
 			if (Canvas != null) Canvas.enabled = false;
@@ -81,9 +83,26 @@ namespace Menutee {
 			return attributes;
 		}
 
+		/// <summary>
+		/// True if the menu became up on this frame. Useful for not accidentally 
+		/// double triggering on button down across menus.
+		/// </summary>
+		public bool IsNewlyUp {
+			get => _lastTimeOpen == Time.unscaledTime;
+        }
+
+		/// <summary>
+		/// True if the menu became on top this frame. Useful for not accidentally 
+		/// double triggering on button down across menus.
+		/// </summary>
+		public bool IsNewlyOnTop {
+			get => _lastTimeOnTop == Time.unscaledTime;
+		}
+
 		public void SetMenuUp(bool newUp) {
 			if (Canvas != null) Canvas.enabled = newUp;
 			if (newUp) {
+				_lastTimeOpen = Time.unscaledTime;
 				OnMenuOpen?.Invoke();
 
 				if (UseDefaultOnPush) {
@@ -97,8 +116,10 @@ namespace Menutee {
 
 		public void SetMenuOnTop(bool newOnTop) {
 			if (HideIfNotOnTop) Canvas.enabled = newOnTop;
-			if (newOnTop) OnMenuTop?.Invoke();
-			else OnMenuNotTop?.Invoke();
+			if (newOnTop) {
+				_lastTimeOnTop = Time.unscaledTime;
+				OnMenuTop?.Invoke();
+			} else OnMenuNotTop?.Invoke();
 
 			_isOnTop = newOnTop;
 			if (!newOnTop) {
