@@ -87,8 +87,8 @@ public class GeneralMenu : MenuGenerator {
 			new ButtonConfig.Builder("yes", ButtonPrefab)
 				.SetDisplayText("Yes")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
-					_onVerify.Invoke();
 					_manager.PopPanel();
+					_onVerify.Invoke();
 				}));
 		verifier.AddPanelObject(
 			new ButtonConfig.Builder("no", ButtonPrefab)
