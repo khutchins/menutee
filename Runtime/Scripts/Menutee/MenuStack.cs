@@ -79,6 +79,7 @@ namespace Menutee {
         private Stack<MenuAttributes> _cachedMenuAttributes = new Stack<MenuAttributes>();
 
         private bool _paused;
+        private float _lastMenuChangeTime = 0;
 
         void Awake() {
             Shared = this;
@@ -92,6 +93,8 @@ namespace Menutee {
             _paused = false;
             OnUnpause?.Invoke();
         }
+
+        public bool ActiveMenuChangedThisFrame { get => _lastMenuChangeTime == Time.unscaledTime; }
 
         /// <summary>
 		/// Toggles the menu.
@@ -116,6 +119,7 @@ namespace Menutee {
                 return false;
             }
 
+            _lastMenuChangeTime = Time.unscaledTime;
             CacheCurrentMenuAttributes();
             SetTopStatusOfTopOfStack(false);
             _menuStack.Push(menu);
@@ -143,6 +147,7 @@ namespace Menutee {
                 Debug.LogWarningFormat("Attempting to pop menu {0} not on top of stack!", menu);
                 return false;
             }
+            _lastMenuChangeTime = Time.unscaledTime;
             PopAndApplyMenuAttributes();
             if (_menuStack.Count > 0) {
                 IMenu top = _menuStack.Pop();
