@@ -187,7 +187,9 @@ namespace Menutee {
 					PopPanel();
 				}
 			}
-			if (_activeDefaultInput != null && EventSystem.current.currentSelectedGameObject == null && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+			if (MenuStack.Shared.IsMenuAtTop(this) &&
+				_activeDefaultInput != null && EventSystem.current.currentSelectedGameObject == null && 
+				(Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
 				EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
 			}
 		}
