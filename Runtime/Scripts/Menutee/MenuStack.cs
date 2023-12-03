@@ -171,10 +171,7 @@ namespace Menutee {
         }
 
         public bool IsMenuUp(IMenu thisMenu) {
-            foreach (IMenu menu in _menuStack) {
-                if (thisMenu == menu) return true;
-            }
-            return false;
+            return IsMenuInStack(thisMenu);
         }
 
         void UpdatePaused(bool newState) {
