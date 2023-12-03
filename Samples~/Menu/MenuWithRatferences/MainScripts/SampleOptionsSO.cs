@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Ratferences;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "KH/Example/Options")]
-public class OptionsSO : ScriptableObject {
+[CreateAssetMenu(menuName = "Menutee/Sample/Options")]
+public class SampleOptionsSO : ScriptableObject {
 	public FloatReference Option1;
 	public BoolReference Option2;
 	public IntReference Option3;

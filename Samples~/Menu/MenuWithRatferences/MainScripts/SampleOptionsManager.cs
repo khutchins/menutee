@@ -4,19 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OptionsManager : ReferenceBindingSave<Options> {
+public class SampleOptionsManager : ReferenceBindingSave<SampleOptions> {
 
-	public static Options GetOptions() {
+	public static SampleOptions GetOptions() {
 		if (SavedOptions == null) {
-			SavedOptions = Options.Load();
+			SavedOptions = SampleOptions.Load();
 		}
 
 		return SavedOptions;
 	}
 
-	private static Options SavedOptions;
+	private static SampleOptions SavedOptions;
 
-	public OptionsSO Opts;
+	public SampleOptionsSO Opts;
 
 	private void Awake() {
 		// These bindings have to be set up explicity, but they will automatically load at start
@@ -31,7 +31,7 @@ public class OptionsManager : ReferenceBindingSave<Options> {
 		SetInitialSOValues();
 	}
 
-	protected override Options GetSave() {
+	protected override SampleOptions GetSave() {
 		return GetOptions();
 	}
 }

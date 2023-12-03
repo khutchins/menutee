@@ -26,7 +26,7 @@ public class GeneralMenu : MenuGenerator {
 
 	[Header("Other Bindings")]
 	[SerializeField] private bool _mainMenu;
-	[SerializeField] private OptionsSO Options;
+	[SerializeField] private SampleOptionsSO Options;
 	[SerializeField] private AudioMixerGroup _musicGroup;
 	[SerializeField] private AudioMixerGroup _sfxGroup;
 
