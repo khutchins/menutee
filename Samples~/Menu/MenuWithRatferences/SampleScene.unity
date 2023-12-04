@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46fb75fd2535fac409862712db5df2bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _reference: {fileID: 11400000, guid: 6e523e22bf0f846429898a1e9e190767, type: 2}
+  _reference: {fileID: 11400000, guid: bebd57cc7c968304c872ed4e56ee1787, type: 2}
   Event:
     m_PersistentCalls:
       m_Calls:
@@ -501,7 +501,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
 --- !u!114 &894236363
 MonoBehaviour:
   m_ObjectHideFlags: 0

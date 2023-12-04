@@ -32,15 +32,17 @@ namespace Menutee {
 				manager.SetOptions(OptionStrings, Ref.Value);
 				manager.OptionSelected += Handler;
 			}
-			IntReceptor receptor = go.GetComponent<IntReceptor>();
-			if (receptor != null) {
-				receptor.Reference = Ref;
-			}
-			IntEvent intEvent = go.GetComponent<IntEvent>();
-			if (intEvent != null) {
-				intEvent.Reference = Ref;
-			}
-			return go;
+
+			// Add reference hookups.
+			var receptor = go.AddComponent<IntReceptor>();
+			receptor.Reference = Ref;
+			manager.OptionChanged.AddListener(receptor.UpdateValue);
+
+			var @event = go.AddComponent<IntEvent>();
+			@event.Reference = Ref;
+			@event.AddListener(manager.SelectOptionWithoutNotify);
+
+            return go;
 		}
 
 		public class Builder : Builder<OptionSelectRefConfig, Builder> {
@@ -119,14 +121,16 @@ namespace Menutee {
 				manager.SetOptions(OptionStrings, Ref.Value ? 1 : 0);
 				manager.OptionSelected += Handler;
 			}
-			BoolReceptor receptor = go.GetComponent<BoolReceptor>();
-			if (receptor != null) {
-				receptor.Reference = Ref;
-			}
-			BoolEvent theEvent = go.GetComponent<BoolEvent>();
-			if (theEvent != null) {
-				theEvent.Reference = Ref;
-			}
+
+			// Add reference hookups.
+			var receptor = go.AddComponent<BoolReceptor>();
+			receptor.Reference = Ref;
+			manager.OptionChanged.AddListener(receptor.UpdateValue);
+
+			var @event = go.AddComponent<BoolEvent>();
+			@event.Reference = Ref;
+			@event.AddListener((bool newValue) => { manager.SelectOptionWithoutNotify(newValue ? 1 : 0); });
+
 			return go;
 		}
 

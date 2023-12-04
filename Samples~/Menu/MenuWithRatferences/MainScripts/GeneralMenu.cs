@@ -20,9 +20,6 @@ public class GeneralMenu : MenuGenerator {
 	[Header("Other Prefabs")]
 	[SerializeField] private GameObject TextPrefab;
 	[SerializeField] private GameObject OptionSelectPrefab;
-	[SerializeField] private GameObject OptionSelectRefPrefab;
-	[SerializeField] private GameObject ToggleRefPrefab;
-	[SerializeField] private GameObject SliderRefPrefab;
 
 	[Header("Other Bindings")]
 	[SerializeField] private bool _mainMenu;
@@ -176,9 +173,9 @@ public class GeneralMenu : MenuGenerator {
 				intOptions.Add(((i + 1) * 16).ToString());
 			}
 
-			builder.AddPanelObject(new SliderRefConfig.Builder("option1", SliderRefPrefab, 0, 5, Options.Option1).SetDisplayText("Option 1"));
-			builder.AddPanelObject(new ToggleRefConfig.Builder("option2", ToggleRefPrefab, Options.Option2).SetDisplayText("Option 2"));
-			builder.AddPanelObject(new OptionSelectRefConfig.Builder("option3", OptionSelectRefPrefab, Options.Option3).SetDisplayText("Option 3").AddOptionStrings(intOptions).SetLoops(false));
+			builder.AddPanelObject(new SliderRefConfig.Builder("option1", SliderPrefab, 0, 5, Options.Option1).SetDisplayText("Option 1"));
+			builder.AddPanelObject(new ToggleRefConfig.Builder("option2", TogglePrefab, Options.Option2).SetDisplayText("Option 2"));
+			builder.AddPanelObject(new OptionSelectRefConfig.Builder("option3", OptionSelectPrefab, Options.Option3).SetDisplayText("Option 3").AddOptionStrings(intOptions).SetLoops(false));
 			builder.AddPanelObject(new ButtonConfig.Builder("controls", ButtonPrefab).SetDisplayText("Rebind Controls")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					ControlMenuSignal.Raise();
@@ -234,7 +231,7 @@ public class GeneralMenu : MenuGenerator {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
 			AddBackOption(builder, _manager, ButtonPrefab);
 
-			builder.AddPanelObject(new SliderRefConfig.Builder("sfxvolume", SliderRefPrefab, 0f, 1f, Options.SFXVolume).SetDisplayText("SFX Volume")
+			builder.AddPanelObject(new SliderRefConfig.Builder("sfxvolume", SliderPrefab, 0f, 1f, Options.SFXVolume).SetDisplayText("SFX Volume")
 			.SetCreationCallback((GameObject go) => {
 				// Have to run this after a frame, as this API doesn't work in awake (at least when I wrote the code).
 				_manager.RunGenericActionAfterFrame(() => {
@@ -244,7 +241,7 @@ public class GeneralMenu : MenuGenerator {
 			.SetSliderUpdatedHandler((SliderManager manager, float newValue) => {
 				SetMixerVolume(_sfxGroup, "SFXVolume", newValue);
 			}));
-			builder.AddPanelObject(new SliderRefConfig.Builder("musicvolume", SliderRefPrefab, 0f, 1f, Options.MusicVolume).SetDisplayText("Music Volume")
+			builder.AddPanelObject(new SliderRefConfig.Builder("musicvolume", SliderPrefab, 0f, 1f, Options.MusicVolume).SetDisplayText("Music Volume")
 			.SetCreationCallback((GameObject go) => {
 				// Have to run this after a frame, as this API doesn't work in awake (at least when I wrote the code).
 				_manager.RunGenericActionAfterFrame(() => {
