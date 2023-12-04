@@ -11,6 +11,8 @@ namespace Menutee {
 		public Color PressedColor = Color.white;
 		public Color SelectedColor = Color.white;
 		public Color DisabledColor = Color.white;
+		public float ColorMultiplier = 1f;
+		public float FadeDuration = 0.1f;
 
 		public void ApplyToSelectable(Selectable selectable) {
 			if (selectable == null) {
@@ -23,6 +25,8 @@ namespace Menutee {
 			block.pressedColor = PressedColor;
 			block.selectedColor = SelectedColor;
 			block.disabledColor = DisabledColor;
+			block.colorMultiplier = ColorMultiplier;
+			block.fadeDuration = FadeDuration;
 			selectable.colors = block;
 		}
 	}
