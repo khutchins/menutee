@@ -14,6 +14,9 @@ namespace Menutee {
 				foreach (Selectable select in GetComponentsInChildren<Selectable>()) {
 					config.ApplyToSelectable(select);
 				}
+				foreach (IPaletteReceptor receptor in GetComponentsInChildren<IPaletteReceptor>()) {
+					config.ApplyToReceptor(receptor);
+				}
 				foreach (HighlightTextWhenSelected highlight in GetComponentsInChildren<HighlightTextWhenSelected>()) {
 					highlight.SelectColor = config.SelectedColor;
 				}

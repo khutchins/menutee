@@ -3,8 +3,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Serialization;
+using System;
 
 namespace Menutee {
+    [Obsolete("Use MirrorSelectable instead.", false)]
     public class HighlightTextWhenSelected : MonoBehaviour, ISelectHandler, IDeselectHandler {
 
         public Color SelectColor = Color.white;
