@@ -6,7 +6,7 @@ namespace Menutee {
 		public readonly bool Toggleable;
 		public readonly bool StartsOpen;
 		public readonly bool MenuPausesGame;
-		public readonly bool NoDefaultSelection;
+		public readonly SelectMode DefaultSelectMode;
 		public readonly string MainPanelKey;
 		public readonly MenuAttributes MenuAttributes;
 		public readonly PaletteConfig PaletteConfig;
@@ -15,14 +15,20 @@ namespace Menutee {
 
 		public readonly Color NormalColor;
 
-		MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null, MenuAttributes? menuAttributesOverride = null, bool noDefaultSelection = false) {
+		public enum SelectMode {
+			Always,
+			Contextual,
+			Never,
+		}
+
+		MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig, PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null, MenuAttributes? menuAttributesOverride = null, SelectMode selectMode = SelectMode.Contextual) {
 			Toggleable = toggleable;
 			StartsOpen = startsOpen;
 			MenuPausesGame = menuPausesGame;
 			MainPanelKey = mainPanelKey;
 			PaletteConfig = paletteConfig;
 			PanelConfigs = panelConfigs;
-			NoDefaultSelection = noDefaultSelection;
+			DefaultSelectMode = selectMode;
 			MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value 
 				: (menuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu());
 			PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<string, string>>();
@@ -32,7 +38,7 @@ namespace Menutee {
 			private bool _toggleable;
 			private bool _startsOpen;
 			private bool _menuPausesGame;
-			private bool _noDefaultSelection;
+			private SelectMode _selectMode;
 			private string _mainPanelKey = null;
 			private MenuAttributes? _menuAttributesOverride = null;
 			private PaletteConfig _paletteConfig;
@@ -42,6 +48,7 @@ namespace Menutee {
 			public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig) {
 				_toggleable = toggleableAndStartsClosed;
 				_startsOpen = !toggleableAndStartsClosed;
+				_selectMode = SelectMode.Contextual;
 				_menuPausesGame = menuPausesGame;
 				_paletteConfig = paletteConfig;
 			}
@@ -57,12 +64,15 @@ namespace Menutee {
 			}
 
 			/// <summary>
-			/// If true, no item will be selected by default.
+			/// Sets whether or not an item will be selected by default. If an element is
+			/// not selected by default, it will require controller or keyboard up/down
+			/// movement to select.
+			/// Always: Always select an element by default when entering a menu or returning to it.
+			/// Never: Never select an element by default.
+			/// Contextual: Select element if last input type was not mouse.
 			/// </summary>
-			/// <param name="noDefaultSelection"></param>
-			/// <returns></returns>
-			public Builder SetNoDefaultSelection( bool noDefaultSelection) {
-				_noDefaultSelection = noDefaultSelection;
+			public Builder SetDefaultSelectMode(SelectMode selectMode) {
+				_selectMode = selectMode;
 				return this;
             }
 
@@ -121,7 +131,7 @@ namespace Menutee {
 				}
 				return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey, 
 					_paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks, _menuAttributesOverride,
-					_noDefaultSelection);
+					_selectMode);
 			}
 		}
 	}

@@ -121,6 +121,14 @@ namespace Menutee {
 			DisableOtherPanels(newPanel);
 		}
 
+		private bool ShouldHaveDefaultSelection {
+			get {
+				return MenuConfig.DefaultSelectMode == MenuConfig.SelectMode.Always ||
+					(MenuConfig.DefaultSelectMode == MenuConfig.SelectMode.Contextual
+					&& InputMediator.LastInputType != MenuInputMediator.InputType.Mouse);
+			}
+		}
+
 		protected void EnablePanel(PanelManager panel, bool fromPush) {
 			EventSystem.current.SetSelectedGameObject(null);
 			string oldKey = _activeKey;
@@ -134,10 +142,10 @@ namespace Menutee {
 				// nothing is selected.
 				_activeDefaultInput = active.DefaultInput;
 
-				if (MenuConfig.NoDefaultSelection) {
+				if (!ShouldHaveDefaultSelection) {
 					// No selection updated on push or pop if disabled.
-					// Above clears the selected game object, so no action
-					// is required here.
+					// The selected game object is cleared above, so no
+					// action is required here.
 				}
 				// If pushing or something is wrong with the selected stack, use the default.
 				else if (fromPush || _selectedStack.Count == 0 || _selectedStack.Peek() == null) {

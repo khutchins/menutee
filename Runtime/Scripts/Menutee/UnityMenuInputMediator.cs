@@ -41,5 +41,12 @@ namespace Menutee {
 		public override bool MenuToggleDown() {
 			return GetButtonDown(menuToggle);
 		}
+
+		public override InputType LastInputType {
+			// I don't know how to get the last input type in straight
+			// Unity (I use Rewired), so stick with a type that won't
+			// have any adverse effect.
+			get => InputType.Unknown;
+		}
 	}
 }
