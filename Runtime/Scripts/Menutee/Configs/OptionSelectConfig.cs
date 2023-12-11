@@ -70,6 +70,7 @@ namespace Menutee {
 			protected OptionSelectedHandler _handler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+				_defaultIndexGetter = () => 0;
 			}
 
 			public TBuilder SetDisplayText(string displayText) {
