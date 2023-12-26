@@ -130,6 +130,7 @@ namespace Menutee {
 
 			PanelObjectDictionary[config.Key] = dict;
 			config.CreationCallback?.Invoke(panel, manager);
+			LayoutRebuilder.ForceRebuildLayoutImmediate(panel.GetComponent<RectTransform>());
 			return manager;
 		}
 
