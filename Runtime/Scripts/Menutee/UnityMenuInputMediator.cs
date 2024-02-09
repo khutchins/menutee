@@ -13,7 +13,7 @@ namespace Menutee {
 
 		private float GetAxis(string name) {
 			if (string.IsNullOrEmpty(name)) return 0;
-			return Input.GetAxis(name);
+			return Input.GetAxisRaw(name);
 		}
 
 		private bool GetButtonDown(string name) {
