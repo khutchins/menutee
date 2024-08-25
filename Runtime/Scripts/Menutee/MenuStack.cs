@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Menutee {
+    [System.Serializable]
     public struct MenuAttributes {
         public CursorLockMode cursorLockMode;
         public bool cursorVisible;
