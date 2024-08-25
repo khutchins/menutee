@@ -3,7 +3,7 @@
 using System.IO;
 using UnityEngine;
 
-public class Options : ISavable {
+public class SampleOptions : ISavable {
 	public float Option1 = 3;
 	public bool Option2 = false;
 	public int Option3 = 2;
@@ -17,12 +17,12 @@ public class Options : ISavable {
 		File.WriteAllBytes(SavePath(), bytes);
 	}
 
-	public static Options Load() {
+	public static SampleOptions Load() {
 		string path = SavePath();
-		if (!File.Exists(path)) return new Options();
+		if (!File.Exists(path)) return new SampleOptions();
 		byte[] bytes = File.ReadAllBytes(path);
 		// Replace this with deserialization code. Odin works well (and is what is used below).
-		return new Options();
+		return new SampleOptions();
 		//return SerializationUtility.DeserializeValue<Options>(bytes, DataFormat.JSON);
 	}
 

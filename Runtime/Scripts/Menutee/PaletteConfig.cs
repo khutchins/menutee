@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Menutee {
+	public interface IPaletteReceptor {
+		void ReceivePalette(PaletteConfig config);
+	}
+
 	[CreateAssetMenu(menuName = "Menutee/Palette Config")]
 	public class PaletteConfig : ScriptableObject {
 		public Color NormalColor = Color.white;
@@ -11,6 +15,8 @@ namespace Menutee {
 		public Color PressedColor = Color.white;
 		public Color SelectedColor = Color.white;
 		public Color DisabledColor = Color.white;
+		public float ColorMultiplier = 1f;
+		public float FadeDuration = 0.1f;
 
 		public void ApplyToSelectable(Selectable selectable) {
 			if (selectable == null) {
@@ -23,7 +29,14 @@ namespace Menutee {
 			block.pressedColor = PressedColor;
 			block.selectedColor = SelectedColor;
 			block.disabledColor = DisabledColor;
+			block.colorMultiplier = ColorMultiplier;
+			block.fadeDuration = FadeDuration;
 			selectable.colors = block;
 		}
+
+		public void ApplyToReceptor(IPaletteReceptor receptor) {
+			receptor.ReceivePalette(this);
+		}
+
 	}
 }

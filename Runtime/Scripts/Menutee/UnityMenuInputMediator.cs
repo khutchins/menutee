@@ -13,7 +13,7 @@ namespace Menutee {
 
 		private float GetAxis(string name) {
 			if (string.IsNullOrEmpty(name)) return 0;
-			return Input.GetAxis(name);
+			return Input.GetAxisRaw(name);
 		}
 
 		private bool GetButtonDown(string name) {
@@ -40,6 +40,13 @@ namespace Menutee {
 
 		public override bool MenuToggleDown() {
 			return GetButtonDown(menuToggle);
+		}
+
+		public override InputType LastInputType {
+			// I don't know how to get the last input type in straight
+			// Unity (I use Rewired), so stick with a type that won't
+			// have any adverse effect.
+			get => InputType.Unknown;
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -31,6 +32,8 @@ namespace Menutee {
 		public GameObject DefaultSelectedGameObject;
 		[Tooltip("GameObject to use when the menu is pushed.")]
 		public bool UseDefaultOnPush;
+		[Tooltip("Whether or not the selected game object should be cleared when this menu is not on top or disappears.")]
+		public bool ClearSelectedOnNotOnTop = false;
 		[Tooltip("Behavior to use when the menu is popped back to.")]
 		public SelectedBehavior BehaviorOnPop = SelectedBehavior.Restore;
 		[Tooltip("Whether or not the default selected game object should be restored if no objects are selected, a direction is pressed, and this menu is on top.")]
@@ -54,6 +57,8 @@ namespace Menutee {
 
 		private GameObject _cachedSelection;
 		private bool _isOnTop = false;
+		private float _lastTimeOnTop;
+		private float _lastTimeOpen;
 
 		void Awake() {
 			if (Canvas != null) Canvas.enabled = false;
@@ -78,9 +83,26 @@ namespace Menutee {
 			return attributes;
 		}
 
+		/// <summary>
+		/// True if the menu became up on this frame. Useful for not accidentally 
+		/// double triggering on button down across menus.
+		/// </summary>
+		public bool IsNewlyUp {
+			get => _lastTimeOpen == Time.unscaledTime;
+        }
+
+		/// <summary>
+		/// True if the menu became on top this frame. Useful for not accidentally 
+		/// double triggering on button down across menus.
+		/// </summary>
+		public bool IsNewlyOnTop {
+			get => _lastTimeOnTop == Time.unscaledTime;
+		}
+
 		public void SetMenuUp(bool newUp) {
 			if (Canvas != null) Canvas.enabled = newUp;
 			if (newUp) {
+				_lastTimeOpen = Time.unscaledTime;
 				OnMenuOpen?.Invoke();
 
 				if (UseDefaultOnPush) {
@@ -94,12 +116,17 @@ namespace Menutee {
 
 		public void SetMenuOnTop(bool newOnTop) {
 			if (HideIfNotOnTop) Canvas.enabled = newOnTop;
-			if (newOnTop) OnMenuTop?.Invoke();
-			else OnMenuNotTop?.Invoke();
+			if (newOnTop) {
+				_lastTimeOnTop = Time.unscaledTime;
+				OnMenuTop?.Invoke();
+			} else OnMenuNotTop?.Invoke();
 
 			_isOnTop = newOnTop;
 			if (!newOnTop) {
 				_cachedSelection = EventSystem.current.currentSelectedGameObject;
+				if (ClearSelectedOnNotOnTop) {
+					EventSystem.current.SetSelectedGameObject(null);
+				}
 			} else {
 				// If cached selection is not null, it means that this is from a pop, not a push.
 				if (_cachedSelection != null) {
@@ -143,6 +170,30 @@ namespace Menutee {
 				&& EventSystem.current.currentSelectedGameObject == null 
 				&& (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
 				EventSystem.current.SetSelectedGameObject(DefaultSelectedGameObject);
+			}
+		}
+
+		public IEnumerator WaitForClose() {
+			yield return new AwaitMenuClose(this).WaitForClose();
+        }
+
+		private class AwaitMenuClose {
+			public bool Finished { get => _finished; }
+			public IEnumerator WaitForClose() {
+				while (!Finished) yield return null;
+            }
+
+			MenuHook _menu;
+			UnityAction _action;
+			bool _finished;
+
+			public AwaitMenuClose(MenuHook menu) {
+				this._menu = menu;
+				_action = new UnityAction(() => {
+					_finished = true;
+					_menu.OnMenuClose.RemoveListener(_action);
+				});
+				_menu.OnMenuClose.AddListener(_action);
 			}
 		}
 	}

@@ -35,14 +35,16 @@ namespace Menutee {
 				manager.Slider.wholeNumbers = UseWholeNumbers;
 				manager.SliderUpdated += Handler;
 			}
-			FloatReceptor receptor = go.GetComponent<FloatReceptor>();
-			if (receptor != null) {
-				receptor.Reference = Ref;
-			}
-			FloatEvent floatEvent = go.GetComponent<FloatEvent>();
-			if (floatEvent != null) {
-				floatEvent.Reference = Ref;
-			}
+
+			// Add reference hookups.
+			var receptor = go.AddComponent<FloatReceptor>();
+			receptor.Reference = Ref;
+			manager.Slider.onValueChanged.AddListener(receptor.UpdateValue);
+
+			var @event = go.AddComponent<FloatEvent>();
+			@event.Reference = Ref;
+			@event.AddListener(manager.Slider.SetValueWithoutNotify);
+			
 			return go;
 		}
 

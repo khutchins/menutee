@@ -28,14 +28,16 @@ namespace Menutee {
 				manager.SetText(DisplayText);
 				manager.TogglePressed += Handler;
 			}
-			BoolReceptor receptor = go.GetComponent<BoolReceptor>();
-			if (receptor != null) {
-				receptor.Reference = Ref;
-			}
-			BoolEvent floatEvent = go.GetComponent<BoolEvent>();
-			if (floatEvent != null) {
-				floatEvent.Reference = Ref;
-			}
+
+			// Add reference hookups.
+			var receptor = go.AddComponent<BoolReceptor>();
+			receptor.Reference = Ref;
+			manager.Toggle.onValueChanged.AddListener(receptor.UpdateValue);
+
+			var @event = go.AddComponent<BoolEvent>();
+			@event.Reference = Ref;
+			@event.AddListener(manager.Toggle.SetIsOnWithoutNotify);
+
 			return go;
 		}
 

@@ -1,7 +1,11 @@
 {
   "name": "com.khutchins.menutee",
   "displayName": "Menutee",
-  "version": "4.0.0",
+  "author": {
+    "name": "Kevin Hutchins",
+    "url": "https://github.com/khutchins"
+  },
+  "version": "5.0.0",
   "unity": "2019.3",
   "description": "A set of scripts that make generating and maintaining a simple menu through code straightforward.",
   "type": "library",
