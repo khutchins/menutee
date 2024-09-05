@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -202,6 +202,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -295,6 +296,7 @@ Transform:
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -309,6 +311,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2683550713102501394}
   m_RootOrder: 0
@@ -344,6 +347,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2683550712239066944}
   m_Father: {fileID: 0}
@@ -414,7 +418,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
 --- !u!1 &2683550713102501398
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,12 +454,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 2683550712239066945}
   PanelPrefab: {fileID: 2417477311400138043, guid: 3dd219850f3c67549a09a02801bd51ac, type: 3}
-  ButtonPrefab: {fileID: 0}
-  SliderPrefab: {fileID: 0}
-  TogglePrefab: {fileID: 0}
-  DropdownPrefab: {fileID: 0}
+  ButtonPrefab: {fileID: 8820340555082134616, guid: 810ce937a8af7d04084d993f93dfb161, type: 3}
+  SliderPrefab: {fileID: 4890371746114118091, guid: 8d99cb989368ae74e8c717b42a24cefc, type: 3}
+  TogglePrefab: {fileID: 4890371746114118091, guid: 612d39b2462d04e47a74976311708d54, type: 3}
+  DropdownPrefab: {fileID: 4890371746114118091, guid: c7e45613f30fdec478559080638972a6, type: 3}
   PaletteConfig: {fileID: 11400000, guid: 086e1285eb84304469c64810d62db912, type: 2}
-  OptionSelectPrefab: {fileID: 4890371746114118091, guid: b0e261af422f39649a21de9cdda6c2b0, type: 3}
+  OptionSelectPrefab: {fileID: 4890371746114118091, guid: 52bc12fff0d5119468f5d6d9752b1809, type: 3}
 --- !u!114 &2683550713102501403
 MonoBehaviour:
   m_ObjectHideFlags: 0

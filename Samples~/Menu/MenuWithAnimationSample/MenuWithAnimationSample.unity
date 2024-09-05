@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -137,10 +137,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Parent: {fileID: 2683550712239066945}
   PanelPrefab: {fileID: 1105689964126391670, guid: d93ff4a60ac275b499cf88664af8e598, type: 3}
-  ButtonPrefab: {fileID: 8820340555082134616, guid: 0f4513f92eccaac4bb3f336e2222134c, type: 3}
-  SliderPrefab: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
-  TogglePrefab: {fileID: 4890371746114118091, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
-  DropdownPrefab: {fileID: 4890371746114118091, guid: 82333ecec6538c249ad83939c7c3a313, type: 3}
+  ButtonPrefab: {fileID: 8820340555082134616, guid: 810ce937a8af7d04084d993f93dfb161, type: 3}
+  SliderPrefab: {fileID: 4890371746114118091, guid: 8d99cb989368ae74e8c717b42a24cefc, type: 3}
+  TogglePrefab: {fileID: 4890371746114118091, guid: 612d39b2462d04e47a74976311708d54, type: 3}
+  DropdownPrefab: {fileID: 4890371746114118091, guid: c7e45613f30fdec478559080638972a6, type: 3}
   PaletteConfig: {fileID: 11400000, guid: 086e1285eb84304469c64810d62db912, type: 2}
 --- !u!1 &884182373
 GameObject:
@@ -168,6 +168,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2683550713102501394}
   m_RootOrder: 1
@@ -256,6 +257,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -286,6 +288,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2683550713102501394}
   m_RootOrder: 2
@@ -384,6 +387,7 @@ Transform:
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -398,6 +402,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2683550713102501394}
   m_RootOrder: 0
@@ -487,6 +492,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2683550712239066944}
   - {fileID: 884182374}
@@ -559,7 +565,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
 --- !u!1 &2683550713102501398
 GameObject:
   m_ObjectHideFlags: 0

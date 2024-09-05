@@ -168,11 +168,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2683550711860310350}
-  PanelPrefab: {fileID: 2417477311400138043, guid: 3dd219850f3c67549a09a02801bd51ac, type: 3}
-  ButtonPrefab: {fileID: 8820340555082134616, guid: 0f4513f92eccaac4bb3f336e2222134c, type: 3}
-  SliderPrefab: {fileID: 4890371746114118091, guid: 1aab9c6615d164947a04065a0647abc3, type: 3}
-  TogglePrefab: {fileID: 4890371746114118091, guid: 0e26f06f6515ec4418833b3172a251f4, type: 3}
-  DropdownPrefab: {fileID: 4890371746114118091, guid: 82333ecec6538c249ad83939c7c3a313, type: 3}
+  PanelPrefab: {fileID: 2417477311400138043, guid: e302fe6b3629a564ba7dce31af2ed80d, type: 3}
+  ButtonPrefab: {fileID: 8820340555082134616, guid: 810ce937a8af7d04084d993f93dfb161, type: 3}
+  SliderPrefab: {fileID: 4890371746114118091, guid: 8d99cb989368ae74e8c717b42a24cefc, type: 3}
+  TogglePrefab: {fileID: 4890371746114118091, guid: 612d39b2462d04e47a74976311708d54, type: 3}
+  DropdownPrefab: {fileID: 4890371746114118091, guid: c7e45613f30fdec478559080638972a6, type: 3}
   PaletteConfig: {fileID: 11400000, guid: 086e1285eb84304469c64810d62db912, type: 2}
 --- !u!1 &2683550713557049950
 GameObject:
