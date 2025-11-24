@@ -27,6 +27,7 @@ namespace Menutee {
 		private string _activeKey;
 		private PanelManager _activeManager;
 		private GameObject _cachedSelection;
+        private GameObject _lastValidSelection;
 
 		private void Awake() {
 			if (Canvas == null) {
@@ -141,6 +142,7 @@ namespace Menutee {
 				// Cache the default so that we have something to default to if
 				// nothing is selected.
 				_activeDefaultInput = active.DefaultInput;
+                _lastValidSelection = _activeDefaultInput;
 
 				if (!ShouldHaveDefaultSelection) {
 					// No selection updated on push or pop if disabled.
@@ -195,11 +197,33 @@ namespace Menutee {
 					PopPanel();
 				}
 			}
-			if (MenuStack.Shared.IsMenuAtTop(this) &&
-				_activeDefaultInput != null && EventSystem.current.currentSelectedGameObject == null && 
-				(Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
-				EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
-			}
+			if (MenuStack.Shared.IsMenuAtTop(this)) {
+                if (EventSystem.current.currentSelectedGameObject != null) {
+                    _lastValidSelection = EventSystem.current.currentSelectedGameObject;
+                } else {
+					// Null selected object.
+					switch (MenuConfig.SelectionRestorationMode) {
+						case MenuConfig.RestorationMode.Never:
+							break;
+						case MenuConfig.RestorationMode.Always:
+							// Try to restore the last input.
+                            if (_lastValidSelection != null && _lastValidSelection.activeInHierarchy) {
+                                EventSystem.current.SetSelectedGameObject(_lastValidSelection);
+                            }
+							// If that isn't available, return to the default.
+							else if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy) {
+								EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                            }
+							break;
+						case MenuConfig.RestorationMode.OnInput:
+							if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy 
+									&& (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+                                EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                            }
+							break;
+                    }
+				}
+            }
 		}
 
 		/// <summary>
