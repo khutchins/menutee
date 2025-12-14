@@ -48,38 +48,17 @@ namespace Menutee {
 			return go;
 		}
 
-		public class Builder : Builder<SliderRefConfig, Builder> {
-			private string _displayText;
-			private SliderUpdatedHandler _handler;
-			private bool _useWholeNumbers;
-			private float _minValue;
-			private float _maxValue;
-			private FloatReference _ref;
+        public class Builder : BaseSliderBuilder<SliderRefConfig, Builder> {
+            private FloatReference _ref;
 
-			public Builder(string key, GameObject prefab, float minValue, float maxValue, FloatReference reference) : base(key, prefab) {
-				_minValue = minValue;
-				_maxValue = maxValue;
-				_ref = reference;
-			}
+            public Builder(string key, GameObject prefab, float minValue, float maxValue, FloatReference reference)
+                : base(key, prefab, minValue, maxValue) {
+                _ref = reference;
+            }
 
-			public Builder SetDisplayText(string displayText) {
-				_displayText = displayText;
-				return _builderInstance;
-			}
-
-			public Builder SetSliderUpdatedHandler(SliderUpdatedHandler handler) {
-				_handler = handler;
-				return _builderInstance;
-			}
-
-			public Builder SetUseWholeNumbers(bool useWholeNumbers) {
-				_useWholeNumbers = useWholeNumbers;
-				return _builderInstance;
-			}
-
-			public override SliderRefConfig Build() {
-				return new SliderRefConfig(BuildInitObject(), _displayText, _useWholeNumbers, _minValue, _maxValue, _ref, _handler);
-			}
-		}
-	}
+            public override SliderRefConfig Build() {
+                return new SliderRefConfig(BuildInitObject(), _displayText, _useWholeNumbers, _minValue, _maxValue, _ref, _handler);
+            }
+        }
+    }
 }

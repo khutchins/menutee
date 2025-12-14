@@ -29,26 +29,14 @@ namespace Menutee {
 			return go;
 		}
 
-		public class Builder : Builder<ToggleConfig, Builder> {
-			private string _displayText;
-			private TogglePressedHandler _handler;
-			private bool _isOn;
+		public class Builder : BaseToggleBuilder<ToggleConfig, Builder> {
+            protected bool _isOn;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
 			}
 
-			public Builder SetDisplayText(string displayText) {
-				_displayText = displayText;
-				return _builderInstance;
-			}
-
 			public Builder SetIsOn(bool isOn) {
 				_isOn = isOn;
-				return _builderInstance;
-			}
-
-			public Builder SetTogglePressedHandler(TogglePressedHandler handler) {
-				_handler = handler;
 				return _builderInstance;
 			}
 
@@ -57,4 +45,24 @@ namespace Menutee {
 			}
 		}
 	}
+
+    public abstract class BaseToggleBuilder<TConfig, TBuilder> : PanelObjectConfig.Builder<TConfig, TBuilder>
+        where TConfig : PanelObjectConfig
+        where TBuilder : BaseToggleBuilder<TConfig, TBuilder> {
+
+        protected string _displayText;
+        protected TogglePressedHandler _handler;
+
+        public BaseToggleBuilder(string key, GameObject prefab) : base(key, prefab) { }
+
+        public TBuilder SetDisplayText(string displayText) {
+            _displayText = displayText;
+            return _builderInstance;
+        }
+
+        public TBuilder SetTogglePressedHandler(TogglePressedHandler handler) {
+            _handler = handler;
+            return _builderInstance;
+        }
+    }
 }

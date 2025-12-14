@@ -41,23 +41,11 @@ namespace Menutee {
 			return go;
 		}
 
-		public class Builder : Builder<ToggleRefConfig, Builder> {
-			private string _displayText;
-			private TogglePressedHandler _handler;
+		public class Builder : BaseToggleBuilder<ToggleRefConfig, Builder> {
 			private BoolReference _ref;
 
 			public Builder(string key, GameObject prefab, BoolReference reference) : base(key, prefab) {
 				_ref = reference;
-			}
-
-			public Builder SetDisplayText(string displayText) {
-				_displayText = displayText;
-				return _builderInstance;
-			}
-
-			public Builder SetTogglePressedHandler(TogglePressedHandler handler) {
-				_handler = handler;
-				return _builderInstance;
 			}
 
 			public override ToggleRefConfig Build() {

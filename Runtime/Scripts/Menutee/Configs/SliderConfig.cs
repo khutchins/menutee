@@ -37,33 +37,11 @@ namespace Menutee {
 			return go;
 		}
 
-		public class Builder : Builder<SliderConfig, Builder> {
-			private string _displayText;
-			private SliderUpdatedHandler _handler;
-			private bool _useWholeNumbers;
-			private float _minValue;
-			private float _maxValue;
+		public class Builder : BaseSliderBuilder<SliderConfig, Builder> {
 			private float _defaultValue;
 
-			public Builder(string key, GameObject prefab, float minValue, float maxValue, float defaultValue) : base(key, prefab) {
-				_minValue = minValue;
-				_maxValue = maxValue;
+			public Builder(string key, GameObject prefab, float minValue, float maxValue, float defaultValue) : base(key, prefab, minValue, maxValue) {
 				_defaultValue = defaultValue;
-			}
-
-			public Builder SetDisplayText(string displayText) {
-				_displayText = displayText;
-				return _builderInstance;
-			}
-
-			public Builder SetSliderUpdatedHandler(SliderUpdatedHandler handler) {
-				_handler = handler;
-				return _builderInstance;
-			}
-
-			public Builder SetUseWholeNumbers(bool useWholeNumbers) {
-				_useWholeNumbers = useWholeNumbers;
-				return _builderInstance;
 			}
 
 			public override SliderConfig Build() {
@@ -71,4 +49,36 @@ namespace Menutee {
 			}
 		}
 	}
+
+    public abstract class BaseSliderBuilder<TConfig, TBuilder> : PanelObjectConfig.Builder<TConfig, TBuilder>
+        where TConfig : PanelObjectConfig
+        where TBuilder : BaseSliderBuilder<TConfig, TBuilder> {
+
+        protected string _displayText;
+        protected float _minValue;
+        protected float _maxValue;
+        protected bool _useWholeNumbers;
+        protected SliderUpdatedHandler _handler;
+
+        public BaseSliderBuilder(string key, GameObject prefab, float minValue, float maxValue)
+            : base(key, prefab) {
+            _minValue = minValue;
+            _maxValue = maxValue;
+        }
+
+        public TBuilder SetDisplayText(string displayText) {
+            _displayText = displayText;
+            return _builderInstance;
+        }
+
+        public TBuilder SetUseWholeNumbers(bool useWholeNumbers) {
+            _useWholeNumbers = useWholeNumbers;
+            return _builderInstance;
+        }
+
+        public TBuilder SetSliderUpdatedHandler(SliderUpdatedHandler handler) {
+            _handler = handler;
+            return _builderInstance;
+        }
+    }
 }
