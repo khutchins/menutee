@@ -26,7 +26,14 @@ namespace Menutee {
 				manager.SetText(DisplayText);
 				manager.SetOptions(OptionStrings, DefaultIndex);
 				manager.DropdownChosen += Handler;
-			}
+
+                if (manager.Dropdown != null && manager.Dropdown.template != null) {
+					// Ensure DropdownAutoScroll exists on the template (I get why they did a template approach, but it's a pain).
+                    if (manager.Dropdown.template.GetComponent<DropdownAutoScroll>() == null) {
+                        manager.Dropdown.template.gameObject.AddComponent<DropdownAutoScroll>();
+                    }
+                }
+            }
 			return go;
 		}
 
