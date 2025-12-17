@@ -230,7 +230,7 @@ namespace Menutee {
             }
 		}
 
-        private bool ShouldConsumeCancelInput() {
+        private bool ShouldIgnoreCancelInput() {
             if (_activeManager == null || _activeManager.ElementManagers == null) {
                 return false;
             }
