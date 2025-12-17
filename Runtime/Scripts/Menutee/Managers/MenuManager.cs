@@ -193,7 +193,11 @@ namespace Menutee {
 			if (InputMediator.MenuToggleDown()) {
 				ToggleMenu();
 			} else if (InputMediator.UICancelDown()) {
-				if (!IsAtRoot()) {
+                if (ShouldIgnoreCancelInput()) {
+                    return;
+                }
+
+                if (!IsAtRoot()) {
 					PopPanel();
 				}
 			}
@@ -226,13 +230,27 @@ namespace Menutee {
             }
 		}
 
-		/// <summary>
-		/// Goes to a panel, bypassing the stack. Used by push and pop after
-		/// modifying the stack. Only use if you know what you're doing.
-		/// </summary>
-		/// <param name="key">Key of the panel to go to.</param>
-		/// <param name="fromPush">Whether the panel is from a push or a pop. Used for animations.</param>
-		protected void GoToPanel(string key, bool fromPush) {
+        private bool ShouldConsumeCancelInput() {
+            if (_activeManager == null || _activeManager.ElementManagers == null) {
+                return false;
+            }
+
+            for (int i = 0; i < _activeManager.ElementManagers.Length; i++) {
+                var el = _activeManager.ElementManagers[i];
+                if (el != null && el.ConsumesCancelInput) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Goes to a panel, bypassing the stack. Used by push and pop after
+        /// modifying the stack. Only use if you know what you're doing.
+        /// </summary>
+        /// <param name="key">Key of the panel to go to.</param>
+        /// <param name="fromPush">Whether the panel is from a push or a pop. Used for animations.</param>
+        protected void GoToPanel(string key, bool fromPush) {
 			ActivatePanel(key, fromPush);
 		}
 

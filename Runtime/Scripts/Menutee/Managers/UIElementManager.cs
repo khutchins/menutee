@@ -24,5 +24,9 @@ namespace Menutee {
 				}
 			}
 		}
-	}
+
+        public virtual bool ConsumesCancelInput {
+            get => false;
+        }
+    }
 }

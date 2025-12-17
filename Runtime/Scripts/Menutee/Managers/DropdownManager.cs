@@ -45,5 +45,9 @@ namespace Menutee {
             base.SetColors(config);
             config?.ApplyToSelectable(Template);
         }
+
+        public override bool ConsumesCancelInput {
+            get => Dropdown != null && Dropdown.IsExpanded;
+        }
     }
 }
