@@ -141,17 +141,17 @@ namespace Menutee {
 
 		protected virtual void SetMenuIsUp(bool isUp, string newKey) {
 			Canvas.enabled = isUp;
-            if (_canvasGroup != null) {
-                _canvasGroup.interactable = isUp;
-                _canvasGroup.blocksRaycasts = isUp;
-            }
             ActivatePanel(newKey, true);
 		}
 
 		protected virtual void SetOnTop(bool isOnTop) {
 			_activeManager?.SetPanelActive(isOnTop);
 			Canvas.enabled = isOnTop;
-		}
+            if (_canvasGroup != null) {
+                _canvasGroup.interactable = isOnTop;
+                _canvasGroup.blocksRaycasts = isOnTop;
+            }
+        }
 
 		void ToggleMenu() {
 			if (!MenuConfig.Toggleable || _disabled) {
