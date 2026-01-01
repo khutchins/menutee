@@ -259,24 +259,12 @@ namespace Menutee {
                         PopPanel();
                     }
                 }
-            }
-            if (InputMediator.MenuToggleDown()) {
-				ToggleMenu();
-			} else if (InputMediator.UICancelDown()) {
-                if (ShouldIgnoreCancelInput()) {
-                    return;
-                }
 
-                if (!IsAtRoot()) {
-					PopPanel();
-				}
-			}
-			if (MenuStack.Shared.IsMenuAtTop(this)) {
+				HandleSelectionRestoration();
             }
 		}
 
 		private void HandleSelectionRestoration() {
-
             if (EventSystem.current.currentSelectedGameObject != null) {
                 _lastValidSelection = EventSystem.current.currentSelectedGameObject;
             } else {
