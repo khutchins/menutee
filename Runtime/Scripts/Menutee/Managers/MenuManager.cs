@@ -237,7 +237,30 @@ namespace Menutee {
 
 		private void Update() {
 			if (_disabled) return;
-			if (InputMediator.MenuToggleDown()) {
+
+            bool isAtTop = MenuStack.Shared.IsMenuAtTop(this);
+            bool isInStack = MenuStack.Shared.IsMenuInStack(this);
+
+			// Toggling can happen if the menu is not up at all, or it's on top.
+            if (!isInStack || isAtTop) {
+                if (InputMediator.MenuToggleDown()) {
+                    ToggleMenu();
+                    return;
+                }
+            }
+
+			if (isAtTop) {
+                if (InputMediator.UICancelDown()) {
+                    if (ShouldIgnoreCancelInput()) {
+                        return;
+                    }
+
+                    if (!IsAtRoot()) {
+                        PopPanel();
+                    }
+                }
+            }
+            if (InputMediator.MenuToggleDown()) {
 				ToggleMenu();
 			} else if (InputMediator.UICancelDown()) {
                 if (ShouldIgnoreCancelInput()) {
@@ -249,33 +272,37 @@ namespace Menutee {
 				}
 			}
 			if (MenuStack.Shared.IsMenuAtTop(this)) {
-                if (EventSystem.current.currentSelectedGameObject != null) {
-                    _lastValidSelection = EventSystem.current.currentSelectedGameObject;
-                } else {
-					// Null selected object.
-					switch (MenuConfig.SelectionRestorationMode) {
-						case MenuConfig.RestorationMode.Never:
-							break;
-						case MenuConfig.RestorationMode.Always:
-							// Try to restore the last input.
-                            if (_lastValidSelection != null && _lastValidSelection.activeInHierarchy) {
-                                EventSystem.current.SetSelectedGameObject(_lastValidSelection);
-                            }
-							// If that isn't available, return to the default.
-							else if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy) {
-								EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
-                            }
-							break;
-						case MenuConfig.RestorationMode.OnInput:
-							if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy 
-									&& (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
-                                EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
-                            }
-							break;
-                    }
-				}
             }
 		}
+
+		private void HandleSelectionRestoration() {
+
+            if (EventSystem.current.currentSelectedGameObject != null) {
+                _lastValidSelection = EventSystem.current.currentSelectedGameObject;
+            } else {
+                // Null selected object.
+                switch (MenuConfig.SelectionRestorationMode) {
+                    case MenuConfig.RestorationMode.Never:
+                        break;
+                    case MenuConfig.RestorationMode.Always:
+                        // Try to restore the last input.
+                        if (_lastValidSelection != null && _lastValidSelection.activeInHierarchy) {
+                            EventSystem.current.SetSelectedGameObject(_lastValidSelection);
+                        }
+                        // If that isn't available, return to the default.
+                        else if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy) {
+                            EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                        }
+                        break;
+                    case MenuConfig.RestorationMode.OnInput:
+                        if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy
+                                && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
+                            EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                        }
+                        break;
+                }
+            }
+        }
 
         private bool ShouldIgnoreCancelInput() {
             if (_activeManager == null || _activeManager.ElementManagers == null) {
