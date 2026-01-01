@@ -8,7 +8,27 @@ using System.Collections;
 namespace Menutee {
 	public class MenuManager : MonoBehaviour, IMenu {
 
-		private bool _active;
+        public delegate void MenuStateChangedHandler(MenuManager manager);
+
+        /// <summary>
+        /// Called when the menu is added to the MenuStack and becomes active.
+        /// </summary>
+        public event MenuStateChangedHandler MenuOpened;
+        /// <summary>
+        /// Called when the menu is removed from the MenuStack.
+        /// </summary>
+        public event MenuStateChangedHandler MenuClosed;
+        /// <summary>
+        /// Called when this menu becomes the top-most menu in the stack (receives focus).
+        /// </summary>
+        public event MenuStateChangedHandler MenuEnteredTop;
+        /// <summary>
+        /// Called when another menu is pushed on top of this one, or this menu is being closed.
+        /// </summary>
+        public event MenuStateChangedHandler MenuExitedTop;
+
+
+        private bool _active;
 
 		[Tooltip("The canvas element. If this is not set, this script will try to get the canvas from the game object it is on.")]
 		public Canvas Canvas;
@@ -84,7 +104,13 @@ namespace Menutee {
 			}
 			_active = newUp;
 			SetMenuIsUp(newUp, _active ? MenuConfig.MainPanelKey : null);
-		}
+
+            if (newUp) {
+                MenuOpened?.Invoke(this);
+            } else {
+                MenuClosed?.Invoke(this);
+            }
+        }
 
 		public void SetMenuOnTop(bool newOnTop) {
 			if (!newOnTop) {
@@ -94,7 +120,13 @@ namespace Menutee {
 				EventSystem.current.SetSelectedGameObject(_cachedSelection);
 			}
 			SetOnTop(newOnTop);
-		}
+
+            if (newOnTop) {
+                MenuEnteredTop?.Invoke(this);
+            } else {
+                MenuExitedTop?.Invoke(this);
+            }
+        }
 
 		protected virtual void SetMenuIsUp(bool isUp, string newKey) {
 			Canvas.enabled = isUp;
