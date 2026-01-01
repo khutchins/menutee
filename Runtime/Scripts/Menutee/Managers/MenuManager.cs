@@ -33,7 +33,10 @@ namespace Menutee {
 		[Tooltip("The canvas element. If this is not set, this script will try to get the canvas from the game object it is on.")]
 		public Canvas Canvas;
 
-		[HideInInspector]
+		[Tooltip("If true, a CanvasGroup will be added/used to control interactivity only when on top.")]
+		public bool ManageInteractivity = true;
+
+        [HideInInspector]
 		public PanelManager[] Panels;
 		public MenuConfig MenuConfig;
 
@@ -48,12 +51,20 @@ namespace Menutee {
 		private PanelManager _activeManager;
 		private GameObject _cachedSelection;
         private GameObject _lastValidSelection;
+        private CanvasGroup _canvasGroup;
 
-		private void Awake() {
+        private void Awake() {
 			if (Canvas == null) {
 				Canvas = GetComponent<Canvas>();
 			}
-		}
+
+			if (ManageInteractivity) {
+				_canvasGroup = GetComponent<CanvasGroup>();
+				if (_canvasGroup == null) {
+					_canvasGroup = gameObject.AddComponent<CanvasGroup>();
+				}
+			}
+        }
 
 		private void Start() {
 			SetMenuUp(false);
@@ -130,7 +141,11 @@ namespace Menutee {
 
 		protected virtual void SetMenuIsUp(bool isUp, string newKey) {
 			Canvas.enabled = isUp;
-			ActivatePanel(newKey, true);
+            if (_canvasGroup != null) {
+                _canvasGroup.interactable = isUp;
+                _canvasGroup.blocksRaycasts = isUp;
+            }
+            ActivatePanel(newKey, true);
 		}
 
 		protected virtual void SetOnTop(bool isOnTop) {
