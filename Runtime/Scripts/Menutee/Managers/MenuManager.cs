@@ -52,6 +52,7 @@ namespace Menutee {
 		private GameObject _cachedSelection;
         private GameObject _lastValidSelection;
         private CanvasGroup _canvasGroup;
+		private string _rootPanelOverride;
 
         private void Awake() {
 			if (Canvas == null) {
@@ -114,7 +115,8 @@ namespace Menutee {
 				_panelStack.Clear();
 			}
 			_active = newUp;
-			SetMenuIsUp(newUp, _active ? MenuConfig.MainPanelKey : null);
+			string panelKey = _active ? (_rootPanelOverride != null ? _rootPanelOverride : MenuConfig.MainPanelKey) : null;
+			SetMenuIsUp(newUp, panelKey);
 
             if (newUp) {
                 MenuOpened?.Invoke(this);
@@ -326,6 +328,19 @@ namespace Menutee {
 				}
 			}
 			Debug.LogErrorFormat("Cannot push panel {0}! Not in Panels array.", key);
+		}
+
+		public void PushMenuWithRootPanel(string key) {
+			if (MenuStack.Shared.IsMenuUp(this)) {
+				Debug.LogWarning($"Cannot push menu {this} to panel {key}. It's already up.");
+				return;
+			}
+			// Since the stack calls back into us, we don't have the context.
+			// Just set a variable around it, which should be fine. In the future
+			// I may want to support sending context with MenuStack pushes.
+			_rootPanelOverride = key;
+			MenuStack.Shared.PushAndShowMenu(this);
+			_rootPanelOverride = null;
 		}
 
 		private bool IsAtRoot() {
