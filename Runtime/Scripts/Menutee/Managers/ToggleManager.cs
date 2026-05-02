@@ -7,8 +7,6 @@ using UnityEngine.UI;
 namespace Menutee {
     public delegate void TogglePressedHandler(ToggleManager toggle, bool on);
     public class ToggleManager : UIElementManager {
-        public int Id;
-
         public event TogglePressedHandler TogglePressed;
 
         public TextMeshProUGUI Text;

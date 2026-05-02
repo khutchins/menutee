@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Rewired.Utils.Libraries.TinyJson;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 
 namespace Menutee {
 	public class UIElementManager : MonoBehaviour {
+		[DoNotSerialize] public int Id;
 		public GameObject SelectableObject;
 		public PanelObjectConfig PanelObjectConfig;
 
@@ -27,6 +29,28 @@ namespace Menutee {
 
         public virtual bool ConsumesCancelInput {
             get => false;
+        }
+
+        /// <summary>
+        /// Returns true while this element is in a state where the menu's
+        /// toggle input (e.g. pause/menu key) should be ignored. Useful for
+        /// elements like text inputs that may capture the same key as a
+        /// character (e.g. Space typed into a focused field).
+        /// </summary>
+        public virtual bool BlocksMenuToggle {
+            get => false;
+        }
+
+        /// <summary>
+        /// Gives an element the chance to react to UI cancel input before the
+        /// containing menu uses it to pop a panel. Return true if the element
+        /// handled (or wants to swallow) the input. The default implementation
+        /// preserves the legacy <see cref="ConsumesCancelInput"/> behavior:
+        /// elements that report consumption simply suppress the panel pop
+        /// without taking any action.
+        /// </summary>
+        public virtual bool TryHandleCancelInput() {
+            return ConsumesCancelInput;
         }
     }
 }

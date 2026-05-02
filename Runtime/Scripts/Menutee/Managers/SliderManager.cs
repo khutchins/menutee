@@ -4,8 +4,6 @@ using UnityEngine.UI;
 namespace Menutee {
     public delegate void SliderUpdatedHandler(SliderManager manager, float newValue);
     public class SliderManager : UIElementManager {
-        public int Id;
-
         public Slider Slider;
         public TextMeshProUGUI Text;
 

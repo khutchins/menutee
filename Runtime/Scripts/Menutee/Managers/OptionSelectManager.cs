@@ -8,8 +8,6 @@ using UnityEngine.UI;
 namespace Menutee {
     public delegate void OptionSelectedHandler(OptionSelectManager dropdown, int index, string option);
     public class OptionSelectManager : UIElementManager {
-        public int Id;
-
         public event OptionSelectedHandler OptionSelected;
 
         public Button LeftButton;

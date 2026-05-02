@@ -5,8 +5,6 @@ using UnityEngine.UI;
 namespace Menutee {
     public delegate void DropdownChosenHandler(DropdownManager dropdown, int index, string option);
     public class DropdownManager : UIElementManager {
-        public int Id;
-
         public event DropdownChosenHandler DropdownChosen;
 
         public TextMeshProUGUI Text;

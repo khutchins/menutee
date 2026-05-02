@@ -245,7 +245,7 @@ namespace Menutee {
 
 			// Toggling can happen if the menu is not up at all, or it's on top.
             if (!isInStack || isAtTop) {
-                if (InputMediator.MenuToggleDown()) {
+                if (InputMediator.MenuToggleDown() && !ShouldBlockMenuToggle()) {
                     ToggleMenu();
                     return;
                 }
@@ -253,7 +253,7 @@ namespace Menutee {
 
 			if (isAtTop) {
                 if (InputMediator.UICancelDown()) {
-                    if (ShouldIgnoreCancelInput()) {
+                    if (DispatchCancelInputToElements()) {
                         return;
                     }
 
@@ -294,14 +294,28 @@ namespace Menutee {
             }
         }
 
-        private bool ShouldIgnoreCancelInput() {
+        private bool DispatchCancelInputToElements() {
             if (_activeManager == null || _activeManager.ElementManagers == null) {
                 return false;
             }
 
+            bool handled = false;
             for (int i = 0; i < _activeManager.ElementManagers.Length; i++) {
                 var el = _activeManager.ElementManagers[i];
-                if (el != null && el.ConsumesCancelInput) {
+                if (el != null && el.TryHandleCancelInput()) {
+                    handled = true;
+                }
+            }
+            return handled;
+        }
+
+        private bool ShouldBlockMenuToggle() {
+            if (_activeManager == null || _activeManager.ElementManagers == null) {
+                return false;
+            }
+            for (int i = 0; i < _activeManager.ElementManagers.Length; i++) {
+                var el = _activeManager.ElementManagers[i];
+                if (el != null && el.BlocksMenuToggle) {
                     return true;
                 }
             }

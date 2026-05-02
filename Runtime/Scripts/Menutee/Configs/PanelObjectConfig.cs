@@ -13,6 +13,7 @@ namespace Menutee {
 		public readonly Action<GameObject> CreationCallback;
 		public readonly Action<GameObject, UIElementManager> OnDisplayCallback;
 		public readonly PaletteConfig PaletteConfig;
+		public readonly PaletteConfigReference PaletteReference;
 		public readonly GameObject Prefab;
 
 		public PanelObjectConfig(InitObject initObject) {
@@ -20,6 +21,7 @@ namespace Menutee {
 			CreationCallback = initObject.CreationCallback;
 			OnDisplayCallback = initObject.OnDisplayCallback;
 			PaletteConfig = initObject.PaletteConfig;
+			PaletteReference = initObject.PaletteReference;
 			Prefab = initObject.Prefab;
 		}
 
@@ -30,14 +32,17 @@ namespace Menutee {
 			public readonly Action<GameObject> CreationCallback;
 			public readonly Action<GameObject, UIElementManager> OnDisplayCallback;
 			public readonly PaletteConfig PaletteConfig;
-			public readonly GameObject Prefab;
+            public readonly PaletteConfigReference PaletteReference;
+            public readonly GameObject Prefab;
 
 			public InitObject(string key, GameObject prefab, Action<GameObject> creationCallback = null, 
-					Action<GameObject, UIElementManager> onDisplayCallback = null, PaletteConfig paletteConfig = null) {
+					Action<GameObject, UIElementManager> onDisplayCallback = null, PaletteConfig paletteConfig = null,
+					PaletteConfigReference paletteReference = null) {
 				Key = key;
 				CreationCallback = creationCallback;
 				OnDisplayCallback = onDisplayCallback;
 				PaletteConfig = paletteConfig;
+				PaletteReference = paletteReference;
 				Prefab = prefab;
 			}
 		}
