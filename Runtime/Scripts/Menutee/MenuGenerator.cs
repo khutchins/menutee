@@ -42,6 +42,7 @@ namespace Menutee {
 				return;
 			}
 			helper.MenuConfig = menuConfig;
+			helper.Generator = this;
 			List<PanelManager> panels = new List<PanelManager>();
 			foreach (PanelConfig panel in menuConfig.PanelConfigs) {
 				PanelManager manager = CreatePanel(helper, Parent, panel, menuConfig);
@@ -61,7 +62,7 @@ namespace Menutee {
 			manager.Key = config.Key;
 			manager.Manager = menuManager;
 			manager.Config = config;
-			PanelDictionary.Add(config.Key, panel);
+			PanelDictionary[config.Key] = panel;
 
 			if (config.SupplementalObjects != null) {
 				List<GameObject> supplementalObjects = new List<GameObject>();

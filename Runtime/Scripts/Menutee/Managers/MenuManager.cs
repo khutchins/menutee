@@ -40,6 +40,9 @@ namespace Menutee {
 		public PanelManager[] Panels;
 		public MenuConfig MenuConfig;
 
+		[HideInInspector]
+		public MenuGenerator Generator;
+
 		protected Stack<string> _panelStack = new Stack<string>();
 		protected Stack<GameObject> _selectedStack = new Stack<GameObject>();
 		private GameObject _activeDefaultInput;
@@ -53,6 +56,10 @@ namespace Menutee {
         private GameObject _lastValidSelection;
         private CanvasGroup _canvasGroup;
 		private string _rootPanelOverride;
+		private string _currentRootKey;
+		private readonly HashSet<string> _dynamicPanelKeys = new HashSet<string>();
+		private readonly Dictionary<string, List<PanelGenerator>> _scopedGenerators
+			= new Dictionary<string, List<PanelGenerator>>();
 
         private void Awake() {
 			if (Canvas == null) {
@@ -109,19 +116,32 @@ namespace Menutee {
 		}
 
 		public void SetMenuUp(bool newUp) {
+			List<string> dynamicToDispose = null;
 			// Menu is closed.
 			if (!newUp) {
 				_cachedSelection = null;
 				_panelStack.Clear();
+				if (_dynamicPanelKeys.Count > 0) {
+					dynamicToDispose = new List<string>(_dynamicPanelKeys);
+				}
 			}
 			_active = newUp;
 			string panelKey = _active ? (_rootPanelOverride != null ? _rootPanelOverride : MenuConfig.MainPanelKey) : null;
+			if (newUp) {
+				_currentRootKey = panelKey;
+			}
 			SetMenuIsUp(newUp, panelKey);
 
             if (newUp) {
                 MenuOpened?.Invoke(this);
             } else {
                 MenuClosed?.Invoke(this);
+                if (dynamicToDispose != null) {
+                    foreach (string key in dynamicToDispose) {
+                        DisposePanel(key);
+                    }
+                }
+                _currentRootKey = null;
             }
         }
 
@@ -234,7 +254,109 @@ namespace Menutee {
 		}
 
 		protected void ActivatePanel(string key, bool fromPush) {
-			ActivatePanel(PanelForKey(_activeKey), PanelForKey(key), fromPush);
+			ActivatePanel(PanelForKey(_activeKey), ResolveOrGeneratePanel(key), fromPush);
+		}
+
+		/// <summary>
+		/// Returns the PanelManager for the given key. If no static panel matches,
+		/// walks the registered PanelGenerators (innermost scoped first, then permanent)
+		/// and lazily generates a panel from the first match. Returns null if nothing
+		/// matches.
+		/// </summary>
+		private PanelManager ResolveOrGeneratePanel(string key) {
+			if (key == null) return null;
+
+			PanelManager existing = PanelForKey(key);
+			if (existing != null) return existing;
+
+			PanelGenerator generator = FindMatchingGenerator(key);
+			if (generator == null) return null;
+
+			return GenerateAndRegisterPanel(key, generator);
+		}
+
+		private PanelGenerator FindMatchingGenerator(string key) {
+			// Stack<T> enumerates top-first, which matches our innermost-first lookup.
+			foreach (string stackKey in _panelStack) {
+				PanelGenerator match = MatchInList(key, stackKey);
+				if (match != null) return match;
+			}
+			// The current root sits below _panelStack and isn't in it; check its
+			// scoped generators so a dynamic root panel can register handlers for
+			// its children.
+			if (_currentRootKey != null) {
+				PanelGenerator match = MatchInList(key, _currentRootKey);
+				if (match != null) return match;
+			}
+			if (MenuConfig != null && MenuConfig.PanelGenerators != null) {
+				foreach (PanelGenerator gen in MenuConfig.PanelGenerators) {
+					if (gen != null && gen.Matches != null && gen.Matches(key)) return gen;
+				}
+			}
+			return null;
+		}
+
+		private PanelGenerator MatchInList(string key, string ownerKey) {
+			if (!_scopedGenerators.TryGetValue(ownerKey, out List<PanelGenerator> list)) return null;
+			foreach (PanelGenerator gen in list) {
+				if (gen != null && gen.Matches != null && gen.Matches(key)) return gen;
+			}
+			return null;
+		}
+
+		private PanelManager GenerateAndRegisterPanel(string key, PanelGenerator generator) {
+			if (Generator == null) {
+				Debug.LogErrorFormat("Cannot generate panel for key {0}: MenuManager has no MenuGenerator reference. Was the menu created via MenuGenerator.CreateMenu?", key);
+				return null;
+			}
+			PanelGeneratorContext ctx = new PanelGeneratorContext();
+			PanelConfig config = generator.Build != null ? generator.Build(key, ctx) : null;
+			if (config == null) {
+				Debug.LogErrorFormat("PanelGenerator returned a null PanelConfig for key {0}.", key);
+				return null;
+			}
+			if (config.Key != key) {
+				Debug.LogErrorFormat("PanelGenerator for key '{0}' returned a PanelConfig with mismatched key '{1}'. The PanelConfig's Key must match the requested key.", key, config.Key);
+				return null;
+			}
+
+			PanelManager manager = Generator.CreatePanel(this, Generator.Parent, config, MenuConfig);
+			PanelManager[] newPanels = new PanelManager[Panels.Length + 1];
+			Panels.CopyTo(newPanels, 0);
+			newPanels[Panels.Length] = manager;
+			Panels = newPanels;
+
+			_dynamicPanelKeys.Add(key);
+			if (ctx.ScopedGenerators.Count > 0) {
+				_scopedGenerators[key] = new List<PanelGenerator>(ctx.ScopedGenerators);
+			}
+			return manager;
+		}
+
+		private void DisposePanel(string key) {
+			PanelManager pm = PanelForKey(key);
+			_dynamicPanelKeys.Remove(key);
+			_scopedGenerators.Remove(key);
+			if (pm == null) return;
+
+			if (pm.Config != null && pm.Config.OnDisposeCallback != null) {
+				pm.Config.OnDisposeCallback(pm.gameObject, pm);
+			}
+
+			List<PanelManager> remaining = new List<PanelManager>(Panels.Length);
+			foreach (PanelManager p in Panels) {
+				if (p != pm) remaining.Add(p);
+			}
+			Panels = remaining.ToArray();
+
+			if (Generator != null) {
+				Generator.PanelDictionary.Remove(key);
+				Generator.PanelObjectDictionary.Remove(key);
+			}
+
+			if (pm.gameObject != null) {
+				Destroy(pm.gameObject);
+			}
 		}
 
 		private void Update() {
@@ -333,15 +455,14 @@ namespace Menutee {
 		}
 
 		public void PushPanel(string key) {
-			foreach (PanelManager panel in Panels) {
-				if (panel.Key == key) {
-					_selectedStack.Push(EventSystem.current.currentSelectedGameObject);
-					_panelStack.Push(key);
-					GoToPanel(key, true);
-					return;
-				}
+			PanelManager panel = ResolveOrGeneratePanel(key);
+			if (panel == null) {
+				Debug.LogErrorFormat("Cannot push panel {0}! Not in Panels array and no matching PanelGenerator.", key);
+				return;
 			}
-			Debug.LogErrorFormat("Cannot push panel {0}! Not in Panels array.", key);
+			_selectedStack.Push(EventSystem.current.currentSelectedGameObject);
+			_panelStack.Push(key);
+			GoToPanel(key, true);
 		}
 
 		public void PushMenuWithRootPanel(string key) {
@@ -362,13 +483,17 @@ namespace Menutee {
 		}
 
 		public void PopPanel() {
+			string poppedKey = null;
 			if (_panelStack.Count > 0) {
-				_panelStack.Pop();
+				poppedKey = _panelStack.Pop();
 			}
 			if (_panelStack.Count == 0) {
-				GoToPanel(MenuConfig.MainPanelKey, false);
+				GoToPanel(_currentRootKey ?? MenuConfig.MainPanelKey, false);
 			} else {
 				GoToPanel(_panelStack.Last(), false);
+			}
+			if (poppedKey != null && _dynamicPanelKeys.Contains(poppedKey)) {
+				DisposePanel(poppedKey);
 			}
 		}
 

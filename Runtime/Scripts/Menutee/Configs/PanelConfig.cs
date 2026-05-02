@@ -27,6 +27,7 @@ namespace Menutee {
 		public readonly Action<PanelManager, List<Selectable>> PanelNavigationCallback;
 		public readonly Action<GameObject, PanelManager> CreationCallback;
 		public readonly Action<GameObject, PanelManager> OnDisplayCallback;
+		public readonly Action<GameObject, PanelManager> OnDisposeCallback;
 		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
 		public readonly PanelObjectConfig[] PanelObjects;
@@ -44,7 +45,8 @@ namespace Menutee {
 				Action<PanelManager, List<Selectable>> panelNavigationCallback = null,
 				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null,
 				Action<GameObject, PanelManager> creationCallback = null,
-				Action<GameObject, PanelManager> onDisplayCallback = null) {
+				Action<GameObject, PanelManager> onDisplayCallback = null,
+				Action<GameObject, PanelManager> onDisposeCallback = null) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -56,6 +58,7 @@ namespace Menutee {
 			DefaultSelectableCallback = defaultSelectableCallback;
 			CreationCallback = creationCallback;
 			OnDisplayCallback = onDisplayCallback;
+			OnDisposeCallback = onDisposeCallback;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -73,6 +76,7 @@ namespace Menutee {
 			private Func<PanelManager, List<Selectable>, GameObject> _defaultSelectableCallback;
 			private Action<GameObject, PanelManager> _creationCallback;
 			private Action<GameObject, PanelManager> _onDisplayCallback;
+			private Action<GameObject, PanelManager> _onDisposeCallback;
 
 			public Builder(string key) {
 				_key = key;
@@ -145,6 +149,18 @@ namespace Menutee {
             }
 
 			/// <summary>
+			/// Called when this panel is being destroyed. For dynamic panels (those
+			/// produced by a PanelGenerator), this fires when the panel is popped
+			/// from the stack or when the menu closes while the panel is still up.
+			/// Use this to unsubscribe from any events the generator wired up during
+			/// creation. Static panels do not dispose during normal operation.
+			/// </summary>
+			public Builder SetOnDisposeCallback(Action<GameObject, PanelManager> onDisposeCallback) {
+				_onDisposeCallback = onDisposeCallback;
+				return this;
+			}
+
+			/// <summary>
 			/// Calls to get the default selectable object at creation time. Allows
 			/// non-programmatically generated selectables to be the default. If unset,
 			/// will use the one specified when adding or inserting a panel object, or the
@@ -208,11 +224,11 @@ namespace Menutee {
 				if (_defaultSelectableKey == null && _panelObjectConfigs.Count > 0) {
 					_defaultSelectableKey = _panelObjectConfigs[0].Key;
 				}
-				return new PanelConfig(_key, _defaultSelectableKey, 
-					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(), 
-					_navigation, _navigationCallback, _prefabOverride, _navigationMode, 
+				return new PanelConfig(_key, _defaultSelectableKey,
+					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(),
+					_navigation, _navigationCallback, _prefabOverride, _navigationMode,
 					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback,
-					_onDisplayCallback);
+					_onDisplayCallback, _onDisposeCallback);
 			}
 		}
 	}

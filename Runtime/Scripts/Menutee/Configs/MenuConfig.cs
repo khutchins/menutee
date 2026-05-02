@@ -12,6 +12,7 @@ namespace Menutee {
         public readonly MenuAttributes MenuAttributes;
         public readonly PaletteConfig PaletteConfig;
         public readonly PanelConfig[] PanelConfigs;
+        public readonly PanelGenerator[] PanelGenerators;
         public List<System.Action<string, string>> PanelChangeCallbacks;
 
         public readonly Color NormalColor;
@@ -29,7 +30,8 @@ namespace Menutee {
         }
 
         MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig,
-                PanelConfig[] panelConfigs, List<System.Action<string, string>> panelChangeCallbacks = null,
+                PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators = null,
+                List<System.Action<string, string>> panelChangeCallbacks = null,
                 MenuAttributes? menuAttributesOverride = null, SelectMode selectMode = SelectMode.Contextual,
                 RestorationMode restorationMode = RestorationMode.Always) {
             Toggleable = toggleable;
@@ -38,6 +40,7 @@ namespace Menutee {
             MainPanelKey = mainPanelKey;
             PaletteConfig = paletteConfig;
             PanelConfigs = panelConfigs;
+            PanelGenerators = panelGenerators ?? new PanelGenerator[0];
             DefaultSelectMode = selectMode;
             SelectionRestorationMode = restorationMode;
             MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value
@@ -55,6 +58,7 @@ namespace Menutee {
             private MenuAttributes? _menuAttributesOverride = null;
             private PaletteConfig _paletteConfig;
             private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
+            private List<PanelGenerator> _panelGenerators = new List<PanelGenerator>();
             private List<System.Action<string, string>> _panelChangeCallbacks = new List<System.Action<string, string>>();
 
             public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig) {
@@ -143,18 +147,37 @@ namespace Menutee {
                 return this;
             }
 
+            /// <summary>
+            /// Registers a panel generator. When a key is pushed that has no static panel,
+            /// generators are checked in order (innermost panel's scoped generators first,
+            /// then walking down the panel stack, then the generators registered here);
+            /// the first matching generator builds the panel.
+            ///
+            /// The generated panel is destroyed when popped from the stack or when the
+            /// menu closes — its PanelConfig.OnDisposeCallback fires at that point.
+            /// </summary>
+            public Builder AddPanelGenerator(PanelGenerator generator) {
+                _panelGenerators.Add(generator);
+                return this;
+            }
+
+            public Builder AddPanelGenerator(System.Predicate<string> matches,
+                    System.Func<string, PanelGeneratorContext, PanelConfig> build) {
+                return AddPanelGenerator(new PanelGenerator(matches, build));
+            }
+
             public Builder SetMenuAttributes(MenuAttributes? menuAttributes) {
                 _menuAttributesOverride = menuAttributes;
                 return this;
             }
 
             public MenuConfig Build() {
-                if (_mainPanelKey == null) {
+                if (_mainPanelKey == null && _panelConfigs.Count > 0) {
                     _mainPanelKey = _panelConfigs[0].Key;
                 }
                 return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey,
-                    _paletteConfig, _panelConfigs.ToArray(), _panelChangeCallbacks, _menuAttributesOverride,
-                    _selectMode);
+                    _paletteConfig, _panelConfigs.ToArray(), _panelGenerators.ToArray(),
+                    _panelChangeCallbacks, _menuAttributesOverride, _selectMode);
             }
         }
     }
