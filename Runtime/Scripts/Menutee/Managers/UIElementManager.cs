@@ -1,5 +1,4 @@
-﻿using Rewired.Utils.Libraries.TinyJson;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Menutee {
 	public class UIElementManager : MonoBehaviour {
-		[DoNotSerialize] public int Id;
+		[HideInInspector] public int Id;
 		public GameObject SelectableObject;
 		public PanelObjectConfig PanelObjectConfig;
 
