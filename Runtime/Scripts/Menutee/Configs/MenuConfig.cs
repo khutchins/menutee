@@ -13,9 +13,7 @@ namespace Menutee {
         public readonly PaletteConfig PaletteConfig;
         public readonly PanelConfig[] PanelConfigs;
         public readonly PanelGenerator[] PanelGenerators;
-        public List<System.Action<string, string>> PanelChangeCallbacks;
-
-        public readonly Color NormalColor;
+        public readonly List<System.Action<string, string>> PanelChangeCallbacks;
 
         public enum SelectMode {
             Always,

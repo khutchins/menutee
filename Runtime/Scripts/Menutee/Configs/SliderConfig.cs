@@ -1,15 +1,15 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Menutee {
 	public class SliderConfig : PanelObjectConfig {
-		public string DisplayText;
-		public float MinValue;
-		public float MaxValue;
-		public float DefaultValue;
-		public bool UseWholeNumbers;
-		public SliderUpdatedHandler Handler;
+		public readonly string DisplayText;
+		public readonly float MinValue;
+		public readonly float MaxValue;
+		public readonly float DefaultValue;
+		public readonly bool UseWholeNumbers;
+		public readonly SliderUpdatedHandler Handler;
 
 		public SliderConfig(InitObject configInit, string displayText, bool useWholeNumbers, float minValue, float maxValue, float defaultValue, SliderUpdatedHandler handler) 
 				: base(configInit) {

@@ -19,7 +19,6 @@ namespace Menutee {
 		/// </summary>
 		public readonly string Key;
 		public readonly string DefaultSelectableKey;
-		public readonly bool HorizontalMenu;
 		public readonly GameObject PrefabOverride;
 		public readonly NavigationType Navigation;
 		public readonly Navigation.Mode NavigationMode;
