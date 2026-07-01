@@ -41,7 +41,10 @@ namespace Menutee {
 
         public override void SetColors(PaletteConfig config) {
             base.SetColors(config);
-            config?.ApplyToSelectable(Template);
+            if (config == null) {
+                return;
+            }
+            config.ApplyToSelectable(Template);
         }
 
         public override bool ConsumesCancelInput {

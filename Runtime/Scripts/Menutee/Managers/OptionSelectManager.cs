@@ -105,6 +105,9 @@ namespace Menutee {
 
         public override void SetColors(PaletteConfig config) {
             base.SetColors(config);
+            if (config == null) {
+                return;
+            }
             config.ApplyToSelectable(TextButton);
             config.ApplyToSelectable(LeftButton);
             config.ApplyToSelectable(RightButton);
