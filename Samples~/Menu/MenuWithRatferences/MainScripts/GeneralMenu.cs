@@ -45,6 +45,7 @@ public class GeneralMenu : MenuGenerator {
         }
 
 		AddOptionsPanels(builder);
+		AddVerifier(builder);
 		CreateMenu(_manager, builder);
 	}
 
@@ -138,7 +139,11 @@ public class GeneralMenu : MenuGenerator {
 	/// <returns>Resolution panel object config</returns>
 	PanelObjectConfig ResolutionConfig(GameObject dropdownPrefab) {
 
+#if UNITY_2022_2_OR_NEWER
+		Resolution[] filteredResolutions = Screen.resolutions.Where(res => System.Math.Abs(res.refreshRateRatio.value - Screen.currentResolution.refreshRateRatio.value) <= 1).ToArray();
+#else
 		Resolution[] filteredResolutions = Screen.resolutions.Where(res => Mathf.Abs(res.refreshRate - Screen.currentResolution.refreshRate) <= 1).ToArray();
+#endif
 		Resolution playerResolution = new Resolution();
 		playerResolution.width = Screen.width;
 		playerResolution.height = Screen.height;
@@ -166,7 +171,6 @@ public class GeneralMenu : MenuGenerator {
 
 		PanelConfig AddControlsPanel(string key) {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
-			AddBackOption(builder, _manager, ButtonPrefab);
 
 			List<string> intOptions = new List<string>();
 			for (int i = 0; i < 20; i++) {
@@ -180,6 +184,7 @@ public class GeneralMenu : MenuGenerator {
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					ControlMenuSignal.Raise();
 				}));
+			AddBackOption(builder, _manager, ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -189,7 +194,6 @@ public class GeneralMenu : MenuGenerator {
 
 		PanelConfig AddVideoPanel(string key) {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
-			AddBackOption(builder, _manager, ButtonPrefab);
 
 			builder.AddPanelObject(new DropdownConfig.Builder("quality", DropdownPrefab)
 				.SetDisplayText("Quality")
@@ -210,6 +214,7 @@ public class GeneralMenu : MenuGenerator {
 				.SetTogglePressedHandler(delegate (ToggleManager manager, bool newValue) {
 					Screen.fullScreen = newValue;
 				}));
+			AddBackOption(builder, _manager, ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -229,7 +234,6 @@ public class GeneralMenu : MenuGenerator {
 
 		PanelConfig AddAudioPanel(string key) {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
-			AddBackOption(builder, _manager, ButtonPrefab);
 
 			builder.AddPanelObject(new SliderRefConfig.Builder("sfxvolume", SliderPrefab, 0f, 1f, Options.SFXVolume).SetDisplayText("SFX Volume")
 			.SetCreationCallback((GameObject go) => {
@@ -251,6 +255,7 @@ public class GeneralMenu : MenuGenerator {
 			.SetSliderUpdatedHandler((SliderManager manager, float newValue) => {
 				SetMixerVolume(_musicGroup, "MusicVolume", newValue);
 			}));
+			AddBackOption(builder, _manager, ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -258,10 +263,10 @@ public class GeneralMenu : MenuGenerator {
 		}
 
 		PanelConfig.Builder builder = new PanelConfig.Builder(MENU_KEY_OPTIONS);
-		AddBackOption(builder, _manager, ButtonPrefab);
 		AddPanelHookup(builder, _manager, ButtonPrefab, "Controls", AddControlsPanel("Controls"));
 		AddPanelHookup(builder, _manager, ButtonPrefab, "Video", AddVideoPanel("Video"));
 		AddPanelHookup(builder, _manager, ButtonPrefab, "Audio", AddAudioPanel("Audio"));
+		AddBackOption(builder, _manager, ButtonPrefab);
 
 		menuBuilder.AddPanelConfig(builder);
 	}
