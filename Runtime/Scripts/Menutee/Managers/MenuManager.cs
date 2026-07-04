@@ -400,6 +400,7 @@ namespace Menutee {
 
 			PanelManager active = panel;
 			active?.SetPanelActive(true);
+			active?.InvokeDisplayCallbacks();
 
 			if (active != null) {
 				// Cache the default so that we have something to default to if
