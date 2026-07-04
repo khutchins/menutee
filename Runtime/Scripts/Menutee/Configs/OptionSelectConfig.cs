@@ -29,6 +29,7 @@ namespace Menutee {
 				Debug.LogWarning("Option select prefab does not contain OptionSelectManager. Menu generation will not proceed normally!");
 			} else {
 				manager.Loops = Loops;
+				manager.HidesArrowAtEnd = HidesArrowIfLastOption;
 				manager.SetText(DisplayText);
 				manager.SetOptions(OptionStrings, DefaultIndex);
 				manager.OptionSelected += Handler;
@@ -158,7 +159,7 @@ namespace Menutee {
 
 		public delegate void OptionSelectedMappedHandler(OptionSelectManager manager, int index, string optionString, T option);
 
-		public class Builder : Builder<OptionSelectConfig, Builder> {
+		public class Builder : Builder<OptionSelectMappedConfig<T>, Builder> {
 			private List<T> _options = new List<T>();
 			private OptionSelectedMappedHandler _mappedHandler;
 
@@ -186,7 +187,7 @@ namespace Menutee {
 				return _builderInstance;
 			}
 
-			public override OptionSelectConfig Build() {
+			public override OptionSelectMappedConfig<T> Build() {
 				if (_handler != null && _mappedHandler != null) {
 					OptionSelectedHandler oldHandler = _handler;
 					_handler = (OptionSelectManager dropdown, int index, string optionString) => {
@@ -201,7 +202,7 @@ namespace Menutee {
 				if (_options.Count != _optionStrings.Count) {
 					Debug.LogError("Invalid configuration. Options does not match Option strings. Things will be broken.");
 				}
-				return new OptionSelectConfig(BuildOSInitObject());
+				return new OptionSelectMappedConfig<T>(BuildOSInitObject(), _options.ToArray());
 			}
 		}
 	}

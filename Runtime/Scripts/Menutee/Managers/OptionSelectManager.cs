@@ -14,10 +14,19 @@ namespace Menutee {
 
 		public bool Loops {
 			get => OptionSelect != null && OptionSelect.Loops;
-			set { 
+			set {
 				if (OptionSelect != null) {
 					OptionSelect.Loops = value;
-				} 
+				}
+			}
+		}
+
+		public bool HidesArrowAtEnd {
+			get => OptionSelect != null && OptionSelect.HidesArrowAtEnd;
+			set {
+				if (OptionSelect != null) {
+					OptionSelect.HidesArrowAtEnd = value;
+				}
 			}
 		}
 

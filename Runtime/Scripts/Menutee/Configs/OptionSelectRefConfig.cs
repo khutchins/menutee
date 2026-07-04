@@ -31,14 +31,6 @@ namespace Menutee {
 				_ref = reference;
 			}
 
-			public Builder SetToggleManager(System.Action<OptionSelectManager, bool> handler) {
-				_handler = (OptionSelectManager manager, int index, string option) => {
-					bool on = index == 1;
-					handler?.Invoke(manager, on);
-				};
-				return _builderInstance;
-			}
-
 			public override OptionSelectRefConfig Build() {
 				_defaultIndexGetter = () => _ref.Value;
 				return new OptionSelectRefConfig(BuildOSInitObject(), _ref);
