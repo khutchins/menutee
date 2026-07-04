@@ -115,7 +115,7 @@ namespace Menutee {
 			/// When true (the default), navigating to the field only highlights it; the
 			/// user must press Submit to begin editing. When false, the field activates
 			/// immediately on selection (default input field behavior).
-			/// Has effect only if the prefab uses <see cref="MenuteeInputField"/>.
+			/// Has effect only if the prefab uses <see cref="DeferredSelectionInputField"/>.
 			/// </summary>
 			public Builder SetRequireSubmitToEdit(bool requireSubmit) {
 				_requireSubmitToEdit = requireSubmit;
