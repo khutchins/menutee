@@ -106,8 +106,8 @@ namespace Menutee {
             private bool _toggleable;
             private bool _startsOpen;
             private bool _menuPausesGame;
-            private SelectMode _selectMode;
-            private RestorationMode _selectionRestorationMode;
+            private SelectMode _selectMode = SelectMode.Contextual;
+            private RestorationMode _selectionRestorationMode = RestorationMode.Always;
             private string _mainPanelKey = null;
             private MenuAttributes? _menuAttributesOverride = null;
             private PaletteConfig _paletteConfig;
@@ -124,7 +124,6 @@ namespace Menutee {
             public Builder(bool toggleableAndStartsClosed, bool menuPausesGame) {
                 _toggleable = toggleableAndStartsClosed;
                 _startsOpen = !toggleableAndStartsClosed;
-                _selectMode = SelectMode.Contextual;
                 _menuPausesGame = menuPausesGame;
             }
 
