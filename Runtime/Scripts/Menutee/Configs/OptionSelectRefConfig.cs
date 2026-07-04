@@ -70,7 +70,7 @@ namespace Menutee {
 				_ref = reference;
 			}
 
-			public Builder SetToggleManager(System.Action<OptionSelectManager, bool> handler) {
+			public Builder SetToggleHandler(System.Action<OptionSelectManager, bool> handler) {
 				_handler = (OptionSelectManager manager, int index, string option) => {
 					bool on = index == 1;
 					handler?.Invoke(manager, on);

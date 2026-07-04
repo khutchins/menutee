@@ -49,7 +49,7 @@ public class SampleOptionSelectMenu : MenuGenerator {
 
 		panel.AddPanelObject(new OptionSelectToggleConfig.Builder("item123", OptionSelectPrefab, "Off", "On", true)
 		.SetDisplayText("Toggle")
-		.SetToggleManager((OptionSelectManager manager, bool toggle) => {
+		.SetToggleHandler((OptionSelectManager manager, bool toggle) => {
 			Debug.Log($"Is on? {toggle}");
 		}));
 

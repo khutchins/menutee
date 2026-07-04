@@ -8,6 +8,7 @@
 * Removed `OptionSelectRefConfig.Builder.SetToggleManager`. It was a copy-paste of the toggle handler onto the non-toggle int-ref option select. Use `SetOptionSelectedHandler`, or `OptionSelectToggleRefConfig` for an actual toggle.
 * Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
 * Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
+* Renamed `SetToggleManager` to `SetToggleHandler` on option select toggle components.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
