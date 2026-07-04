@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.0.0]
+
+### Breaking
+* `OptionSelectManager` now operates on an `OperatorSelect` `Selectable` instead of the prior conglomeration. You can make a new one for your prefab with `Create/UI/Menutee/Option Select`.
+
+### Added
+* `OptionSelect`: a Selectable subclass that behaves like the combination of features I had worked before.
+* `GameObject > UI > Menutee > Option Select (Horizontal/Vertical)` create-menu entries that drop the shipped OptionSelect prefabs into the scene (creating a Canvas/EventSystem if needed).
+* Default arrow sprites (left/right/up/down) and OptionSelect prefabs shipped in the package.
+
 ## [5.2.1]
 
 ### Changed

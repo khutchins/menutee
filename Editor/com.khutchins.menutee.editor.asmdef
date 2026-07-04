@@ -1,0 +1,19 @@
+{
+    "name": "com.khutchins.menutee.editor",
+    "rootNamespace": "",
+    "references": [
+        "com.khutchins.menutee",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
