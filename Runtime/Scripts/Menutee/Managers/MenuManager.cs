@@ -711,9 +711,5 @@ namespace Menutee {
 			if (!_active) return;
 			ToggleMenu();
 		}
-
-		public void ExitGame() {
-			Application.Quit();
-		}
 	}
 }

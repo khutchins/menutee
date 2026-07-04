@@ -9,6 +9,7 @@
 * Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
 * Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
 * Renamed `SetToggleManager` to `SetToggleHandler` on option select toggle components.
+* `ExitGame()` removed from `MenuManager`.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
