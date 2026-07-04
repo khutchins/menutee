@@ -10,7 +10,17 @@ namespace Menutee {
         public readonly SelectMode DefaultSelectMode;
         public readonly string MainPanelKey;
         public readonly MenuAttributes MenuAttributes;
-        public readonly PaletteConfig PaletteConfig;
+        /// <summary>
+        /// Menu-level default palette, applied to any element that doesn't specify its
+        /// own palette. Overridden by <see cref="DefaultPaletteReference"/> if set.
+        /// </summary>
+        public readonly PaletteConfig DefaultPaletteConfig;
+        /// <summary>
+        /// Menu-level default palette reference. Elements that don't specify their own
+        /// palette re-theme live when this reference changes. Takes precedence over
+        /// <see cref="DefaultPaletteConfig"/>.
+        /// </summary>
+        public readonly PaletteConfigReference DefaultPaletteReference;
         public readonly PanelConfig[] PanelConfigs;
         public readonly PanelGenerator[] PanelGenerators;
         public readonly List<System.Action<string, string>> PanelChangeCallbacks;
@@ -70,12 +80,14 @@ namespace Menutee {
                 IMenuVisibilityTransition menuInTransition = null, IMenuVisibilityTransition menuOutTransition = null,
                 IPanelTransition defaultPanelTransition = null,
                 MenuPanelSequence menuOpenSequence = MenuPanelSequence.None,
-                MenuPanelSequence menuCloseSequence = MenuPanelSequence.None) {
+                MenuPanelSequence menuCloseSequence = MenuPanelSequence.None,
+                PaletteConfigReference defaultPaletteReference = null) {
             Toggleable = toggleable;
             StartsOpen = startsOpen;
             MenuPausesGame = menuPausesGame;
             MainPanelKey = mainPanelKey;
-            PaletteConfig = paletteConfig;
+            DefaultPaletteConfig = paletteConfig;
+            DefaultPaletteReference = defaultPaletteReference;
             PanelConfigs = panelConfigs;
             PanelGenerators = panelGenerators ?? new PanelGenerator[0];
             DefaultSelectMode = selectMode;
@@ -99,6 +111,7 @@ namespace Menutee {
             private string _mainPanelKey = null;
             private MenuAttributes? _menuAttributesOverride = null;
             private PaletteConfig _paletteConfig;
+            private PaletteConfigReference _paletteReference;
             private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
             private List<PanelGenerator> _panelGenerators = new List<PanelGenerator>();
             private List<System.Action<string, string>> _panelChangeCallbacks = new List<System.Action<string, string>>();
@@ -108,12 +121,37 @@ namespace Menutee {
             private MenuPanelSequence _menuOpenSequence = MenuPanelSequence.None;
             private MenuPanelSequence _menuCloseSequence = MenuPanelSequence.None;
 
-            public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig) {
+            public Builder(bool toggleableAndStartsClosed, bool menuPausesGame) {
                 _toggleable = toggleableAndStartsClosed;
                 _startsOpen = !toggleableAndStartsClosed;
                 _selectMode = SelectMode.Contextual;
                 _menuPausesGame = menuPausesGame;
+            }
+
+            [System.Obsolete("Set the palette via SetDefaultPaletteConfig instead of the constructor: new Builder(toggleableAndStartsClosed, menuPausesGame).SetDefaultPaletteConfig(palette).", false)]
+            public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig)
+                    : this(toggleableAndStartsClosed, menuPausesGame) {
                 _paletteConfig = paletteConfig;
+            }
+
+            /// <summary>
+            /// Sets the menu-level default palette, applied to any element that doesn't
+            /// specify its own palette (config or reference). Overridden by
+            /// <see cref="SetDefaultPaletteReference"/> if that is also set.
+            /// </summary>
+            public Builder SetDefaultPaletteConfig(PaletteConfig paletteConfig) {
+                _paletteConfig = paletteConfig;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets a menu-level default palette reference. Elements that don't specify
+            /// their own palette re-theme live whenever this reference changes. Takes
+            /// precedence over <see cref="SetDefaultPaletteConfig"/>.
+            /// </summary>
+            public Builder SetDefaultPaletteReference(PaletteConfigReference paletteReference) {
+                _paletteReference = paletteReference;
+                return this;
             }
 
             public Builder SetStartsOpen(bool startsOpen) {
@@ -278,7 +316,8 @@ namespace Menutee {
                     _panelChangeCallbacks, _menuAttributesOverride, _selectMode, _selectionRestorationMode,
                     menuInTransition: _menuInTransition, menuOutTransition: _menuOutTransition,
                     defaultPanelTransition: _defaultPanelTransition,
-                    menuOpenSequence: _menuOpenSequence, menuCloseSequence: _menuCloseSequence);
+                    menuOpenSequence: _menuOpenSequence, menuCloseSequence: _menuCloseSequence,
+                    defaultPaletteReference: _paletteReference);
             }
         }
     }

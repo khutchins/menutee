@@ -86,8 +86,7 @@ namespace Menutee {
 				if (elementManager != null) {
 					panelElements.Add(elementManager);
 					elementManager.PanelObjectConfig = objConfig;
-					elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
-					elementManager.BindPaletteReference();
+					ResolveAndApplyPalette(elementManager, objConfig, menuConfig);
 					if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
 						selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
 					}
@@ -138,6 +137,26 @@ namespace Menutee {
 
 		protected GameObject CreatePanelObject(GameObject panel, PanelObjectConfig config) {
 			return config.Create(panel);
+		}
+
+		private static void ResolveAndApplyPalette(UIElementManager element, PanelObjectConfig objConfig, MenuConfig menuConfig) {
+			PaletteConfigReference reference;
+			PaletteConfig staticPalette;
+			if (objConfig.PaletteReference != null) {
+				reference = objConfig.PaletteReference;
+				staticPalette = null;
+			} else if (objConfig.PaletteConfig != null) {
+				reference = null;
+				staticPalette = objConfig.PaletteConfig;
+			} else if (menuConfig.DefaultPaletteReference != null) {
+				reference = menuConfig.DefaultPaletteReference;
+				staticPalette = null;
+			} else {
+				reference = null;
+				staticPalette = menuConfig.DefaultPaletteConfig;
+			}
+			element.SetColors(staticPalette);
+			element.BindPaletteReference(reference);
 		}
 
 		/// <summary>

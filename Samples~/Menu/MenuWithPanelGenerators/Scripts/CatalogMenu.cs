@@ -30,7 +30,7 @@ public class CatalogMenu : MenuGenerator {
 	private void Awake() {
 		_manager = GetComponent<MenuManager>();
 
-		MenuConfig.Builder builder = new MenuConfig.Builder(true, true, PaletteConfig);
+		MenuConfig.Builder builder = new MenuConfig.Builder(true, true).SetDefaultPaletteConfig(PaletteConfig);
 		MenuAttributes attr = MenuAttributes.StandardPauseMenu();
 		attr.cursorLockMode = CursorLockMode.None;
 		builder.SetMenuAttributes(attr);

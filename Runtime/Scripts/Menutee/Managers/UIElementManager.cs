@@ -13,14 +13,14 @@ namespace Menutee {
 		private PaletteConfigReference _paletteReference;
 
 		/// <summary>
-		/// Hooks this element up to the PaletteConfigReference on its
-		/// PanelObjectConfig, if one is set. While bound, the element re-applies its
-		/// colors whenever the referenced palette changes. The generator calls this
-		/// after assigning PanelObjectConfig, since the reference isn't known yet when
-		/// the element's OnEnable first runs during instantiation.
+		/// Binds this element to the given palette reference (or none). While bound,
+		/// the element re-applies its colors whenever the referenced palette changes.
+		/// The generator resolves palette precedence and calls this after assigning
+		/// PanelObjectConfig, since the reference isn't known yet when the element's
+		/// OnEnable first runs during instantiation.
 		/// </summary>
-		public void BindPaletteReference() {
-			_paletteReference = PanelObjectConfig != null ? PanelObjectConfig.PaletteReference : null;
+		public void BindPaletteReference(PaletteConfigReference reference) {
+			_paletteReference = reference;
 			ResubscribeToPaletteReference();
 			// SetColors no-ops on null, so a null-valued reference leaves the palette
 			// applied at generation time untouched.

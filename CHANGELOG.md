@@ -7,12 +7,17 @@
 * `MenuManager`'s animation hooks are no longer overridable: `SetMenuIsUp`, `SetOnTop`, and `ActivatePanel(PanelManager, PanelManager, bool)` are now `private` (was `protected virtual`), and `DoToggle` was removed. Menus that animated by subclassing `MenuManager` should transition to the new transition system (see `MenuWithAnimationSample`).
 * Removed `OptionSelectRefConfig.Builder.SetToggleManager`. It was a copy-paste of the toggle handler onto the non-toggle int-ref option select. Use `SetOptionSelectedHandler`, or `OptionSelectToggleRefConfig` for an actual toggle.
 * Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
+* Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
+
+### Deprecated
+* `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
 
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.
 * `OptionSelectConfig` builders' `SetHidesArrowIfLastOption` is now applied to the generated `OptionSelect` instead of being ignored.
 
 ### Added
+* `MenuConfig.Builder.SetDefaultPaletteConfig` / `SetDefaultPaletteReference` set a menu-level default palette. A reference re-themes every element that uses the default whenever it changes. Element palette precedence is: object reference > object config > menu default reference > menu default config.
 * `PanelObjectConfig.Builder.SetPaletteReferenceOverride` binds an element to a `PaletteConfigReference`, so it re-themes live whenever the referenced palette changes (and applies the reference's current value on creation). Previously the `PaletteReference` field existed but was never settable through the builder or read during generation.
 * `OptionSelect`: a Selectable subclass that behaves like the combination of features I had worked before.
 * `GameObject > UI > Menutee > Option Select (Horizontal/Vertical)` create-menu entries that drop the shipped OptionSelect prefabs into the scene (creating a Canvas/EventSystem if needed).

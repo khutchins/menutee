@@ -18,7 +18,7 @@ public class SampleMenuWithHook : MenuGenerator {
 	void Awake() {
 		_manager = GetComponent<MenuManager>();
 
-		MenuConfig.Builder builder = new MenuConfig.Builder(false, false, PaletteConfig);
+		MenuConfig.Builder builder = new MenuConfig.Builder(false, false).SetDefaultPaletteConfig(PaletteConfig);
 
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
 			.AddPanelObject(

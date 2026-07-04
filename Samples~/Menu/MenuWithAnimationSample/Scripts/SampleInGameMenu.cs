@@ -29,7 +29,7 @@ public class SampleInGameMenu : MenuGenerator {
 		MenuAttributes attr = MenuAttributes.StandardPauseMenu();
 		attr.cursorLockMode = CursorLockMode.None;
 
-		MenuConfig.Builder builder = new MenuConfig.Builder(true, true, PaletteConfig)
+		MenuConfig.Builder builder = new MenuConfig.Builder(true, true).SetDefaultPaletteConfig(PaletteConfig)
 			.SetMenuAttributes(attr)
 			// Slide up to open, fade to close.
 			.SetMenuTransition(

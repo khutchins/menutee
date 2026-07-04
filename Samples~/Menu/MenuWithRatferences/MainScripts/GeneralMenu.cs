@@ -33,7 +33,7 @@ public class GeneralMenu : MenuGenerator {
 	void Awake() {
 		_manager = GetComponent<MenuManager>();
 
-		MenuConfig.Builder builder = new MenuConfig.Builder(!_mainMenu, !_mainMenu, PaletteConfig);
+		MenuConfig.Builder builder = new MenuConfig.Builder(!_mainMenu, !_mainMenu).SetDefaultPaletteConfig(PaletteConfig);
 		MenuAttributes noLock = _mainMenu ? MenuAttributes.StandardNonPauseMenu() : MenuAttributes.StandardPauseMenu();
 		noLock.cursorLockMode = UnityEngine.CursorLockMode.None;
 		builder.SetMenuAttributes(noLock);

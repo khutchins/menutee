@@ -15,7 +15,7 @@ public class SampleOptionSelectMenu : MenuGenerator {
 		_manager = GetComponent<MenuManager>();
 
 		// This is just the option select prefab in action.
-		MenuConfig.Builder builder = new MenuConfig.Builder(false, true, PaletteConfig);
+		MenuConfig.Builder builder = new MenuConfig.Builder(false, true).SetDefaultPaletteConfig(PaletteConfig);
 
 		PanelConfig.Builder panel = new PanelConfig.Builder(MENU_KEY_MAIN);
 		panel.AddPanelObject(new OptionSelectConfig.Builder("quality", OptionSelectPrefab)
