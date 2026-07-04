@@ -140,7 +140,7 @@ namespace Menutee {
             }
 
             /// <summary>
-            /// Sets the conditions under which an input will be reselcted if none are selected.
+            /// Sets the conditions under which an input will be reselected if none are selected.
             /// Always: Instantly restores a selection if no options are selected.
             /// OnInput: Restores a selection when an input that would select the next/previous input is entered.
             /// Never: Never automatically reselect an element.

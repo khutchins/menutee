@@ -60,13 +60,9 @@ Click on the import button next  to Samples -> Menu Generation. You should then 
 
 This scene shows what a fully-featured menu using my SO reference library, Ratferences, to bind options to a savable references. This is currently the standard for how I generate menus in my newer games.
 
-##### InGameMenuSample
+##### MenuWithAnimationSample
 
-This scene shows an example of what an in-game menu could look like. SampleInGameMenu.cs is the script that drives the creation of the menu. The builder, MenuConfig.Builder, allows the menu to be built in a more or less readable way. The first argument to MenuConfig.Builder's constructor is whether the menu is closeable, and the second is whether or not the menu pauses the game. For an in-game menu, likely both of those should be true.
-
-After that, panels (groupings of menu options that are displayed at a given time) are added to the MenuConfig builder object. Each panel has a set of PanelObjects, which are built using various subclasses of PanelObjectConfig, like ButtonConfig or SliderConfig.
-
-Once the MenuConfig object is built, pass it to CreateMenu() and the menu itself will be constructed.
+This demonstrates the animation system: the menu slides in and fades out, and its panels each use a different transition (rigid slide, per-element stagger, and crossfade). Transitions are assigned through the builders—see `SetMenuTransition`, `SetMenuSequence`, and `SetDefaultPanelTransition` on `MenuConfig.Builder`, and per-panel `SetTransition` on `PanelConfig.Builder`.
 
 ##### MenuHookSample
 
@@ -79,6 +75,14 @@ If you hook up the Canvas property, it will automatically show and hide the canv
 ##### MenuWithCustomBackSample
 
 This example has a menu with buttons that exist outside of the programmatic generation. One instance where this is useful is having a custom panel with a static back button. These custom elements can be set as the default selectable by using `.SetDefaultSelectableCallback` on the PanelConfig builder. Similarly, you can hook up the navigation by using the using `.SetCustomNavigation` method. MenuGenerator has `SetHorizontalNavigation` and `SetVerticalNavigation` convenience methods that automate the UI hookup process. See the `SampleMenuWithCustomBack` script to look at how they're implemented.
+
+##### MenuWithPanelGenerators
+
+This scene demonstrates panel generators, which build panels on demand instead of declaring every panel up front. Register a generator with `AddPanelGenerator` on the MenuConfig builder; when a key is pushed that has no static panel, the matching generator builds one lazily (and it's disposed when popped). This is useful when the set of panels isn't known ahead of time—for example, generating a detail panel per item in a catalog. See `CatalogMenu.cs`.
+
+##### OptionSelectMenuSample
+
+This scene demonstrates the OptionSelect element—a Selectable that cycles through a set of options with left/right (or up/down) arrows. Add one to a panel with `OptionSelectConfig`. See `SampleOptionSelectMenu.cs`.
 
 ### Add & Customize Prefabs
 

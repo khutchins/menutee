@@ -27,7 +27,7 @@ namespace Menutee {
         }
 
         /// <summary>
-        /// Standard pause menu: Locked and invisible cursor, uses existing time scale, unpaused game.
+        /// Standard in-game menu: Locked and invisible cursor, uses existing time scale, unpaused game.
         /// </summary>
         public static MenuAttributes StandardInGame() {
             MenuAttributes attributes = new MenuAttributes();

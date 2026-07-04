@@ -18,7 +18,7 @@ namespace Menutee {
         [SerializeField] PaletteConfig Palette;
         [Tooltip("Graphic to tint.")]
         [SerializeField] Graphic TargetGraphic;
-        [Tooltip("If disabled, the diabled state will not be entered.")]
+        [Tooltip("If disabled, the disabled state will not be entered.")]
         [SerializeField] bool ProcessDisabled = true;
         [Tooltip("If disabled, the pressed state will not be entered.")]
         [SerializeField] bool ProcessPressed = true;
