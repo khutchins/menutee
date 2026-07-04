@@ -14,16 +14,51 @@ namespace Menutee {
         public readonly PanelConfig[] PanelConfigs;
         public readonly PanelGenerator[] PanelGenerators;
         public readonly List<System.Action<string, string>> PanelChangeCallbacks;
+        /// <summary>
+        /// Animation for the menu showing (opening). Null means an instant open.
+        /// See <see cref="IMenuVisibilityTransition"/>.
+        /// </summary>
+        public readonly IMenuVisibilityTransition MenuInTransition;
+        /// <summary>
+        /// Animation for the menu hiding (closing). Null means an instant close.
+        /// See <see cref="IMenuVisibilityTransition"/>.
+        /// </summary>
+        public readonly IMenuVisibilityTransition MenuOutTransition;
+        /// <summary>
+        /// Fallback animation for panel changes, used by any panel that does not
+        /// set its own <see cref="PanelConfig.Transition"/>. Null means instant.
+        /// See <see cref="IPanelTransition"/>.
+        /// </summary>
+        public readonly IPanelTransition DefaultPanelTransition;
+        /// <summary>How the root panel's enter composes with the menu opening. See <see cref="MenuPanelSequence"/>.</summary>
+        public readonly MenuPanelSequence MenuOpenSequence;
+        /// <summary>How the active panel's exit composes with the menu closing. See <see cref="MenuPanelSequence"/>.</summary>
+        public readonly MenuPanelSequence MenuCloseSequence;
 
+        /// <summary>
+        /// Controls whether an element is selected by default when a menu is entered
+        /// or returned to. Without a default selection, the user must move the
+        /// controller/keyboard to select anything.
+        /// </summary>
         public enum SelectMode {
+            /// <summary>Always select an element by default.</summary>
             Always,
+            /// <summary>Select an element only if the last input was not the mouse.</summary>
             Contextual,
+            /// <summary>Never select an element by default.</summary>
             Never,
         }
 
+        /// <summary>
+        /// Controls whether a selection is automatically restored after it is lost
+        /// (e.g. the selected element is destroyed or deselected).
+        /// </summary>
         public enum RestorationMode {
+            /// <summary>Instantly restore a selection whenever none is selected.</summary>
             Always,
+            /// <summary>Restore a selection on the next directional (next/previous) input.</summary>
             OnInput,
+            /// <summary>Never automatically restore a selection.</summary>
             Never,
         }
 
@@ -31,7 +66,11 @@ namespace Menutee {
                 PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators = null,
                 List<System.Action<string, string>> panelChangeCallbacks = null,
                 MenuAttributes? menuAttributesOverride = null, SelectMode selectMode = SelectMode.Contextual,
-                RestorationMode restorationMode = RestorationMode.Always) {
+                RestorationMode restorationMode = RestorationMode.Always,
+                IMenuVisibilityTransition menuInTransition = null, IMenuVisibilityTransition menuOutTransition = null,
+                IPanelTransition defaultPanelTransition = null,
+                MenuPanelSequence menuOpenSequence = MenuPanelSequence.None,
+                MenuPanelSequence menuCloseSequence = MenuPanelSequence.None) {
             Toggleable = toggleable;
             StartsOpen = startsOpen;
             MenuPausesGame = menuPausesGame;
@@ -44,6 +83,11 @@ namespace Menutee {
             MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value
                 : (menuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu());
             PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<string, string>>();
+            MenuInTransition = menuInTransition;
+            MenuOutTransition = menuOutTransition;
+            DefaultPanelTransition = defaultPanelTransition;
+            MenuOpenSequence = menuOpenSequence;
+            MenuCloseSequence = menuCloseSequence;
         }
 
         public class Builder {
@@ -58,6 +102,11 @@ namespace Menutee {
             private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
             private List<PanelGenerator> _panelGenerators = new List<PanelGenerator>();
             private List<System.Action<string, string>> _panelChangeCallbacks = new List<System.Action<string, string>>();
+            private IMenuVisibilityTransition _menuInTransition;
+            private IMenuVisibilityTransition _menuOutTransition;
+            private IPanelTransition _defaultPanelTransition;
+            private MenuPanelSequence _menuOpenSequence = MenuPanelSequence.None;
+            private MenuPanelSequence _menuCloseSequence = MenuPanelSequence.None;
 
             public Builder(bool toggleableAndStartsClosed, bool menuPausesGame, PaletteConfig paletteConfig) {
                 _toggleable = toggleableAndStartsClosed;
@@ -164,6 +213,57 @@ namespace Menutee {
                 return AddPanelGenerator(new PanelGenerator(matches, build));
             }
 
+            /// <summary>
+            /// Sets a single animation used for both opening and closing the menu. 
+            /// Leave unset for an instant show/hide.
+            /// </summary>
+            public Builder SetMenuTransition(IMenuVisibilityTransition transition) {
+                _menuInTransition = transition;
+                _menuOutTransition = transition;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets independent open and close animations. Either may be null for
+            /// an instant show/hide in that direction.
+            /// </summary>
+            public Builder SetMenuTransition(IMenuVisibilityTransition inTransition, IMenuVisibilityTransition outTransition) {
+                _menuInTransition = inTransition;
+                _menuOutTransition = outTransition;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets how the active panel's enter/exit composes with the menu opening
+            /// and closing, applying <paramref name="sequence"/> to both directions.
+            /// See <see cref="MenuPanelSequence"/>.
+            /// </summary>
+            public Builder SetMenuSequence(MenuPanelSequence sequence) {
+                _menuOpenSequence = sequence;
+                _menuCloseSequence = sequence;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the panel enter/exit sequencing independently for opening and
+            /// closing - e.g. an Ordered entrance but a None exit.
+            /// </summary>
+            public Builder SetMenuSequence(MenuPanelSequence openSequence, MenuPanelSequence closeSequence) {
+                _menuOpenSequence = openSequence;
+                _menuCloseSequence = closeSequence;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the fallback panel-change animation, used by any panel that doesn't
+            /// set its own via PanelConfig.Builder.SetTransition. Leave unset for
+            /// instant panel changes.
+            /// </summary>
+            public Builder SetDefaultPanelTransition(IPanelTransition transition) {
+                _defaultPanelTransition = transition;
+                return this;
+            }
+
             public Builder SetMenuAttributes(MenuAttributes? menuAttributes) {
                 _menuAttributesOverride = menuAttributes;
                 return this;
@@ -175,7 +275,10 @@ namespace Menutee {
                 }
                 return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey,
                     _paletteConfig, _panelConfigs.ToArray(), _panelGenerators.ToArray(),
-                    _panelChangeCallbacks, _menuAttributesOverride, _selectMode);
+                    _panelChangeCallbacks, _menuAttributesOverride, _selectMode, _selectionRestorationMode,
+                    menuInTransition: _menuInTransition, menuOutTransition: _menuOutTransition,
+                    defaultPanelTransition: _defaultPanelTransition,
+                    menuOpenSequence: _menuOpenSequence, menuCloseSequence: _menuCloseSequence);
             }
         }
     }
