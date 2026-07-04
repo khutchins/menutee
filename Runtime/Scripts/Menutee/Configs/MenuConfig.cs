@@ -23,7 +23,7 @@ namespace Menutee {
         public readonly PaletteConfigReference DefaultPaletteReference;
         public readonly PanelConfig[] PanelConfigs;
         public readonly PanelGenerator[] PanelGenerators;
-        public readonly List<System.Action<string, string>> PanelChangeCallbacks;
+        public readonly List<System.Action<PanelManager, PanelManager>> PanelChangeCallbacks;
         /// <summary>
         /// Animation for the menu showing (opening). Null means an instant open.
         /// See <see cref="IMenuVisibilityTransition"/>.
@@ -74,7 +74,7 @@ namespace Menutee {
 
         private MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig,
                 PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators,
-                List<System.Action<string, string>> panelChangeCallbacks,
+                List<System.Action<PanelManager, PanelManager>> panelChangeCallbacks,
                 MenuAttributes? menuAttributesOverride, SelectMode selectMode,
                 RestorationMode restorationMode,
                 IMenuVisibilityTransition menuInTransition, IMenuVisibilityTransition menuOutTransition,
@@ -94,7 +94,7 @@ namespace Menutee {
             SelectionRestorationMode = restorationMode;
             MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value
                 : (menuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu());
-            PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<string, string>>();
+            PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<PanelManager, PanelManager>>();
             MenuInTransition = menuInTransition;
             MenuOutTransition = menuOutTransition;
             DefaultPanelTransition = defaultPanelTransition;
@@ -114,7 +114,7 @@ namespace Menutee {
             private PaletteConfigReference _paletteReference;
             private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
             private List<PanelGenerator> _panelGenerators = new List<PanelGenerator>();
-            private List<System.Action<string, string>> _panelChangeCallbacks = new List<System.Action<string, string>>();
+            private List<System.Action<PanelManager, PanelManager>> _panelChangeCallbacks = new List<System.Action<PanelManager, PanelManager>>();
             private IMenuVisibilityTransition _menuInTransition;
             private IMenuVisibilityTransition _menuOutTransition;
             private IPanelTransition _defaultPanelTransition;
@@ -231,7 +231,18 @@ namespace Menutee {
             /// The first parameter is the old panel (null if menu wasn't active), and the second is the new panel
             /// (null if menu is going away).
             /// </summary>
+            [System.Obsolete("Use the PanelManager version instead.", false)]
             public Builder AddPanelChangeCallback(System.Action<string, string> callback) {
+                _panelChangeCallbacks.Add((oldPanel, newPanel) => callback(oldPanel?.Key, newPanel?.Key));
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a callback invoked whenever the active panel changes (including to and from null).
+            /// The first parameter is the old panel (null if the menu wasn't active), the second is the
+            /// new panel (null if the menu is going away).
+            /// </summary>
+            public Builder AddPanelChangeCallback(System.Action<PanelManager, PanelManager> callback) {
                 _panelChangeCallbacks.Add(callback);
                 return this;
             }

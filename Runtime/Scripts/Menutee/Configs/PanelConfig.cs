@@ -18,7 +18,7 @@ namespace Menutee {
 		/// lookups in the panel dictionary.
 		/// </summary>
 		public readonly string Key;
-		public readonly string DefaultSelectableKey;
+		public readonly PanelObjectConfig DefaultSelectable;
 		public readonly GameObject PrefabOverride;
 		public readonly NavigationType Navigation;
 		public readonly Navigation.Mode NavigationMode;
@@ -41,7 +41,7 @@ namespace Menutee {
 		public readonly GameObject[] SupplementalObjects;
 
 		private PanelConfig(string key,
-				string defaultSelectableKey,
+				PanelObjectConfig defaultSelectable,
 				PanelObjectConfig[] panelObjects,
 				GameObject[] supplementalObjects,
 				NavigationType navigation,
@@ -55,7 +55,7 @@ namespace Menutee {
 				Action<GameObject, PanelManager> onDisposeCallback,
 				IPanelTransition transition) {
 			Key = key;
-			DefaultSelectableKey = defaultSelectableKey;
+			DefaultSelectable = defaultSelectable;
 			PanelObjects = panelObjects;
 			SupplementalObjects = supplementalObjects;
 			Navigation = navigation;
@@ -76,7 +76,7 @@ namespace Menutee {
 			private List<GameObject> _supplementalObjects = new List<GameObject>();
 			private GameObject _prefabOverride;
 			private string _key;
-			private string _defaultSelectableKey;
+			private PanelObjectConfig _defaultSelectable;
 			private NavigationType _navigation;
 			private Navigation.Mode _navigationMode;
 			private Action<List<Selectable>> _navigationCallback;
@@ -104,7 +104,7 @@ namespace Menutee {
 			public Builder AddPanelObject(PanelObjectConfig config, bool defaultObject = false) {
 				_panelObjectConfigs.Add(config);
 				if (defaultObject) {
-					_defaultSelectableKey = config.Key;
+					_defaultSelectable = config;
 				}
 				return this;
 			}
@@ -117,7 +117,7 @@ namespace Menutee {
 			public Builder InsertPanelObject(PanelObjectConfig config, int index, bool defaultObject = false) {
 				_panelObjectConfigs.Insert(index, config);
 				if (defaultObject) {
-					_defaultSelectableKey = config.Key;
+					_defaultSelectable = config;
 				}
 				return this;
 			}
@@ -239,10 +239,10 @@ namespace Menutee {
 			}
 
 			public PanelConfig Build() {
-				if (_defaultSelectableKey == null && _panelObjectConfigs.Count > 0) {
-					_defaultSelectableKey = _panelObjectConfigs[0].Key;
+				if (_defaultSelectable == null && _panelObjectConfigs.Count > 0) {
+					_defaultSelectable = _panelObjectConfigs[0];
 				}
-				return new PanelConfig(_key, _defaultSelectableKey,
+				return new PanelConfig(_key, _defaultSelectable,
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(),
 					_navigation, _navigationCallback, _prefabOverride, _navigationMode,
 					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback,

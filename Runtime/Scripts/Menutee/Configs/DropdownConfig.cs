@@ -18,7 +18,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			DropdownManager manager = go.GetComponent<DropdownManager>();
 			if (manager == null) {
 				Debug.LogWarning("Dropdown prefab does not contain DropdownManager. Menu generation will not proceed normally!");
@@ -44,6 +44,9 @@ namespace Menutee {
 			private DropdownChosenHandler _handler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 			}
 
 			public Builder SetDisplayText(string displayText) {

@@ -19,7 +19,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			ToggleManager manager = go.GetComponent<ToggleManager>();
 			if (manager == null) {
 				Debug.LogWarning("Toggle prefab does not contain ToggleManager. Menu generation will not proceed normally!");
@@ -45,6 +45,10 @@ namespace Menutee {
 			private BoolReference _ref;
 
 			public Builder(string key, GameObject prefab, BoolReference reference) : base(key, prefab) {
+				_ref = reference;
+			}
+
+			public Builder(GameObject prefab, BoolReference reference) : base(prefab) {
 				_ref = reference;
 			}
 

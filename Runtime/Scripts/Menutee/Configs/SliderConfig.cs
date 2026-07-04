@@ -23,7 +23,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			SliderManager manager = go.GetComponent<SliderManager>();
 			if (manager == null) {
 				Debug.LogWarning("Slider prefab does not contain SliderManager. Menu generation will not proceed normally!");
@@ -41,6 +41,10 @@ namespace Menutee {
 			private float _defaultValue;
 
 			public Builder(string key, GameObject prefab, float minValue, float maxValue, float defaultValue) : base(key, prefab, minValue, maxValue) {
+				_defaultValue = defaultValue;
+			}
+
+			public Builder(GameObject prefab, float minValue, float maxValue, float defaultValue) : base(prefab, minValue, maxValue) {
 				_defaultValue = defaultValue;
 			}
 
@@ -62,6 +66,12 @@ namespace Menutee {
 
         public BaseSliderBuilder(string key, GameObject prefab, float minValue, float maxValue)
             : base(key, prefab) {
+            _minValue = minValue;
+            _maxValue = maxValue;
+        }
+
+        public BaseSliderBuilder(GameObject prefab, float minValue, float maxValue)
+            : base(prefab) {
             _minValue = minValue;
             _maxValue = maxValue;
         }

@@ -15,7 +15,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			ButtonManager manager = go.GetComponent<ButtonManager>();
 			if (manager == null) {
 				Debug.LogWarning("Button prefab does not contain ButtonManager. Menu generation will not proceed normally!");
@@ -31,6 +31,9 @@ namespace Menutee {
 			private ButtonPressedHandler _handler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 			}
 
 			public Builder SetDisplayText(string displayText) {

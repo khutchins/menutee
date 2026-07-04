@@ -430,8 +430,9 @@ namespace Menutee {
 			_activeManager = active;
 
 			if (oldKey != _activeKey) {
-				foreach (System.Action<string, string> action in MenuConfig.PanelChangeCallbacks) {
-					action.Invoke(oldKey, _activeKey);
+				PanelManager oldManager = PanelForKey(oldKey);
+				foreach (System.Action<PanelManager, PanelManager> action in MenuConfig.PanelChangeCallbacks) {
+					action.Invoke(oldManager, active);
 				}
 			}
 		}

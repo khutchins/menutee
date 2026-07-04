@@ -23,7 +23,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = UnityEngine.Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			OptionSelectManager manager = go.GetComponent<OptionSelectManager>();
 			if (manager == null) {
 				Debug.LogWarning("Option select prefab does not contain OptionSelectManager. Menu generation will not proceed normally!");
@@ -71,6 +71,10 @@ namespace Menutee {
 			protected OptionSelectedHandler _handler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+				_defaultIndexGetter = () => 0;
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 				_defaultIndexGetter = () => 0;
 			}
 
@@ -144,6 +148,9 @@ namespace Menutee {
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
 			}
 
+			public Builder(GameObject prefab) : base(prefab) {
+			}
+
 			public override OptionSelectConfig Build() {
 				return new OptionSelectConfig(BuildOSInitObject());
 			}
@@ -164,6 +171,9 @@ namespace Menutee {
 			private OptionSelectedMappedHandler _mappedHandler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 			}
 
 			public Builder AddOptionString(string optionString, T option, bool defaultOption = false) {
@@ -221,6 +231,12 @@ namespace Menutee {
 			private bool _isOn;
 
 			public Builder(string key, GameObject prefab, string offText, string onText, bool isOn) : base(key, prefab) {
+				_onText = onText;
+				_offText = offText;
+				_isOn = isOn;
+			}
+
+			public Builder(GameObject prefab, string offText, string onText, bool isOn) : base(prefab) {
 				_onText = onText;
 				_offText = offText;
 				_isOn = isOn;

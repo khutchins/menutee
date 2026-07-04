@@ -6,8 +6,9 @@ using UnityEngine;
 namespace Menutee {
 	public abstract class PanelObjectConfig {
 		/// <summary>
-		/// Key that uniquely identifies an object within
-		/// a panel. Should be unique within that scope.
+		/// Optional key that uniquely identifies an object within a panel (used for
+		/// PanelObjectDictionary lookups). Should be unique within that scope. Null
+		/// when the element was created without a key.
 		/// </summary>
 		public readonly string Key;
 		public readonly Action<GameObject> CreationCallback;
@@ -15,6 +16,8 @@ namespace Menutee {
 		public readonly PaletteConfig PaletteConfig;
 		public readonly PaletteConfigReference PaletteReference;
 		public readonly GameObject Prefab;
+		protected string ObjectName => !string.IsNullOrEmpty(Key) ? Key
+			: (Prefab != null ? Prefab.name : GetType().Name);
 
 		public PanelObjectConfig(InitObject initObject) {
 			Key = initObject.Key;
@@ -60,6 +63,9 @@ namespace Menutee {
 				_key = key;
 				_prefab = prefab;
 				_builderInstance = (TBuilder)this;
+			}
+
+			public Builder(GameObject prefab) : this(null, prefab) {
 			}
 
 			public TBuilder SetPaletteConfigOverride(PaletteConfig config) {

@@ -33,7 +33,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			TextInputManager manager = go.GetComponent<TextInputManager>();
 			if (manager == null) {
 				Debug.LogWarning("Text input prefab does not contain TextInputManager. Menu generation will not proceed normally!");
@@ -69,6 +69,9 @@ namespace Menutee {
 			private TextSubmittedHandler _submittedHandler;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 			}
 
 			public Builder SetDisplayText(string displayText) {

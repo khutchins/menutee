@@ -92,8 +92,10 @@ namespace Menutee {
 					}
 				}
 				objConfig.CreationCallback?.Invoke(go);
-				dict[objConfig.Key] = go;
-				if (objConfig.Key == config.DefaultSelectableKey) {
+				if (!string.IsNullOrEmpty(objConfig.Key)) {
+					dict[objConfig.Key] = go;
+				}
+				if (objConfig == config.DefaultSelectable) {
 					if (elementManager != null) {
 						manager.DefaultInput = elementManager.SelectableObject;
 					} else {

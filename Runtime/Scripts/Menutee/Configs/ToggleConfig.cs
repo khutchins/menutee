@@ -17,7 +17,7 @@ namespace Menutee {
 
 		public override GameObject Create(GameObject parent) {
 			GameObject go = Object.Instantiate(Prefab, parent.transform);
-			go.name = Key;
+			go.name = ObjectName;
 			ToggleManager manager = go.GetComponent<ToggleManager>();
 			if (manager == null) {
 				Debug.LogWarning("Toggle prefab does not contain ToggleManager. Menu generation will not proceed normally!");
@@ -33,6 +33,9 @@ namespace Menutee {
             protected bool _isOn;
 
 			public Builder(string key, GameObject prefab) : base(key, prefab) {
+			}
+
+			public Builder(GameObject prefab) : base(prefab) {
 			}
 
 			public Builder SetIsOn(bool isOn) {
@@ -54,6 +57,8 @@ namespace Menutee {
         protected TogglePressedHandler _handler;
 
         public BaseToggleBuilder(string key, GameObject prefab) : base(key, prefab) { }
+
+        public BaseToggleBuilder(GameObject prefab) : base(prefab) { }
 
         public TBuilder SetDisplayText(string displayText) {
             _displayText = displayText;

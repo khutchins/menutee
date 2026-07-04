@@ -16,6 +16,7 @@
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
 * `MenuConfig.Builder.SetSelectedRestorationMode`. Renamed to `SetSelectionRestorationMode`, matching the `MenuConfig.SelectionRestorationMode` field. The old name forwards to it for now.
 * `PanelConfig.Builder.SetCustomNavigation(Action<List<Selectable>>)`. Use the `Action<PanelManager, List<Selectable>>` overload, which also exposes the PanelManager for reading non-generated selectables. The old overload forwards to it.
+* `MenuConfig.AddPanelChangeCallback(string,string)` is deprecated. Calls should be switched to the PanelManager version.
 
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.
@@ -30,6 +31,8 @@
 * Configurable menu animation system replacing the old subclassing approach. `IMenuVisibilityTransition` (menu show/hide) and `IPanelTransition` (panel push/pop) are assigned via the `MenuConfig`/`PanelConfig` builders, with per-panel transitions overriding a menu-level default.
 * Added menu transitions: `FadeMenuTransition`, `SlideMenuTransition`
 * Added panel transitions: `FadePanelTransition`, `SlidePanelTransition`, and `StaggeredSlidePanelTransition`.
+* Panel objects no longer require a key to be specified.
+* `MenuConfig.AddPanelChangeCallback(PanelManager,PanelManager)`.
 
 ## [5.2.1]
 

@@ -31,6 +31,10 @@ namespace Menutee {
 				_ref = reference;
 			}
 
+			public Builder(GameObject prefab, IntReference reference) : base(prefab) {
+				_ref = reference;
+			}
+
 			public override OptionSelectRefConfig Build() {
 				_defaultIndexGetter = () => _ref.Value;
 				return new OptionSelectRefConfig(BuildOSInitObject(), _ref);
@@ -65,6 +69,12 @@ namespace Menutee {
 			private BoolReference _ref;
 
 			public Builder(string key, GameObject prefab, string offText, string onText, BoolReference reference) : base(key, prefab) {
+				_onText = onText;
+				_offText = offText;
+				_ref = reference;
+			}
+
+			public Builder(GameObject prefab, string offText, string onText, BoolReference reference) : base(prefab) {
 				_onText = onText;
 				_offText = offText;
 				_ref = reference;
