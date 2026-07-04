@@ -182,7 +182,7 @@ namespace Menutee {
             /// OnInput: Restores a selection when an input that would select the next/previous input is entered.
             /// Never: Never automatically reselect an element.
             /// </summary>
-            public Builder SetSelectedRestorationMode(RestorationMode mode) {
+            public Builder SetSelectionRestorationMode(RestorationMode mode) {
                 _selectionRestorationMode = mode;
                 return this;
             }
