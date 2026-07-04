@@ -10,10 +10,12 @@
 * Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
 * Renamed `SetToggleManager` to `SetToggleHandler` on option select toggle components.
 * `ExitGame()` removed from `MenuManager`.
+* `PanelConfig`'s constructor is now private. Build panels through `PanelConfig.Builder`.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
 * `MenuConfig.Builder.SetSelectedRestorationMode`. Renamed to `SetSelectionRestorationMode`, matching the `MenuConfig.SelectionRestorationMode` field. The old name forwards to it for now.
+* `PanelConfig.Builder.SetCustomNavigation(Action<List<Selectable>>)`. Use the `Action<PanelManager, List<Selectable>>` overload, which also exposes the PanelManager for reading non-generated selectables. The old overload forwards to it.
 
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.

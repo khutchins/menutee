@@ -72,16 +72,16 @@ namespace Menutee {
             Never,
         }
 
-        MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig,
-                PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators = null,
-                List<System.Action<string, string>> panelChangeCallbacks = null,
-                MenuAttributes? menuAttributesOverride = null, SelectMode selectMode = SelectMode.Contextual,
-                RestorationMode restorationMode = RestorationMode.Always,
-                IMenuVisibilityTransition menuInTransition = null, IMenuVisibilityTransition menuOutTransition = null,
-                IPanelTransition defaultPanelTransition = null,
-                MenuPanelSequence menuOpenSequence = MenuPanelSequence.None,
-                MenuPanelSequence menuCloseSequence = MenuPanelSequence.None,
-                PaletteConfigReference defaultPaletteReference = null) {
+        private MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig,
+                PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators,
+                List<System.Action<string, string>> panelChangeCallbacks,
+                MenuAttributes? menuAttributesOverride, SelectMode selectMode,
+                RestorationMode restorationMode,
+                IMenuVisibilityTransition menuInTransition, IMenuVisibilityTransition menuOutTransition,
+                IPanelTransition defaultPanelTransition,
+                MenuPanelSequence menuOpenSequence,
+                MenuPanelSequence menuCloseSequence,
+                PaletteConfigReference defaultPaletteReference) {
             Toggleable = toggleable;
             StartsOpen = startsOpen;
             MenuPausesGame = menuPausesGame;

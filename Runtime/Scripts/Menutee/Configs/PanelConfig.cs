@@ -40,20 +40,20 @@ namespace Menutee {
 		[HideInInspector]
 		public readonly GameObject[] SupplementalObjects;
 
-		public PanelConfig(string key, 
-				string defaultSelectableKey, 
-				PanelObjectConfig[] panelObjects, 
-				GameObject[] supplementalObjects = null, 
-				NavigationType navigation = NavigationType.Vertical,
-				Action<List<Selectable>> navigationCallback = null, 
-				GameObject prefabOverride = null, 
-				Navigation.Mode mode = UnityEngine.UI.Navigation.Mode.Explicit,
-				Action<PanelManager, List<Selectable>> panelNavigationCallback = null,
-				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null,
-				Action<GameObject, PanelManager> creationCallback = null,
-				Action<GameObject, PanelManager> onDisplayCallback = null,
-				Action<GameObject, PanelManager> onDisposeCallback = null,
-				IPanelTransition transition = null) {
+		private PanelConfig(string key,
+				string defaultSelectableKey,
+				PanelObjectConfig[] panelObjects,
+				GameObject[] supplementalObjects,
+				NavigationType navigation,
+				Action<List<Selectable>> navigationCallback,
+				GameObject prefabOverride,
+				Navigation.Mode mode,
+				Action<PanelManager, List<Selectable>> panelNavigationCallback,
+				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback,
+				Action<GameObject, PanelManager> creationCallback,
+				Action<GameObject, PanelManager> onDisplayCallback,
+				Action<GameObject, PanelManager> onDisposeCallback,
+				IPanelTransition transition) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -212,10 +212,9 @@ namespace Menutee {
 			/// Allows the selectables to have their navigation specified by the provided callback.
 			/// The selectable list is the order in which the panel objects were added, ignoring unselectable elements.
 			/// </summary>
+			[System.Obsolete("Use SetCustomNavigation(Action<PanelManager, List<Selectable>>). That overload also exposes the PanelManager for reading non-generated selectables; this one just ignores it.", false)]
 			public Builder SetCustomNavigation(Action<List<Selectable>> navigationCallback) {
-				_navigation = NavigationType.Custom;
-				_navigationCallback = navigationCallback;
-				return this;
+				return SetCustomNavigation((PanelManager _, List<Selectable> selectables) => navigationCallback?.Invoke(selectables));
 			}
 
 			/// <summary>
