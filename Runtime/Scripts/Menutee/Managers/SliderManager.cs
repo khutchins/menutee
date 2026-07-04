@@ -31,10 +31,5 @@ namespace Menutee {
         void SliderValueUpdated(float newValue) {
             SliderUpdated?.Invoke(this, newValue);
         }
-
-        public override void SetColors(PaletteConfig config) {
-            base.SetColors(config);
-
-        }
     }
 }
