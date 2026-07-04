@@ -87,6 +87,7 @@ namespace Menutee {
 					panelElements.Add(elementManager);
 					elementManager.PanelObjectConfig = objConfig;
 					elementManager.SetColors(objConfig.PaletteConfig ? objConfig.PaletteConfig : menuConfig.PaletteConfig);
+					elementManager.BindPaletteReference();
 					if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
 						selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
 					}

@@ -12,6 +12,7 @@
 * `OptionSelectConfig` builders' `SetHidesArrowIfLastOption` is now applied to the generated `OptionSelect` instead of being ignored.
 
 ### Added
+* `PanelObjectConfig.Builder.SetPaletteReferenceOverride` binds an element to a `PaletteConfigReference`, so it re-themes live whenever the referenced palette changes (and applies the reference's current value on creation). Previously the `PaletteReference` field existed but was never settable through the builder or read during generation.
 * `OptionSelect`: a Selectable subclass that behaves like the combination of features I had worked before.
 * `GameObject > UI > Menutee > Option Select (Horizontal/Vertical)` create-menu entries that drop the shipped OptionSelect prefabs into the scene (creating a Canvas/EventSystem if needed).
 * Default arrow sprites (left/right/up/down) and OptionSelect prefabs shipped in the package.

@@ -10,6 +10,53 @@ namespace Menutee {
 		public GameObject SelectableObject;
 		public PanelObjectConfig PanelObjectConfig;
 
+		private PaletteConfigReference _paletteReference;
+
+		/// <summary>
+		/// Hooks this element up to the PaletteConfigReference on its
+		/// PanelObjectConfig, if one is set. While bound, the element re-applies its
+		/// colors whenever the referenced palette changes. The generator calls this
+		/// after assigning PanelObjectConfig, since the reference isn't known yet when
+		/// the element's OnEnable first runs during instantiation.
+		/// </summary>
+		public void BindPaletteReference() {
+			_paletteReference = PanelObjectConfig != null ? PanelObjectConfig.PaletteReference : null;
+			ResubscribeToPaletteReference();
+			// SetColors no-ops on null, so a null-valued reference leaves the palette
+			// applied at generation time untouched.
+			if (_paletteReference != null) {
+				SetColors(_paletteReference.Value);
+			}
+		}
+
+		protected virtual void OnEnable() {
+			ResubscribeToPaletteReference();
+			if (_paletteReference != null) {
+				SetColors(_paletteReference.Value);
+			}
+		}
+
+		protected virtual void OnDisable() {
+			UnsubscribeFromPaletteReference();
+		}
+
+		private void ResubscribeToPaletteReference() {
+			UnsubscribeFromPaletteReference();
+			if (_paletteReference != null) {
+				_paletteReference.ValueChanged += OnPaletteReferenceChanged;
+			}
+		}
+
+		private void UnsubscribeFromPaletteReference() {
+			if (_paletteReference != null) {
+				_paletteReference.ValueChanged -= OnPaletteReferenceChanged;
+			}
+		}
+
+		private void OnPaletteReferenceChanged(PaletteConfig palette) {
+			SetColors(palette);
+		}
+
 		public virtual void SetColors(PaletteConfig config) {
 			if (config != null) {
 				foreach (Selectable select in GetComponentsInChildren<Selectable>()) {

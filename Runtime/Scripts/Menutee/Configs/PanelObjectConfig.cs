@@ -53,6 +53,7 @@ namespace Menutee {
 			protected Action<GameObject, UIElementManager> _onDisplayCallback;
 			protected GameObject _prefab;
 			protected PaletteConfig _paletteConfig;
+			protected PaletteConfigReference _paletteReference;
 			protected readonly TBuilder _builderInstance;
 
 			public Builder(string key, GameObject prefab) {
@@ -63,6 +64,11 @@ namespace Menutee {
 
 			public TBuilder SetPaletteConfigOverride(PaletteConfig config) {
 				_paletteConfig = config;
+				return _builderInstance;
+			}
+
+			public TBuilder SetPaletteReferenceOverride(PaletteConfigReference reference) {
+				_paletteReference = reference;
 				return _builderInstance;
 			}
 
@@ -77,7 +83,7 @@ namespace Menutee {
             }
 
 			public InitObject BuildInitObject() {
-				return new InitObject(_key, _prefab, _creationCallback, _onDisplayCallback, _paletteConfig);
+				return new InitObject(_key, _prefab, _creationCallback, _onDisplayCallback, _paletteConfig, _paletteReference);
 			}
 
 			public abstract TObject Build();
