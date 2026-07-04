@@ -6,6 +6,7 @@
 * `OptionSelectManager` now operates on an `OperatorSelect` `Selectable` instead of the prior conglomeration. You can make a new one for your prefab with `Create/UI/Menutee/Option Select`.
 * `MenuManager`'s animation hooks are no longer overridable: `SetMenuIsUp`, `SetOnTop`, and `ActivatePanel(PanelManager, PanelManager, bool)` are now `private` (was `protected virtual`), and `DoToggle` was removed. Menus that animated by subclassing `MenuManager` should transition to the new transition system (see `MenuWithAnimationSample`).
 * Removed `OptionSelectRefConfig.Builder.SetToggleManager`. It was a copy-paste of the toggle handler onto the non-toggle int-ref option select. Use `SetOptionSelectedHandler`, or `OptionSelectToggleRefConfig` for an actual toggle.
+* Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
 
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.
