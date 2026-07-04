@@ -16,11 +16,11 @@ The menu generation component of this library is meant for getting a menu quickl
 * All menu elements are customizable (my example primarily looks ugly because I lack an eye for art).
 * Additional UI element types can be added without modifying the library code.
 * Supports using a scriptable object for setting the palette, so you can easily tweak all the colors in one location.
+* Supports menu and panel transitions using transition classes.
 
 ### Limitations
 
 * Does not easily support a combination of horizontal and vertical layouts. If you want to have two buttons next to each other in a vertical menu, it's probably possible if you set the navigation directions directly, but it may be easier to implement the menu directly at that point.
-* Doesn't have full animation support. Simple slides in and out and transitions between menus are possible, but it's not supported in a robust way.
 
 ## Installation
 

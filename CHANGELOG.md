@@ -4,11 +4,15 @@
 
 ### Breaking
 * `OptionSelectManager` now operates on an `OperatorSelect` `Selectable` instead of the prior conglomeration. You can make a new one for your prefab with `Create/UI/Menutee/Option Select`.
+* `MenuManager`'s animation hooks are no longer overridable: `SetMenuIsUp`, `SetOnTop`, and `ActivatePanel(PanelManager, PanelManager, bool)` are now `private` (was `protected virtual`), and `DoToggle` was removed. Menus that animated by subclassing `MenuManager` should transition to the new transition system (see `MenuWithAnimationSample`).
 
 ### Added
 * `OptionSelect`: a Selectable subclass that behaves like the combination of features I had worked before.
 * `GameObject > UI > Menutee > Option Select (Horizontal/Vertical)` create-menu entries that drop the shipped OptionSelect prefabs into the scene (creating a Canvas/EventSystem if needed).
 * Default arrow sprites (left/right/up/down) and OptionSelect prefabs shipped in the package.
+* Configurable menu animation system replacing the old subclassing approach. `IMenuVisibilityTransition` (menu show/hide) and `IPanelTransition` (panel push/pop) are assigned via the `MenuConfig`/`PanelConfig` builders, with per-panel transitions overriding a menu-level default.
+* Added menu transitions: `FadeMenuTransition`, `SlideMenuTransition`
+* Added panel transitions: `FadePanelTransition`, `SlidePanelTransition`, and `StaggeredSlidePanelTransition`.
 
 ## [5.2.1]
 

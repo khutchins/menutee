@@ -55,6 +55,10 @@ namespace Menutee {
 		private GameObject _cachedSelection;
         private GameObject _lastValidSelection;
         private CanvasGroup _canvasGroup;
+		private Coroutine _transitionRoutine;
+		private Action _pendingFinalize;
+		private bool _onTop;
+		private bool _menuVisible;
 		private string _rootPanelOverride;
 		private string _currentRootKey;
 		private readonly HashSet<string> _dynamicPanelKeys = new HashSet<string>();
@@ -161,19 +165,204 @@ namespace Menutee {
             }
         }
 
-		protected virtual void SetMenuIsUp(bool isUp, string newKey) {
-			Canvas.enabled = isUp;
-            ActivatePanel(newKey, true);
+		private void SetMenuIsUp(bool isUp, string newKey) {
+			IMenuVisibilityTransition transition = isUp ? ResolveMenuInTransition() : ResolveMenuOutTransition();
+
+			// Menu show/hide places panels instantly (only the menu itself animates,
+			// via the visibility transition). No transition, or hiding a menu that
+			// was never actually shown (the initial hide in Start), is fully instant.
+			if (transition == null || (!isUp && !_menuVisible)) {
+				Canvas.enabled = isUp;
+				// Snap to the shown baseline in case a prior animated out left the
+				// menu offscreen/transparent.
+				if (isUp) SnapToShownBaseline();
+				InstantActivatePanel(isUp ? newKey : null, true);
+				_menuVisible = isUp;
+				return;
+			}
+
+			if (isUp) {
+				Canvas.enabled = true;
+				// Normalize before the in-transition so mismatched in/out pairs (e.g.
+				// slide-out then fade-in) don't leave the menu offscreen or transparent.
+				SnapToShownBaseline();
+				_menuVisible = true;
+				PanelManager root = ResolveOrGeneratePanel(newKey);
+				IPanelTransition panelTransition = ResolvePanelTransition(root);
+				if (MenuConfig.MenuOpenSequence == MenuPanelSequence.Ordered && panelTransition != null && root != null) {
+					// Ordered: menu animates in first (empty), then the root panel
+					// plays its enter animation.
+					RunTransition(RaiseOrderedRoutine(transition, panelTransition, root), null);
+				} else {
+					// None: root panel is visible immediately.
+					InstantActivatePanel(newKey, true);
+					RunTransition(transition.AnimateMenu(this, true), null);
+				}
+			} else {
+				_menuVisible = false;
+				PanelManager active = _activeManager;
+				IPanelTransition panelTransition = ResolvePanelTransition(active);
+				Action finalize = () => {
+					Canvas.enabled = false;
+					InstantActivatePanel(null, true);
+				};
+				if (MenuConfig.MenuCloseSequence == MenuPanelSequence.Ordered && panelTransition != null && active != null) {
+					// Ordered: the active panel plays its exit first, then the menu
+					// container animates out.
+					RunTransition(LowerOrderedRoutine(transition, panelTransition, active), finalize);
+				} else {
+					// None: keep the panel visible while the menu animates out.
+					RunTransition(transition.AnimateMenu(this, false), finalize);
+				}
+			}
 		}
 
-		protected virtual void SetOnTop(bool isOnTop) {
-			_activeManager?.SetPanelActive(isOnTop);
-			Canvas.enabled = isOnTop;
+		/// <summary>
+		/// Ordered menu open: animate the menu in (nothing active yet), then enable
+		/// the root panel and play its enter animation. Kept as sequential yields in
+		/// one coroutine so a mid-transition interruption stops the whole thing
+		/// cleanly.
+		/// </summary>
+		private IEnumerator RaiseOrderedRoutine(IMenuVisibilityTransition menuTransition, IPanelTransition panelTransition, PanelManager root) {
+			yield return menuTransition.AnimateMenu(this, true);
+			EnablePanel(root, true);
+			yield return panelTransition.AnimatePanel(this, null, root, true);
+			DisableOtherPanels(root);
+		}
+
+		/// <summary>
+		/// Ordered menu close: play the active panel's exit, deactivate it so a
+		/// transition's alpha-restore can't pop it back into view, then animate the
+		/// menu container out.
+		/// </summary>
+		private IEnumerator LowerOrderedRoutine(IMenuVisibilityTransition menuTransition, IPanelTransition panelTransition, PanelManager active) {
+			yield return panelTransition.AnimatePanel(this, active, null, false);
+			active.SetPanelActive(false);
+			yield return menuTransition.AnimateMenu(this, false);
+		}
+
+		private void SetOnTop(bool isOnTop) {
+			_onTop = isOnTop;
+			// When a menu-visibility transition is present, SetMenuIsUp owns the
+			// canvas so the show/hide animation can play. Interactivity is still
+			// gated so a covered menu can't be clicked through.
+			if (!AnimatesMenuVisibility) {
+				if (_activeManager != null) {
+					_activeManager.SetPanelActive(isOnTop);
+				}
+				Canvas.enabled = isOnTop;
+			}
             if (_canvasGroup != null) {
                 _canvasGroup.interactable = isOnTop;
                 _canvasGroup.blocksRaycasts = isOnTop;
             }
         }
+
+		/// <summary>Whether either direction of menu show/hide is animated.</summary>
+		private bool AnimatesMenuVisibility {
+			get { return ResolveMenuInTransition() != null || ResolveMenuOutTransition() != null; }
+		}
+
+		/// <summary>
+		/// The menu-level open animation, or null (instant).
+		/// </summary>
+		protected IMenuVisibilityTransition ResolveMenuInTransition() {
+			return MenuConfig != null ? MenuConfig.MenuInTransition : null;
+		}
+
+		/// <summary>
+		/// The menu-level close animation, or null (instant).
+		/// </summary>
+		protected IMenuVisibilityTransition ResolveMenuOutTransition() {
+			return MenuConfig != null ? MenuConfig.MenuOutTransition : null;
+		}
+
+		/// <summary>
+		/// Snaps the menu to its shown baseline by running the out-transition at 0
+		/// duration in the shown (up) direction.
+		/// </summary>
+		private void SnapToShownBaseline() {
+			IMenuVisibilityTransition outTransition = ResolveMenuOutTransition();
+			if (outTransition != null) {
+				RunInstant(outTransition.AnimateMenu(this, true, true));
+			}
+		}
+
+		/// <summary>
+		/// Drives an instant (non-yielding) transition coroutine to completion
+		/// synchronously. Guarded against a misbehaving instant path that yields.
+		/// </summary>
+		private static void RunInstant(IEnumerator routine) {
+			if (routine == null) return;
+			int guard = 0;
+			while (routine.MoveNext()) {
+				if (++guard > 1000) {
+					Debug.LogWarning("Instant menu transition did not complete synchronously. Ensure its instant path does not yield.");
+					break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Resolves the panel-change animation for navigating to the given panel:
+		/// the panel's own <see cref="PanelConfig.Transition"/> if set, otherwise the
+		/// menu-level <see cref="MenuConfig.DefaultPanelTransition"/>, otherwise null
+		/// (instant).
+		/// </summary>
+		protected IPanelTransition ResolvePanelTransition(PanelManager panel) {
+			if (panel != null && panel.Config != null && panel.Config.Transition != null) {
+				return panel.Config.Transition;
+			}
+			return MenuConfig != null ? MenuConfig.DefaultPanelTransition : null;
+		}
+
+		/// <summary>
+		/// Applies a panel change immediately, bypassing any transition. Used for
+		/// placing the root panel during an animated menu raise and clearing it
+		/// after an animated menu lower.
+		/// </summary>
+		private void InstantActivatePanel(string key, bool fromPush) {
+			PanelManager panel = ResolveOrGeneratePanel(key);
+			EnablePanel(panel, fromPush);
+			DisableOtherPanels(panel);
+		}
+
+		/// <summary>
+		/// Runs a transition coroutine to completion, blocking interactivity for its
+		/// duration and invoking <paramref name="finalize"/> afterward. Only one
+		/// transition runs at a time; starting a new one stops any in-flight
+		/// transition and immediately applies its pending finalize so logical state
+		/// stays consistent.
+		/// </summary>
+		private void RunTransition(IEnumerator routine, Action finalize) {
+			if (_transitionRoutine != null) {
+				StopCoroutine(_transitionRoutine);
+				_transitionRoutine = null;
+				Action previous = _pendingFinalize;
+				_pendingFinalize = null;
+				previous?.Invoke();
+			}
+			_pendingFinalize = finalize;
+			SetTransitionInteractable(false);
+			_transitionRoutine = StartCoroutine(RunAndFinalize(routine));
+		}
+
+		private IEnumerator RunAndFinalize(IEnumerator routine) {
+			if (routine != null) {
+				yield return routine;
+			}
+			_transitionRoutine = null;
+			Action finalize = _pendingFinalize;
+			_pendingFinalize = null;
+			finalize?.Invoke();
+			SetTransitionInteractable(_onTop);
+		}
+
+		private void SetTransitionInteractable(bool interactable) {
+			if (_canvasGroup == null) return;
+			_canvasGroup.interactable = interactable;
+			_canvasGroup.blocksRaycasts = interactable;
+		}
 
 		void ToggleMenu() {
 			if (!MenuConfig.Toggleable || _disabled) {
@@ -182,13 +371,18 @@ namespace Menutee {
 			MenuStack.Shared.ToggleMenu(this);
 		}
 
-		protected virtual void DoToggle() {
-			MenuStack.Shared.ToggleMenu(this);
-		}
-
-		protected virtual void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush) {
+		private void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush) {
+			IPanelTransition transition = ResolvePanelTransition(newPanel);
+			if (transition == null) {
+				EnablePanel(newPanel, fromPush);
+				DisableOtherPanels(newPanel);
+				return;
+			}
+			// Enable the incoming panel now (both panels are visible during the
+			// animation). Disable the outgoing panel only once it completes.
 			EnablePanel(newPanel, fromPush);
-			DisableOtherPanels(newPanel);
+			RunTransition(transition.AnimatePanel(this, oldPanel, newPanel, fromPush),
+				() => DisableOtherPanels(newPanel));
 		}
 
 		private bool ShouldHaveDefaultSelection {

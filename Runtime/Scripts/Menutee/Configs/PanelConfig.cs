@@ -29,6 +29,13 @@ namespace Menutee {
 		public readonly Action<GameObject, PanelManager> OnDisposeCallback;
 		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
+		/// <summary>
+		/// Optional per-panel animation used when navigating to this panel. When
+		/// set, overrides the menu-level <see cref="MenuConfig.DefaultPanelTransition"/>.
+		/// See <see cref="IPanelTransition"/>.
+		/// </summary>
+		public readonly IPanelTransition Transition;
+
 		public readonly PanelObjectConfig[] PanelObjects;
 		[HideInInspector]
 		public readonly GameObject[] SupplementalObjects;
@@ -45,7 +52,8 @@ namespace Menutee {
 				Func<PanelManager, List<Selectable>, GameObject> defaultSelectableCallback = null,
 				Action<GameObject, PanelManager> creationCallback = null,
 				Action<GameObject, PanelManager> onDisplayCallback = null,
-				Action<GameObject, PanelManager> onDisposeCallback = null) {
+				Action<GameObject, PanelManager> onDisposeCallback = null,
+				IPanelTransition transition = null) {
 			Key = key;
 			DefaultSelectableKey = defaultSelectableKey;
 			PanelObjects = panelObjects;
@@ -58,6 +66,7 @@ namespace Menutee {
 			CreationCallback = creationCallback;
 			OnDisplayCallback = onDisplayCallback;
 			OnDisposeCallback = onDisposeCallback;
+			Transition = transition;
 
 			PrefabOverride = prefabOverride;
 		}
@@ -76,6 +85,7 @@ namespace Menutee {
 			private Action<GameObject, PanelManager> _creationCallback;
 			private Action<GameObject, PanelManager> _onDisplayCallback;
 			private Action<GameObject, PanelManager> _onDisposeCallback;
+			private IPanelTransition _transition;
 
 			public Builder(string key) {
 				_key = key;
@@ -160,6 +170,16 @@ namespace Menutee {
 			}
 
 			/// <summary>
+			/// Sets a per-panel animation used when navigating to this panel. Overrides
+			/// the menu-level default set via MenuConfig.Builder.SetDefaultPanelTransition.
+			/// If neither is set, the panel change is instant.
+			/// </summary>
+			public Builder SetTransition(IPanelTransition transition) {
+				_transition = transition;
+				return this;
+			}
+
+			/// <summary>
 			/// Calls to get the default selectable object at creation time. Allows
 			/// non-programmatically generated selectables to be the default. If unset,
 			/// will use the one specified when adding or inserting a panel object, or the
@@ -227,7 +247,7 @@ namespace Menutee {
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(),
 					_navigation, _navigationCallback, _prefabOverride, _navigationMode,
 					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback,
-					_onDisplayCallback, _onDisposeCallback);
+					_onDisplayCallback, _onDisposeCallback, _transition);
 			}
 		}
 	}
