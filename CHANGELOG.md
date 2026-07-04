@@ -9,11 +9,11 @@
 * Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
 * Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
 * Renamed `SetToggleManager` to `SetToggleHandler` on option select toggle components.
-* Renamed `MenuConfig.Builder.SetSelectedRestorationMode` to `SetSelectionRestorationMode`, matching the `MenuConfig.SelectionRestorationMode` field.
 * `ExitGame()` removed from `MenuManager`.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
+* `MenuConfig.Builder.SetSelectedRestorationMode`. Renamed to `SetSelectionRestorationMode`, matching the `MenuConfig.SelectionRestorationMode` field. The old name forwards to it for now.
 
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.

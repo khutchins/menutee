@@ -187,6 +187,11 @@ namespace Menutee {
                 return this;
             }
 
+            [System.Obsolete("Use SetSelectionRestorationMode instead.", false)]
+            public Builder SetSelectedRestorationMode(RestorationMode mode) {
+                return SetSelectionRestorationMode(mode);
+            }
+
             public Builder AddPanelConfig(PanelConfig config, bool mainPanel = false) {
                 _panelConfigs.Add(config);
                 if (mainPanel) {
