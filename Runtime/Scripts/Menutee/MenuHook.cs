@@ -12,32 +12,48 @@ namespace Menutee {
 			SetDefault
 		}
 
+		public enum CanvasGroupMode {
+			// Grabs an existing CanvasGroup on this object, or adds one at runtime
+			// if there isn't one. Best for menus that don't have a CanvasGroup wired
+			// up ahead of time, including ones generated dynamically at runtime.
+			Auto,
+			// Drives the CanvasGroup assigned to the CanvasGroup field.
+			Reference,
+			// Doesn't manage interactability through a CanvasGroup.
+			None
+		}
+
 		[Header("General")]
 		[Tooltip("The canvas element. If this is set, this script will automatically hide/show the canvas when appropriate.")]
 		public Canvas Canvas;
+		[Tooltip("How the menu controls interactability (blocking and receiving input) when it isn't the top menu. Auto grabs or adds a CanvasGroup on this object at runtime, Reference uses the one you assign, and None disables the behavior. The CanvasGroup should be on the root of the menu so it covers everything.")]
+		public CanvasGroupMode InteractabilityMode = CanvasGroupMode.Auto;
+		[Tooltip("CanvasGroup used to toggle interactability. Only used when Interactability Mode is set to Reference.")]
+		public CanvasGroup CanvasGroup;
 		[Tooltip("Whether or not this canvas should be shown by default.")]
 		public bool ShowOnStart = false;
 		[Tooltip("If this is true, it will hide the canvas except when it is not on top.")]
 		public bool HideIfNotOnTop = false;
 
 		[Header("Menu Attributes")]
-		public CursorLockMode CursorLockMode = CursorLockMode.None;
-		public bool CursorVisible = true;
-		public bool PausesGame = true;
-		[Tooltip("Time scale to use when in menu. If negative, it will use the existing time scale.")]
-		public float TimeScale = 0;
+		public MenuAttributes Attributes = new MenuAttributes {
+			cursorLockMode = CursorLockMode.None,
+			cursorVisible = true,
+			pauseGame = true,
+			timeScale = 0
+		};
 
 		[Header("Selected Behavior")]
-		[Tooltip("GameObject to default to when using the \"SetDefault\" behavior.")]
-		public GameObject DefaultSelectedGameObject;
-		[Tooltip("GameObject to use when the menu is pushed.")]
+		[Tooltip("Whether the default selected game object should be selected when the menu is pushed.")]
 		public bool UseDefaultOnPush;
-		[Tooltip("Whether or not the selected game object should be cleared when this menu is not on top or disappears.")]
-		public bool ClearSelectedOnNotOnTop = false;
 		[Tooltip("Behavior to use when the menu is popped back to.")]
 		public SelectedBehavior BehaviorOnPop = SelectedBehavior.Restore;
+		[Tooltip("Whether or not the selected game object should be cleared when this menu is not on top or disappears.")]
+		public bool ClearSelectedOnNotOnTop = false;
 		[Tooltip("Whether or not the default selected game object should be restored if no objects are selected, a direction is pressed, and this menu is on top.")]
 		public bool RestoreDefaultOnInputIfNoneSelected = false;
+		[Tooltip("GameObject to default to when using the \"SetDefault\" behavior.")]
+		public GameObject DefaultSelectedGameObject;
 		[Tooltip("Input mediator to use to detect input if restore default on input is enabled.")]
 		public MenuInputMediator InputMediator;
 
@@ -59,9 +75,33 @@ namespace Menutee {
 		private bool _isOnTop = false;
 		private float _lastTimeOnTop;
 		private float _lastTimeOpen;
+		private CanvasGroup _canvasGroup;
 
 		void Awake() {
 			if (Canvas != null) Canvas.enabled = false;
+			_canvasGroup = ResolveCanvasGroup();
+			// Start non-interactable; a push will make it interactable via SetMenuOnTop.
+			SetInteractable(false);
+		}
+
+		private CanvasGroup ResolveCanvasGroup() {
+			switch (InteractabilityMode) {
+				case CanvasGroupMode.Auto:
+					CanvasGroup group = GetComponent<CanvasGroup>();
+					if (group == null) group = gameObject.AddComponent<CanvasGroup>();
+					return group;
+				case CanvasGroupMode.Reference:
+					return CanvasGroup;
+				case CanvasGroupMode.None:
+				default:
+					return null;
+			}
+		}
+
+		private void SetInteractable(bool interactable) {
+			if (_canvasGroup == null) return;
+			_canvasGroup.interactable = interactable;
+			_canvasGroup.blocksRaycasts = interactable;
 		}
 
 		void Start() {
@@ -74,13 +114,7 @@ namespace Menutee {
 		}
 
 		public MenuAttributes GetMenuAttributes() {
-			MenuAttributes attributes = new MenuAttributes {
-				cursorLockMode = CursorLockMode,
-				cursorVisible = CursorVisible,
-				pauseGame = PausesGame,
-				timeScale = TimeScale
-			};
-			return attributes;
+			return Attributes;
 		}
 
 		/// <summary>
@@ -116,6 +150,7 @@ namespace Menutee {
 
 		public void SetMenuOnTop(bool newOnTop) {
 			if (HideIfNotOnTop) Canvas.enabled = newOnTop;
+			SetInteractable(newOnTop);
 			if (newOnTop) {
 				_lastTimeOnTop = Time.unscaledTime;
 				OnMenuTop?.Invoke();

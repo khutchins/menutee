@@ -12,6 +12,8 @@
 * `ExitGame()` removed from `MenuManager`.
 * `PanelConfig`'s constructor is now private. Build panels through `PanelConfig.Builder`.
 * `MenuGenerator` is now lean: the prefabs slots and the `PaletteConfig` field moved off it (it was making assumptions about the shape you'd want to use), and the public `PanelDictionary`/`PanelObjectDictionary` were removed, as they were vestigial. If your generator subclass referenced those prefab slots, change its base class from `MenuGenerator` to `StarterMenuGenerator` to fix the compile errors. Expectation moving forward is to declare the ones you want.
+* `MenuHook` now manages interactability through a CanvasGroup, defaulting to `InteractabilityMode.Auto`, which grabs or adds a CanvasGroup on the hook's object at runtime and makes the menu non-interactable whenever it isn't the top menu. Previously menus underneath the stack still received input. Set `Interactability Mode` to `None` to restore the old behavior.
+* `MenuHook`'s `CursorLockMode`, `CursorVisible`, `PausesGame`, and `TimeScale` fields were consolidated into a single serialized `MenuAttributes Attributes` field. Existing MenuHooks will reset these values to defaults, so re-check the Menu Attributes on any MenuHook you've customized. Code that read those fields directly should switch to `hook.Attributes.cursorLockMode` (etc.).
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
@@ -41,6 +43,9 @@
   * `PanelManager.RegisterFocusSource` / `RegisterFocusSources` / `UnregisterFocusSource` opt external selectables (e.g. ones baked into a panel prefab) into the system.
 * Navigation-state queries on `MenuManager`: `IsAtRoot()` (whether the active panel can be popped) and `GetPanelPath()` (root-to-active panel keys, for breadcrumbs). `PanelManager.Selectables` now exposes the panel's generated selectables, so an `OnDisplayCallback` can rebuild navigation (e.g. to conditionally shot back button if not at root). The `MenuWithCustomBack` sample uses these to share one back-button prefab across all panels.
 * `MirrorSelectable.SelfManagedPalette`: when enabled, the component keeps its own serialized `Palette` and ignores palettes applied during generation. Lets part of a composite element (e.g. a shared background) stay on a fixed palette while the rest receives the element's palette.
+* `MenuHook.InteractabilityMode` (`Auto`/`Reference`/`None`) controls whether the menu uses a CanvasGroup's `interactable`/`blocksRaycasts` to disable input when it isn't on top. `Auto` grabs or adds a CanvasGroup at runtime, `Reference` uses one you assign, and `None` opts out.
+* Custom inspector for `MenuHook` that hides fields that don't currently apply (e.g. `Input Mediator` only shows when restore-on-input is enabled, `CanvasGroup` only in `Reference` mode).
+* `MenuAttributes` now has a property drawer that presents the time scale as an "Override Time Scale" toggle instead of the negative-value sentinel, and it's `[System.Serializable]` so it can be edited directly in the inspector.
 
 ## [5.2.1]
 

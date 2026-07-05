@@ -135,7 +135,6 @@ GameObject:
   - component: {fileID: 29556210}
   - component: {fileID: 29556209}
   - component: {fileID: 29556208}
-  - component: {fileID: 29556213}
   m_Layer: 5
   m_Name: HookedCanvas
   m_TagString: Untagged
@@ -158,6 +157,8 @@ MonoBehaviour:
   Canvas: {fileID: 29556211}
   ShowOnStart: 0
   HideIfNotOnTop: 1
+  InteractabilityMode: 0
+  CanvasGroup: {fileID: 0}
   CursorLockMode: 2
   CursorVisible: 1
   PausesGame: 0
@@ -178,34 +179,10 @@ MonoBehaviour:
       m_Calls: []
   OnMenuTop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29556213}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   OnMenuNotTop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29556213}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &29556209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,18 +268,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!225 &29556213
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 29556207}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &280385182
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +548,6 @@ GameObject:
   - component: {fileID: 497326944}
   - component: {fileID: 497326943}
   - component: {fileID: 497326942}
-  - component: {fileID: 497326947}
   m_Layer: 5
   m_Name: HookedCanvas2
   m_TagString: Untagged
@@ -606,6 +570,8 @@ MonoBehaviour:
   Canvas: {fileID: 497326945}
   ShowOnStart: 0
   HideIfNotOnTop: 1
+  InteractabilityMode: 0
+  CanvasGroup: {fileID: 0}
   CursorLockMode: 2
   CursorVisible: 1
   PausesGame: 0
@@ -626,34 +592,10 @@ MonoBehaviour:
       m_Calls: []
   OnMenuTop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 497326947}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   OnMenuNotTop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 497326947}
-        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
-        m_MethodName: set_interactable
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &497326943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -738,18 +680,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!225 &497326947
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 497326941}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &631610242
 GameObject:
   m_ObjectHideFlags: 0

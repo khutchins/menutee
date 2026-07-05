@@ -70,7 +70,7 @@ This is another version of a main menu, but this example actually leverages some
 
 Often you'll want to use the unity event callbacks on the object itself to call into the canvas you're hooking into's internals. You can display this menu by calling `MenuStack.Shared.PushAndShowMenu()` with the MenuHook (or anything that implements IMenu) as an argument.
 
-If you hook up the Canvas property, it will automatically show and hide the canvas for you (note that this won't disable interaction, so you might run into problems. I'm trying to find a good way to solve this, maybe canvas groups, I need to research that more). Similarly, you can configure it to automatically set the default selected game object when it's pushed to or popped back to.
+If you hook up the Canvas property, it will automatically show and hide the canvas for you. Interaction is handled separately through a CanvasGroup, controlled by the `Interactability Mode` setting: `Auto` grabs or adds a CanvasGroup on the MenuHook's object at runtime, `Reference` drives a CanvasGroup you assign, and `None` opts out. When set, the menu becomes non-interactable whenever it isn't the top menu, so menus underneath the stack no longer receive input. Similarly, you can configure it to automatically set the default selected game object when it's pushed to or popped back to.
 
 ##### MenuWithCustomBackSample
 

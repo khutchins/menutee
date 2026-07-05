@@ -11,7 +11,9 @@ namespace Menutee {
         /// <summary>
         /// Sets the time scale while in the menu. If the value is negative, will not modify the existing time scale.
         /// </summary>
+        [Tooltip("The time scale applied while this menu is on top.")]
         public float timeScale;
+        [Tooltip("Whether the game is treated as paused while the menu is up. This only fires MenuStack's OnPause/OnUnpause events. Nothing else.")]
         public bool pauseGame;
 
         /// <summary>
