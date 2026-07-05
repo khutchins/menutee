@@ -47,6 +47,52 @@ namespace Menutee {
         }
 
         /// <summary>
+        /// Opts a selectable that wasn't created through a PanelObjectConfig into 
+        /// the menu's focus system, so it participates in the focus callbacks.
+        /// Only needed for external selectables, typically from the panel's
+        /// SetCreationCallback where the instance is available.
+        /// 
+        /// Safe to call on an already-registered selectable (updates the key).
+        /// </summary>
+        public void RegisterFocusSource(Selectable selectable, string key = null) {
+            if (selectable == null) {
+                return;
+            }
+            GameObject go = selectable.gameObject;
+            FocusRelay relay = go.GetComponent<FocusRelay>();
+            if (relay == null) {
+                relay = go.AddComponent<FocusRelay>();
+            }
+            // Preserve any element already associated while applying the supplied key.
+            relay.Configure(this, relay.Element, key);
+        }
+
+        /// <summary>
+        /// Registers several focus sources at once. See RegisterFocusSource.
+        /// </summary>
+        public void RegisterFocusSources(params Selectable[] selectables) {
+            if (selectables == null) {
+                return;
+            }
+            foreach (Selectable selectable in selectables) {
+                RegisterFocusSource(selectable);
+            }
+        }
+
+        /// <summary>
+        /// Removes a selectable previously added with RegisterFocusSource from the
+        /// focus system. The relay clears its focus state as it is destroyed.
+        /// </summary>
+        public void UnregisterFocusSource(Selectable selectable) {
+            if (selectable == null) {
+                return;
+            }
+            if (selectable.TryGetComponent<FocusRelay>(out var relay)) {
+                Destroy(relay);
+            }
+        }
+
+        /// <summary>
         /// Pops the currently panel from the menu.
         /// </summary>
         public void Pop() {

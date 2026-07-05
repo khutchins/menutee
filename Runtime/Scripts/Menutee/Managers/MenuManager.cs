@@ -65,6 +65,12 @@ namespace Menutee {
 		private readonly Dictionary<string, List<PanelGenerator>> _scopedGenerators
 			= new Dictionary<string, List<PanelGenerator>>();
 
+		// Recency-ordered set of elements that are currently a focus candidate
+		// (selected or highlighted). The end of the list is the most recent, and
+		// considered the "focused" element. See HandleFocusChange.
+		private readonly List<FocusRelay> _focusStack = new List<FocusRelay>();
+		private FocusRelay _currentTop;
+
         private void Awake() {
 			if (Canvas == null) {
 				Canvas = GetComponent<Canvas>();
@@ -125,6 +131,8 @@ namespace Menutee {
 			if (!newUp) {
 				_cachedSelection = null;
 				_panelStack.Clear();
+				// Drop any lingering focus so that any shared information clears.
+				ClearFocus();
 				if (_dynamicPanelKeys.Count > 0) {
 					dynamicToDispose = new List<string>(_dynamicPanelKeys);
 				}
@@ -712,6 +720,103 @@ namespace Menutee {
 		public void ExitMenu() {
 			if (!_active) return;
 			ToggleMenu();
+		}
+
+		/// <summary>
+		/// Reports a single element's interaction-state transition, fired by the
+		/// element's <see cref="FocusRelay"/>. Fires the element's raw state
+		/// callback, updates the menu-wide recency stack, and re-resolves which
+		/// element is focused. Not intended to be called directly.
+		/// </summary>
+		public void HandleFocusChange(FocusRelay relay, InteractionState prev, InteractionState next) {
+			if (relay == null) return;
+
+			// Raw object tier: only generated elements carry a config to notify.
+			if (relay.Element != null && relay.Element.PanelObjectConfig != null) {
+				List<Action<InteractionStateChange>> callbacks = relay.Element.PanelObjectConfig.InteractionStateCallbacks;
+				if (callbacks.Count > 0) {
+					InteractionStateChange change = new InteractionStateChange(relay.Element, prev, next);
+					foreach (Action<InteractionStateChange> callback in callbacks) {
+						callback?.Invoke(change);
+					}
+				}
+			}
+
+			UpdateFocusStack(relay, prev, next);
+			ResolveFocus();
+		}
+
+		private void UpdateFocusStack(FocusRelay relay, InteractionState prev, InteractionState next) {
+			if (next == InteractionState.None) {
+				_focusStack.Remove(relay);
+				return;
+			}
+			// Any newly-enabled flag counts as a fresh interaction and moves the
+			// element to the top.
+			bool gainedBit = (next & ~prev) != 0;
+			if (gainedBit) {
+				_focusStack.Remove(relay);
+				_focusStack.Add(relay);
+			} else if (!_focusStack.Contains(relay)) {
+				_focusStack.Add(relay);
+			}
+		}
+
+		private void ResolveFocus() {
+			FocusRelay newTop = _focusStack.Count > 0 ? _focusStack[_focusStack.Count - 1] : null;
+			if (newTop == _currentTop) return;
+
+			FocusRelay oldTop = _currentTop;
+			_currentTop = newTop;
+
+			FocusRef oldRef = oldTop != null ? oldTop.ToFocusRef() : default;
+			FocusRef newRef = newTop != null ? newTop.ToFocusRef() : default;
+
+			NotifyObjectFocus(oldTop, false);
+			NotifyObjectFocus(newTop, true);
+
+			PanelManager oldPanel = oldTop != null ? oldTop.Panel : null;
+			PanelManager newPanel = newTop != null ? newTop.Panel : null;
+			NotifyPanelFocus(oldPanel, oldRef, newRef, oldPanel, newPanel);
+			if (newPanel != oldPanel) {
+				NotifyPanelFocus(newPanel, oldRef, newRef, oldPanel, newPanel);
+			}
+
+			if (MenuConfig.FocusedElementChangedCallbacks.Count > 0) {
+				FocusChange change = new FocusChange(oldRef, newRef);
+				foreach (Action<FocusChange> callback in MenuConfig.FocusedElementChangedCallbacks) {
+					callback?.Invoke(change);
+				}
+			}
+		}
+
+		private void NotifyObjectFocus(FocusRelay relay, bool focused) {
+			if (relay == null || relay.Element == null || relay.Element.PanelObjectConfig == null) return;
+			List<Action<ElementFocusChange>> callbacks = relay.Element.PanelObjectConfig.FocusChangedCallbacks;
+			if (callbacks.Count == 0) return;
+			ElementFocusChange change = new ElementFocusChange(relay.Element, focused);
+			foreach (Action<ElementFocusChange> callback in callbacks) {
+				callback?.Invoke(change);
+			}
+		}
+
+		private void NotifyPanelFocus(PanelManager panel, FocusRef oldRef, FocusRef newRef,
+				PanelManager oldPanel, PanelManager newPanel) {
+			if (panel == null || panel.Config == null) return;
+			List<Action<FocusChange>> callbacks = panel.Config.FocusedElementChangedCallbacks;
+			if (callbacks.Count == 0) return;
+			FocusRef prevForPanel = oldPanel == panel ? oldRef : default;
+			FocusRef curForPanel = newPanel == panel ? newRef : default;
+			FocusChange change = new FocusChange(prevForPanel, curForPanel);
+			foreach (Action<FocusChange> callback in callbacks) {
+				callback?.Invoke(change);
+			}
+		}
+
+		/// <summary>Drops all tracked focus.</summary>
+		private void ClearFocus() {
+			_focusStack.Clear();
+			ResolveFocus();
 		}
 	}
 }

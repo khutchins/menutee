@@ -87,8 +87,13 @@ namespace Menutee {
 					panelElements.Add(elementManager);
 					elementManager.PanelObjectConfig = objConfig;
 					ResolveAndApplyPalette(elementManager, objConfig, menuConfig);
-					if (elementManager.SelectableObject != null && elementManager.SelectableObject.GetComponent<Selectable>() != null) {
-						selectableObjects.Add(elementManager.SelectableObject.GetComponent<Selectable>());
+					if (elementManager.SelectableObject != null && elementManager.TryGetComponent<Selectable>(out var selectable)) {
+						selectableObjects.Add(selectable);
+						// Listen in on selectable events.
+						if (!elementManager.SelectableObject.TryGetComponent<FocusRelay>(out var relay)) {
+							relay = elementManager.SelectableObject.AddComponent<FocusRelay>();
+						}
+						relay.Configure(manager, elementManager, objConfig.Key);
 					}
 				}
 				objConfig.CreationCallback?.Invoke(go);

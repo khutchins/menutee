@@ -33,6 +33,11 @@
 * Added panel transitions: `FadePanelTransition`, `SlidePanelTransition`, and `StaggeredSlidePanelTransition`.
 * Panel objects no longer require a key to be specified.
 * `MenuConfig.AddPanelChangeCallback(PanelManager,PanelManager)`.
+* Focus tracking. The menu now resolves which single element is "focused" - the most recently selected or highlighted candidate, available at the menu, panel, and element level. Generated elements participate automatically.
+  * Per-object: `PanelObjectConfig.Builder.AddFocusChangedCallback(Action<ElementFocusChange>)` fires as an element gains/loses focus; `AddInteractionStateCallback(Action<InteractionStateChange>)` reports its raw local transitions.
+  * Per-panel: `PanelConfig.Builder.AddFocusedElementChangedCallback(Action<FocusChange>)`.
+  * Menu-wide: `MenuConfig.Builder.AddFocusedElementChangedCallback(Action<FocusChange>)`.
+  * `PanelManager.RegisterFocusSource` / `RegisterFocusSources` / `UnregisterFocusSource` opt external selectables (e.g. ones baked into a panel prefab) into the system.
 
 ## [5.2.1]
 

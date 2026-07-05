@@ -23,16 +23,35 @@ public class SampleMenuWithCustomBack : MenuGenerator {
 		MenuConfig.Builder builder = new MenuConfig.Builder(false, false).SetDefaultPaletteConfig(PaletteConfig);
 
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
+			.AddFocusedElementChangedCallback(change => {
+				Debug.LogFormat("Main panel focus: {0} -> {1}",
+					change.Previous.HasFocus ? change.Previous.Key : "(none)",
+					change.Current.HasFocus ? change.Current.Key : "(none)");
+			})
 			.AddPanelObject(
 				new ButtonConfig.Builder("show other", ButtonPrefab)
 					.SetDisplayText("Show Other Menu")
+					.AddFocusChangedCallback(change => {
+						Debug.LogFormat("'Show Other Menu' focused: {0}", change.IsFocused);
+					})
 					.SetButtonPressedHandler(delegate (ButtonManager manager) {
 						_manager.PushPanel("Other");
-					}).Build()), 
+					}).Build()),
 			true);
 
 		builder.AddPanelConfig(new PanelConfig.Builder("Other")
 			.SetPrefabOverride(CustomBackPanel)
+			// Opt the prefab-baked back button into the focus system. Creation
+			// callback runs after instantiation, so pm.BackSelectable exists.
+			.SetCreationCallback((panelObj, manager) => {
+				SamplePanelManager pm = manager as SamplePanelManager;
+				manager.RegisterFocusSource(pm.BackSelectable, KEY_BACK);
+			})
+			.AddFocusedElementChangedCallback(change => {
+				Debug.LogFormat("Other panel focus: {0} -> {1}",
+					change.Previous.HasFocus ? change.Previous.Key : "(none)",
+					change.Current.HasFocus ? change.Current.Key : "(none)");
+			})
 			.SetCustomNavigation((PanelManager manager, List<Selectable> selectables) => {
 				SamplePanelManager pm = manager as SamplePanelManager;
 				selectables.Add(pm.BackSelectable);

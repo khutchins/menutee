@@ -27,6 +27,12 @@ namespace Menutee {
 		public readonly Action<GameObject, PanelManager> CreationCallback;
 		public readonly Action<GameObject, PanelManager> OnDisplayCallback;
 		public readonly Action<GameObject, PanelManager> OnDisposeCallback;
+		/// <summary>
+		/// Callbacks invoked when the focused element within this panel changes.
+		/// The first argument is the previously focused element, the second is the
+		/// newly focused one.
+		/// </summary>
+		public readonly List<Action<FocusChange>> FocusedElementChangedCallbacks;
 		public readonly Func<PanelManager, List<Selectable>, GameObject> DefaultSelectableCallback;
 
 		/// <summary>
@@ -53,6 +59,7 @@ namespace Menutee {
 				Action<GameObject, PanelManager> creationCallback,
 				Action<GameObject, PanelManager> onDisplayCallback,
 				Action<GameObject, PanelManager> onDisposeCallback,
+				List<Action<FocusChange>> focusedElementChangedCallbacks,
 				IPanelTransition transition) {
 			Key = key;
 			DefaultSelectable = defaultSelectable;
@@ -66,6 +73,7 @@ namespace Menutee {
 			CreationCallback = creationCallback;
 			OnDisplayCallback = onDisplayCallback;
 			OnDisposeCallback = onDisposeCallback;
+			FocusedElementChangedCallbacks = focusedElementChangedCallbacks ?? new List<Action<FocusChange>>();
 			Transition = transition;
 
 			PrefabOverride = prefabOverride;
@@ -85,6 +93,7 @@ namespace Menutee {
 			private Action<GameObject, PanelManager> _creationCallback;
 			private Action<GameObject, PanelManager> _onDisplayCallback;
 			private Action<GameObject, PanelManager> _onDisposeCallback;
+			private List<Action<FocusChange>> _focusedElementChangedCallbacks = new List<Action<FocusChange>>();
 			private IPanelTransition _transition;
 
 			public Builder(string key) {
@@ -170,6 +179,17 @@ namespace Menutee {
 			}
 
 			/// <summary>
+			/// Adds a callback invoked when the focused element within this panel
+			/// changes. The first argument is the previously focused element, the
+			/// second is the newly focused one. If the new object has HasFocus false
+			/// no element is focused.
+			/// </summary>
+			public Builder AddFocusedElementChangedCallback(Action<FocusChange> onFocusedElementChanged) {
+				_focusedElementChangedCallbacks.Add(onFocusedElementChanged);
+				return this;
+			}
+
+			/// <summary>
 			/// Sets a per-panel animation used when navigating to this panel. Overrides
 			/// the menu-level default set via MenuConfig.Builder.SetDefaultPanelTransition.
 			/// If neither is set, the panel change is instant.
@@ -246,7 +266,7 @@ namespace Menutee {
 					_panelObjectConfigs.ToArray(), _supplementalObjects.ToArray(),
 					_navigation, _navigationCallback, _prefabOverride, _navigationMode,
 					_panelNavigationCallback, _defaultSelectableCallback, _creationCallback,
-					_onDisplayCallback, _onDisposeCallback, _transition);
+					_onDisplayCallback, _onDisposeCallback, _focusedElementChangedCallbacks, _transition);
 			}
 		}
 	}

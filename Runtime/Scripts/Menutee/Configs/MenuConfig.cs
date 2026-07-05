@@ -25,6 +25,12 @@ namespace Menutee {
         public readonly PanelGenerator[] PanelGenerators;
         public readonly List<System.Action<PanelManager, PanelManager>> PanelChangeCallbacks;
         /// <summary>
+        /// Callbacks invoked whenever the menu's focused element changes (including
+        /// to and from nothing focused). The first argument is the previously
+        /// focused element, the second the newly focused one.
+        /// </summary>
+        public readonly List<System.Action<FocusChange>> FocusedElementChangedCallbacks;
+        /// <summary>
         /// Animation for the menu showing (opening). Null means an instant open.
         /// See <see cref="IMenuVisibilityTransition"/>.
         /// </summary>
@@ -75,6 +81,7 @@ namespace Menutee {
         private MenuConfig(bool toggleable, bool startsOpen, bool menuPausesGame, string mainPanelKey, PaletteConfig paletteConfig,
                 PanelConfig[] panelConfigs, PanelGenerator[] panelGenerators,
                 List<System.Action<PanelManager, PanelManager>> panelChangeCallbacks,
+                List<System.Action<FocusChange>> focusedElementChangedCallbacks,
                 MenuAttributes? menuAttributesOverride, SelectMode selectMode,
                 RestorationMode restorationMode,
                 IMenuVisibilityTransition menuInTransition, IMenuVisibilityTransition menuOutTransition,
@@ -95,6 +102,7 @@ namespace Menutee {
             MenuAttributes = menuAttributesOverride.HasValue ? menuAttributesOverride.Value
                 : (menuPausesGame ? MenuAttributes.StandardPauseMenu() : MenuAttributes.StandardNonPauseMenu());
             PanelChangeCallbacks = panelChangeCallbacks ?? new List<System.Action<PanelManager, PanelManager>>();
+            FocusedElementChangedCallbacks = focusedElementChangedCallbacks ?? new List<System.Action<FocusChange>>();
             MenuInTransition = menuInTransition;
             MenuOutTransition = menuOutTransition;
             DefaultPanelTransition = defaultPanelTransition;
@@ -115,6 +123,7 @@ namespace Menutee {
             private List<PanelConfig> _panelConfigs = new List<PanelConfig>();
             private List<PanelGenerator> _panelGenerators = new List<PanelGenerator>();
             private List<System.Action<PanelManager, PanelManager>> _panelChangeCallbacks = new List<System.Action<PanelManager, PanelManager>>();
+            private List<System.Action<FocusChange>> _focusedElementChangedCallbacks = new List<System.Action<FocusChange>>();
             private IMenuVisibilityTransition _menuInTransition;
             private IMenuVisibilityTransition _menuOutTransition;
             private IPanelTransition _defaultPanelTransition;
@@ -248,6 +257,16 @@ namespace Menutee {
             }
 
             /// <summary>
+            /// Adds a callback invoked whenever the menu's focused element changes
+            /// (including to and from nothing focused). The first argument is the
+            /// previously focused element, the second the newly focused one.
+            /// </summary>
+            public Builder AddFocusedElementChangedCallback(System.Action<FocusChange> callback) {
+                _focusedElementChangedCallbacks.Add(callback);
+                return this;
+            }
+
+            /// <summary>
             /// Registers a panel generator. When a key is pushed that has no static panel,
             /// generators are checked in order (innermost panel's scoped generators first,
             /// then walking down the panel stack, then the generators registered here);
@@ -328,7 +347,7 @@ namespace Menutee {
                 }
                 return new MenuConfig(_toggleable, _startsOpen, _menuPausesGame, _mainPanelKey,
                     _paletteConfig, _panelConfigs.ToArray(), _panelGenerators.ToArray(),
-                    _panelChangeCallbacks, _menuAttributesOverride, _selectMode, _selectionRestorationMode,
+                    _panelChangeCallbacks, _focusedElementChangedCallbacks, _menuAttributesOverride, _selectMode, _selectionRestorationMode,
                     menuInTransition: _menuInTransition, menuOutTransition: _menuOutTransition,
                     defaultPanelTransition: _defaultPanelTransition,
                     menuOpenSequence: _menuOpenSequence, menuCloseSequence: _menuCloseSequence,
