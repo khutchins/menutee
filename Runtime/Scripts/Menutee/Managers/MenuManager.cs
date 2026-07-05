@@ -70,6 +70,7 @@ namespace Menutee {
 		// considered the "focused" element. See HandleFocusChange.
 		private readonly List<FocusRelay> _focusStack = new List<FocusRelay>();
 		private FocusRelay _currentTop;
+		private FocusSource _pendingSource = FocusSource.UserInput;
 
         private void Awake() {
 			if (Canvas == null) {
@@ -160,9 +161,9 @@ namespace Menutee {
 		public void SetMenuOnTop(bool newOnTop) {
 			if (!newOnTop) {
 				_cachedSelection = EventSystem.current.currentSelectedGameObject;
-				EventSystem.current.SetSelectedGameObject(null);
+				SelectGameObject(null, FocusSource.Programmatic);
 			} else if(_cachedSelection != null) {
-				EventSystem.current.SetSelectedGameObject(_cachedSelection);
+				SelectGameObject(_cachedSelection, FocusSource.Programmatic);
 			}
 			SetOnTop(newOnTop);
 
@@ -402,7 +403,7 @@ namespace Menutee {
 		}
 
 		protected void EnablePanel(PanelManager panel, bool fromPush) {
-			EventSystem.current.SetSelectedGameObject(null);
+			SelectGameObject(null, FocusSource.Programmatic);
 			string oldKey = _activeKey;
 			_activeKey = panel != null ? panel.Key : null;
 
@@ -424,13 +425,13 @@ namespace Menutee {
 				// If pushing or something is wrong with the selected stack, use the default.
 				else if (fromPush || _selectedStack.Count == 0 || _selectedStack.Peek() == null) {
 					if (_activeDefaultInput != null) {
-						EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+						SelectGameObject(_activeDefaultInput, FocusSource.Programmatic);
 					}
-				} 
+				}
 				// Otherwise, restore the previous selection.
 				else {
 					GameObject selected = _selectedStack.Pop();
-					EventSystem.current.SetSelectedGameObject(selected);
+					SelectGameObject(selected, FocusSource.Programmatic);
                 }
 			} else {
 				_activeDefaultInput = null;
@@ -603,17 +604,17 @@ namespace Menutee {
                     case MenuConfig.RestorationMode.Always:
                         // Try to restore the last input.
                         if (_lastValidSelection != null && _lastValidSelection.activeInHierarchy) {
-                            EventSystem.current.SetSelectedGameObject(_lastValidSelection);
+                            SelectGameObject(_lastValidSelection, FocusSource.Programmatic);
                         }
                         // If that isn't available, return to the default.
                         else if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy) {
-                            EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                            SelectGameObject(_activeDefaultInput, FocusSource.Programmatic);
                         }
                         break;
                     case MenuConfig.RestorationMode.OnInput:
                         if (_activeDefaultInput != null && _activeDefaultInput.activeInHierarchy
                                 && (Mathf.Abs(InputMediator.UIX()) > 0.1 || Mathf.Abs(InputMediator.UIY()) > 0.1)) {
-                            EventSystem.current.SetSelectedGameObject(_activeDefaultInput);
+                            SelectGameObject(_activeDefaultInput, FocusSource.UserInput);
                         }
                         break;
                 }
@@ -682,8 +683,30 @@ namespace Menutee {
 			_rootPanelOverride = null;
 		}
 
-		private bool IsAtRoot() {
+		/// <summary>
+		/// True when the active panel is the root of the navigation (nothing has
+		/// been pushed on top of it, so there is no panel to pop back to).
+		/// </summary>
+		public bool IsAtRoot() {
 			return _panelStack.Count == 0;
+		}
+
+		/// <summary>
+		/// The keys of the panels from the current root to the active panel, in
+		/// order (root first, active last).
+		/// 
+		/// Returns an empty list when the menu is not up.
+		/// </summary>
+		public IReadOnlyList<string> GetPanelPath() {
+			List<string> path = new List<string>(_panelStack.Count + 1);
+			if (_currentRootKey != null) {
+				path.Add(_currentRootKey);
+			}
+			string[] pushed = _panelStack.ToArray();
+			for (int i = pushed.Length - 1; i >= 0; i--) {
+				path.Add(pushed[i]);
+			}
+			return path;
 		}
 
 		public void PopPanel() {
@@ -771,43 +794,44 @@ namespace Menutee {
 
 			FocusRef oldRef = oldTop != null ? oldTop.ToFocusRef() : default;
 			FocusRef newRef = newTop != null ? newTop.ToFocusRef() : default;
+			FocusSource source = _pendingSource;
 
-			NotifyObjectFocus(oldTop, false);
-			NotifyObjectFocus(newTop, true);
+			NotifyObjectFocus(oldTop, false, source);
+			NotifyObjectFocus(newTop, true, source);
 
 			PanelManager oldPanel = oldTop != null ? oldTop.Panel : null;
 			PanelManager newPanel = newTop != null ? newTop.Panel : null;
-			NotifyPanelFocus(oldPanel, oldRef, newRef, oldPanel, newPanel);
+			NotifyPanelFocus(oldPanel, oldRef, newRef, oldPanel, newPanel, source);
 			if (newPanel != oldPanel) {
-				NotifyPanelFocus(newPanel, oldRef, newRef, oldPanel, newPanel);
+				NotifyPanelFocus(newPanel, oldRef, newRef, oldPanel, newPanel, source);
 			}
 
 			if (MenuConfig.FocusedElementChangedCallbacks.Count > 0) {
-				FocusChange change = new FocusChange(oldRef, newRef);
+				FocusChange change = new FocusChange(oldRef, newRef, source);
 				foreach (Action<FocusChange> callback in MenuConfig.FocusedElementChangedCallbacks) {
 					callback?.Invoke(change);
 				}
 			}
 		}
 
-		private void NotifyObjectFocus(FocusRelay relay, bool focused) {
+		private void NotifyObjectFocus(FocusRelay relay, bool focused, FocusSource source) {
 			if (relay == null || relay.Element == null || relay.Element.PanelObjectConfig == null) return;
 			List<Action<ElementFocusChange>> callbacks = relay.Element.PanelObjectConfig.FocusChangedCallbacks;
 			if (callbacks.Count == 0) return;
-			ElementFocusChange change = new ElementFocusChange(relay.Element, focused);
+			ElementFocusChange change = new ElementFocusChange(relay.Element, focused, source);
 			foreach (Action<ElementFocusChange> callback in callbacks) {
 				callback?.Invoke(change);
 			}
 		}
 
 		private void NotifyPanelFocus(PanelManager panel, FocusRef oldRef, FocusRef newRef,
-				PanelManager oldPanel, PanelManager newPanel) {
+				PanelManager oldPanel, PanelManager newPanel, FocusSource source) {
 			if (panel == null || panel.Config == null) return;
 			List<Action<FocusChange>> callbacks = panel.Config.FocusedElementChangedCallbacks;
 			if (callbacks.Count == 0) return;
 			FocusRef prevForPanel = oldPanel == panel ? oldRef : default;
 			FocusRef curForPanel = newPanel == panel ? newRef : default;
-			FocusChange change = new FocusChange(prevForPanel, curForPanel);
+			FocusChange change = new FocusChange(prevForPanel, curForPanel, source);
 			foreach (Action<FocusChange> callback in callbacks) {
 				callback?.Invoke(change);
 			}
@@ -815,8 +839,23 @@ namespace Menutee {
 
 		/// <summary>Drops all tracked focus.</summary>
 		private void ClearFocus() {
+			FocusSource previous = _pendingSource;
+			_pendingSource = FocusSource.Programmatic;
 			_focusStack.Clear();
 			ResolveFocus();
+			_pendingSource = previous;
+		}
+
+		/// <summary>
+		/// Sets the EventSystem selection, tagging the focus change it produces
+		/// with the given source. Used for all selection changes the manager makes
+		/// itself, so callbacks can distinguish them from user navigation.
+		/// </summary>
+		private void SelectGameObject(GameObject go, FocusSource source) {
+			FocusSource previous = _pendingSource;
+			_pendingSource = source;
+			EventSystem.current.SetSelectedGameObject(go);
+			_pendingSource = previous;
 		}
 	}
 }

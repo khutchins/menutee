@@ -7,10 +7,13 @@ namespace Menutee {
     public readonly struct FocusChange {
         public readonly FocusRef Previous;
         public readonly FocusRef Current;
+        /// <summary>What caused this focus change. See <see cref="FocusSource"/>.</summary>
+        public readonly FocusSource Source;
 
-        public FocusChange(FocusRef previous, FocusRef current) {
+        public FocusChange(FocusRef previous, FocusRef current, FocusSource source) {
             Previous = previous;
             Current = current;
+            Source = source;
         }
     }
 }

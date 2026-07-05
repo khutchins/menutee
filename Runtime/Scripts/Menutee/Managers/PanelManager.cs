@@ -15,6 +15,8 @@ namespace Menutee {
         [HideInInspector]
         public UIElementManager[] ElementManagers;
         [HideInInspector]
+        public Selectable[] Selectables;
+        [HideInInspector]
         public MenuManager Manager;
         [HideInInspector]
         public PanelConfig Config;

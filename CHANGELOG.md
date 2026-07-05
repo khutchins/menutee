@@ -38,6 +38,8 @@
   * Per-panel: `PanelConfig.Builder.AddFocusedElementChangedCallback(Action<FocusChange>)`.
   * Menu-wide: `MenuConfig.Builder.AddFocusedElementChangedCallback(Action<FocusChange>)`.
   * `PanelManager.RegisterFocusSource` / `RegisterFocusSources` / `UnregisterFocusSource` opt external selectables (e.g. ones baked into a panel prefab) into the system.
+* Navigation-state queries on `MenuManager`: `IsAtRoot()` (whether the active panel can be popped) and `GetPanelPath()` (root-to-active panel keys, for breadcrumbs). `PanelManager.Selectables` now exposes the panel's generated selectables, so an `OnDisplayCallback` can rebuild navigation (e.g. to conditionally shot back button if not at root). The `MenuWithCustomBack` sample uses these to share one back-button prefab across all panels.
+* `MirrorSelectable.SelfManagedPalette`: when enabled, the component keeps its own serialized `Palette` and ignores palettes applied during generation. Lets part of a composite element (e.g. a shared background) stay on a fixed palette while the rest receives the element's palette.
 
 ## [5.2.1]
 

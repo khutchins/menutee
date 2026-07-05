@@ -16,6 +16,8 @@ namespace Menutee {
             IPointerDownHandler, IPointerUpHandler {
         [Tooltip("Palette to read from. If on an object with UIElementManager, this will be set automatically.")]
         [SerializeField] PaletteConfig Palette;
+        [Tooltip("If enabled, keeps this component's own Palette and ignores palettes applied during menu generation.")]
+        [SerializeField] bool SelfManagedPalette = false;
         [Tooltip("Graphic to tint.")]
         [SerializeField] Graphic TargetGraphic;
         [Tooltip("If disabled, the disabled state will not be entered.")]
@@ -121,6 +123,7 @@ namespace Menutee {
         }
 
         public void ReceivePalette(PaletteConfig config) {
+            if (SelfManagedPalette) return;
             Palette = config;
             UpdateGraphic(true);
         }

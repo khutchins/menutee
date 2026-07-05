@@ -87,7 +87,7 @@ namespace Menutee {
 					panelElements.Add(elementManager);
 					elementManager.PanelObjectConfig = objConfig;
 					ResolveAndApplyPalette(elementManager, objConfig, menuConfig);
-					if (elementManager.SelectableObject != null && elementManager.TryGetComponent<Selectable>(out var selectable)) {
+					if (elementManager.SelectableObject != null && elementManager.SelectableObject.TryGetComponent<Selectable>(out var selectable)) {
 						selectableObjects.Add(selectable);
 						// Listen in on selectable events.
 						if (!elementManager.SelectableObject.TryGetComponent<FocusRelay>(out var relay)) {
@@ -109,6 +109,7 @@ namespace Menutee {
 				}
 			}
 			manager.ElementManagers = panelElements.ToArray();
+			manager.Selectables = selectableObjects.ToArray();
 
 			// Set the default selectable to the callback value, if it exists and
 			// returns a valid object.
