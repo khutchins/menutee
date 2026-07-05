@@ -74,6 +74,12 @@ If you hook up the Canvas property, it will automatically show and hide the canv
 
 ##### MenuWithCustomBackSample
 
+The name is a bit of a misnomer. This demo actually shows multiple things:
+
+* How to add a custom element and wire it in. In this case, a custom back object that isn't dynamically generated. It is dynamically hidden depending on if the panel is the root or not.
+* Playing audio in response to navigation events.
+* A detail pane off to the side that shows information about the focused option.
+
 This example has a menu with buttons that exist outside of the programmatic generation. One instance where this is useful is having a custom panel with a static back button. These custom elements can be set as the default selectable by using `.SetDefaultSelectableCallback` on the PanelConfig builder. Similarly, you can hook up the navigation by using the using `.SetCustomNavigation` method. MenuGenerator has `SetHorizontalNavigation` and `SetVerticalNavigation` convenience methods that automate the UI hookup process. See the `SampleMenuWithCustomBack` script to look at how they're implemented.
 
 ##### MenuWithPanelGenerators
