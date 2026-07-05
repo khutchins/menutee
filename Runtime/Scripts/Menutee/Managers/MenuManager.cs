@@ -554,11 +554,6 @@ namespace Menutee {
 			}
 			Panels = remaining.ToArray();
 
-			if (Generator != null) {
-				Generator.PanelDictionary.Remove(key);
-				Generator.PanelObjectDictionary.Remove(key);
-			}
-
 			if (pm.gameObject != null) {
 				Destroy(pm.gameObject);
 			}

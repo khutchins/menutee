@@ -6,11 +6,12 @@
 * `OptionSelectManager` now operates on an `OperatorSelect` `Selectable` instead of the prior conglomeration. You can make a new one for your prefab with `Create/UI/Menutee/Option Select`.
 * `MenuManager`'s animation hooks are no longer overridable: `SetMenuIsUp`, `SetOnTop`, and `ActivatePanel(PanelManager, PanelManager, bool)` are now `private` (was `protected virtual`), and `DoToggle` was removed. Menus that animated by subclassing `MenuManager` should transition to the new transition system (see `MenuWithAnimationSample`).
 * Removed `OptionSelectRefConfig.Builder.SetToggleManager`. It was a copy-paste of the toggle handler onto the non-toggle int-ref option select. Use `SetOptionSelectedHandler`, or `OptionSelectToggleRefConfig` for an actual toggle.
-* Removed the obsolete `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
+* Removed the deprecated `HighlightTextWhenSelected` component. Use `MirrorSelectable` instead.
 * Renamed `MenuConfig.PaletteConfig` to `DefaultPaletteConfig`.
 * Renamed `SetToggleManager` to `SetToggleHandler` on option select toggle components.
 * `ExitGame()` removed from `MenuManager`.
 * `PanelConfig`'s constructor is now private. Build panels through `PanelConfig.Builder`.
+* `MenuGenerator` is now lean: the prefabs slots and the `PaletteConfig` field moved off it (it was making assumptions about the shape you'd want to use), and the public `PanelDictionary`/`PanelObjectDictionary` were removed, as they were vestigial. If your generator subclass referenced those prefab slots, change its base class from `MenuGenerator` to `StarterMenuGenerator` to fix the compile errors. Expectation moving forward is to declare the ones you want.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.

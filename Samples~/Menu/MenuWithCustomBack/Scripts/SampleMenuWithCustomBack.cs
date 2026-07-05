@@ -18,8 +18,12 @@ public class SampleMenuWithCustomBack : MenuGenerator {
 	private const string KEY_WINDOW_MODE = "window mode";
 
 	[Header("Sample Prefabs")]
-	[Tooltip("Prefab used for option-select elements (the default MenuGenerator prefabs don't include one).")]
+	[Tooltip("Prefab used for button elements.")]
+	public GameObject ButtonPrefab;
+	[Tooltip("Prefab used for option select elements.")]
 	public GameObject OptionSelectPrefab;
+	[Tooltip("Default palette applied to generated elements.")]
+	public PaletteConfig PaletteConfig;
 
 	[Header("Focus Sample")]
 	[Tooltip("Shared detail pane. Shows a description of whatever element is focused, cleared when nothing is.")]

@@ -6,9 +6,8 @@ using UnityEngine;
 namespace Menutee {
 	public abstract class PanelObjectConfig {
 		/// <summary>
-		/// Optional key that uniquely identifies an object within a panel (used for
-		/// PanelObjectDictionary lookups). Should be unique within that scope. Null
-		/// when the element was created without a key.
+		/// Optional key that uniquely identifies an object within a panel. Should be
+		/// unique within that scope. Null when the element was created without a key.
 		/// </summary>
 		public readonly string Key;
 		public readonly Action<GameObject> CreationCallback;

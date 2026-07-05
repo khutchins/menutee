@@ -9,8 +9,12 @@ public class CatalogMenu : MenuGenerator {
 	public readonly static string MENU_KEY_LIST = "Catalog";
 	public readonly static string ITEM_KEY_PREFIX = "Catalog/";
 
-	[Header("Other Prefabs")]
+	[Header("Prefabs")]
+	public GameObject ButtonPrefab;
 	[SerializeField] private GameObject _textPrefab;
+
+	[Header("Appearance")]
+	public PaletteConfig PaletteConfig;
 
 	private MenuManager _manager;
 

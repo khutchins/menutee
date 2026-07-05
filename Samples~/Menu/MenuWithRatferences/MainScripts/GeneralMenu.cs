@@ -13,13 +13,14 @@ public class GeneralMenu : MenuGenerator {
 	public readonly static string MENU_KEY_OPTIONS = "Options";
 	public readonly static string MENU_KEY_VERIFY = "Verify";
 
+	[Header("Prefabs")]
+	[Tooltip("Shared prefab set.")]
+	[SerializeField] private SampleMenuPrefabSet _prefabs;
+	public PaletteConfig PaletteConfig;
+
 	[Header("Menu Signals")]
 	[SerializeField] private Signal ControlMenuSignal;
 	[SerializeField] private Signal CreditsMenuSignal;
-
-	[Header("Other Prefabs")]
-	[SerializeField] private GameObject TextPrefab;
-	[SerializeField] private GameObject OptionSelectPrefab;
 
 	[Header("Other Bindings")]
 	[SerializeField] private bool _mainMenu;
@@ -52,25 +53,25 @@ public class GeneralMenu : MenuGenerator {
 	private void AddInGameMenu(MenuConfig.Builder builder) {
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
 			.AddPanelObject(
-				new ButtonConfig.Builder("resume", ButtonPrefab)
+				new ButtonConfig.Builder("resume", _prefabs.ButtonPrefab)
 					.SetDisplayText("Resume")
 					.SetButtonPressedHandler(delegate (ButtonManager manager) {
 						_manager.ExitMenu();
 					}), true)
 			.AddPanelObject(
-				new ButtonConfig.Builder("options", ButtonPrefab)
+				new ButtonConfig.Builder("options", _prefabs.ButtonPrefab)
 					.SetDisplayText("Options")
 					.SetButtonPressedHandler(delegate (ButtonManager manager) {
 						_manager.PushPanel(MENU_KEY_OPTIONS);
 					}))
 			.AddPanelObject(
-				new ButtonConfig.Builder("restart", ButtonPrefab)
+				new ButtonConfig.Builder("restart", _prefabs.ButtonPrefab)
 					.SetDisplayText("Restart")
 					.SetButtonPressedHandler(delegate (ButtonManager manager) {
 						SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 					}))
 			.AddPanelObject(
-				new ButtonConfig.Builder("exit", ButtonPrefab)
+				new ButtonConfig.Builder("exit", _prefabs.ButtonPrefab)
 					.SetDisplayText("Exit")
 					.SetButtonPressedHandler(delegate (ButtonManager manager) {
 						VerifyAction(() => SceneManager.LoadScene("MenuScene"));
@@ -80,16 +81,16 @@ public class GeneralMenu : MenuGenerator {
 	private void AddVerifier(MenuConfig.Builder builder) {
 		PanelConfig.Builder verifier = new PanelConfig.Builder(MENU_KEY_VERIFY);
 
-		verifier.AddPanelObject(new TextConfig.Builder("text", TextPrefab, "Are you sure?"));
+		verifier.AddPanelObject(new TextConfig.Builder("text", _prefabs.TextPrefab, "Are you sure?"));
 		verifier.AddPanelObject(
-			new ButtonConfig.Builder("yes", ButtonPrefab)
+			new ButtonConfig.Builder("yes", _prefabs.ButtonPrefab)
 				.SetDisplayText("Yes")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					_manager.PopPanel();
 					_onVerify.Invoke();
 				}));
 		verifier.AddPanelObject(
-			new ButtonConfig.Builder("no", ButtonPrefab)
+			new ButtonConfig.Builder("no", _prefabs.ButtonPrefab)
 				.SetDisplayText("No")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					_manager.PopPanel();
@@ -101,25 +102,25 @@ public class GeneralMenu : MenuGenerator {
 	private void AddMainMenu(MenuConfig.Builder builder) {
 		PanelConfig.Builder main = new PanelConfig.Builder(MENU_KEY_MAIN);
 		main.AddPanelObject(
-			new ButtonConfig.Builder("play", ButtonPrefab)
+			new ButtonConfig.Builder("play", _prefabs.ButtonPrefab)
 				.SetDisplayText("Play")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					Debug.Log("Pressed play!");
 				}));
 		main.AddPanelObject(
-			new ButtonConfig.Builder("options", ButtonPrefab)
+			new ButtonConfig.Builder("options", _prefabs.ButtonPrefab)
 				.SetDisplayText("Options")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					_manager.PushPanel(MENU_KEY_OPTIONS);
 				}));
 		main.AddPanelObject(
-			new ButtonConfig.Builder("credits", ButtonPrefab)
+			new ButtonConfig.Builder("credits", _prefabs.ButtonPrefab)
 				.SetDisplayText("Credits")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					CreditsMenuSignal.Raise();
 				}));
 		main.AddPanelObject(
-			new ButtonConfig.Builder("exit", ButtonPrefab)
+			new ButtonConfig.Builder("exit", _prefabs.ButtonPrefab)
 				.SetDisplayText("Exit")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					VerifyAction(() => Application.Quit());
@@ -177,14 +178,14 @@ public class GeneralMenu : MenuGenerator {
 				intOptions.Add(((i + 1) * 16).ToString());
 			}
 
-			builder.AddPanelObject(new SliderRefConfig.Builder("option1", SliderPrefab, 0, 5, Options.Option1).SetDisplayText("Option 1"));
-			builder.AddPanelObject(new ToggleRefConfig.Builder("option2", TogglePrefab, Options.Option2).SetDisplayText("Option 2"));
-			builder.AddPanelObject(new OptionSelectRefConfig.Builder("option3", OptionSelectPrefab, Options.Option3).SetDisplayText("Option 3").AddOptionStrings(intOptions).SetLoops(false));
-			builder.AddPanelObject(new ButtonConfig.Builder("controls", ButtonPrefab).SetDisplayText("Rebind Controls")
+			builder.AddPanelObject(new SliderRefConfig.Builder("option1", _prefabs.SliderPrefab, 0, 5, Options.Option1).SetDisplayText("Option 1"));
+			builder.AddPanelObject(new ToggleRefConfig.Builder("option2", _prefabs.TogglePrefab, Options.Option2).SetDisplayText("Option 2"));
+			builder.AddPanelObject(new OptionSelectRefConfig.Builder("option3", _prefabs.OptionSelectPrefab, Options.Option3).SetDisplayText("Option 3").AddOptionStrings(intOptions).SetLoops(false));
+			builder.AddPanelObject(new ButtonConfig.Builder("controls", _prefabs.ButtonPrefab).SetDisplayText("Rebind Controls")
 				.SetButtonPressedHandler(delegate (ButtonManager manager) {
 					ControlMenuSignal.Raise();
 				}));
-			AddBackOption(builder, _manager, ButtonPrefab);
+			AddBackOption(builder, _manager, _prefabs.ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -195,7 +196,7 @@ public class GeneralMenu : MenuGenerator {
 		PanelConfig AddVideoPanel(string key) {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
 
-			builder.AddPanelObject(new DropdownConfig.Builder("quality", DropdownPrefab)
+			builder.AddPanelObject(new DropdownConfig.Builder("quality", _prefabs.DropdownPrefab)
 				.SetDisplayText("Quality")
 				.AddOptionStrings(QualitySettings.names)
 				.SetDefaultOptionIndex(QualitySettings.GetQualityLevel())
@@ -205,16 +206,16 @@ public class GeneralMenu : MenuGenerator {
 
 			// No point in showing resolution config in WebGL - It does nothing.
 			if (Application.platform != RuntimePlatform.WebGLPlayer) {
-				builder.AddPanelObject(ResolutionConfig(DropdownPrefab));
+				builder.AddPanelObject(ResolutionConfig(_prefabs.DropdownPrefab));
 			}
 
-			builder.AddPanelObject(new ToggleConfig.Builder("fullscreen", TogglePrefab)
+			builder.AddPanelObject(new ToggleConfig.Builder("fullscreen", _prefabs.TogglePrefab)
 				.SetDisplayText("Fullscreen")
 				.SetIsOn(Screen.fullScreen)
 				.SetTogglePressedHandler(delegate (ToggleManager manager, bool newValue) {
 					Screen.fullScreen = newValue;
 				}));
-			AddBackOption(builder, _manager, ButtonPrefab);
+			AddBackOption(builder, _manager, _prefabs.ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -235,7 +236,7 @@ public class GeneralMenu : MenuGenerator {
 		PanelConfig AddAudioPanel(string key) {
 			PanelConfig.Builder builder = new PanelConfig.Builder(key);
 
-			builder.AddPanelObject(new SliderRefConfig.Builder("sfxvolume", SliderPrefab, 0f, 1f, Options.SFXVolume).SetDisplayText("SFX Volume")
+			builder.AddPanelObject(new SliderRefConfig.Builder("sfxvolume", _prefabs.SliderPrefab, 0f, 1f, Options.SFXVolume).SetDisplayText("SFX Volume")
 			.SetCreationCallback((GameObject go) => {
 				// Have to run this after a frame, as this API doesn't work in awake (at least when I wrote the code).
 				_manager.RunGenericActionAfterFrame(() => {
@@ -245,7 +246,7 @@ public class GeneralMenu : MenuGenerator {
 			.SetSliderUpdatedHandler((SliderManager manager, float newValue) => {
 				SetMixerVolume(_sfxGroup, "SFXVolume", newValue);
 			}));
-			builder.AddPanelObject(new SliderRefConfig.Builder("musicvolume", SliderPrefab, 0f, 1f, Options.MusicVolume).SetDisplayText("Music Volume")
+			builder.AddPanelObject(new SliderRefConfig.Builder("musicvolume", _prefabs.SliderPrefab, 0f, 1f, Options.MusicVolume).SetDisplayText("Music Volume")
 			.SetCreationCallback((GameObject go) => {
 				// Have to run this after a frame, as this API doesn't work in awake (at least when I wrote the code).
 				_manager.RunGenericActionAfterFrame(() => {
@@ -255,7 +256,7 @@ public class GeneralMenu : MenuGenerator {
 			.SetSliderUpdatedHandler((SliderManager manager, float newValue) => {
 				SetMixerVolume(_musicGroup, "MusicVolume", newValue);
 			}));
-			AddBackOption(builder, _manager, ButtonPrefab);
+			AddBackOption(builder, _manager, _prefabs.ButtonPrefab);
 
 			PanelConfig config = builder.Build();
 			menuBuilder.AddPanelConfig(config);
@@ -263,10 +264,10 @@ public class GeneralMenu : MenuGenerator {
 		}
 
 		PanelConfig.Builder builder = new PanelConfig.Builder(MENU_KEY_OPTIONS);
-		AddPanelHookup(builder, _manager, ButtonPrefab, "Controls", AddControlsPanel("Controls"));
-		AddPanelHookup(builder, _manager, ButtonPrefab, "Video", AddVideoPanel("Video"));
-		AddPanelHookup(builder, _manager, ButtonPrefab, "Audio", AddAudioPanel("Audio"));
-		AddBackOption(builder, _manager, ButtonPrefab);
+		AddPanelHookup(builder, _manager, _prefabs.ButtonPrefab, "Controls", AddControlsPanel("Controls"));
+		AddPanelHookup(builder, _manager, _prefabs.ButtonPrefab, "Video", AddVideoPanel("Video"));
+		AddPanelHookup(builder, _manager, _prefabs.ButtonPrefab, "Audio", AddAudioPanel("Audio"));
+		AddBackOption(builder, _manager, _prefabs.ButtonPrefab);
 
 		menuBuilder.AddPanelConfig(builder);
 	}

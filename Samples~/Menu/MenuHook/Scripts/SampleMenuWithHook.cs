@@ -11,6 +11,10 @@ public class SampleMenuWithHook : MenuGenerator {
 	public readonly static string KEY_EXIT = "exit";
 	public readonly static string KEY_BACK = "back";
 
+	[Header("Prefabs")]
+	public GameObject ButtonPrefab;
+	public PaletteConfig PaletteConfig;
+
 	public MenuHook HookedMenu;
 
 	private MenuManager _manager;

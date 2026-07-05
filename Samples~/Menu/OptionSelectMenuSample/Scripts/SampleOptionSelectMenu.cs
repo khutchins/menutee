@@ -8,6 +8,7 @@ public class SampleOptionSelectMenu : MenuGenerator {
 	public readonly static string MENU_KEY_MAIN = "Main";
 
 	public GameObject OptionSelectPrefab;
+	public PaletteConfig PaletteConfig;
 
 	private MenuManager _manager;
 

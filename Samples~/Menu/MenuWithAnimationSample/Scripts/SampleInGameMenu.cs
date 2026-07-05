@@ -18,6 +18,10 @@ public class SampleInGameMenu : MenuGenerator {
 	public readonly static string MENU_KEY_STAGGER = "Stagger";
 	public readonly static string MENU_KEY_CROSSFADE = "Crossfade";
 
+	[Header("Prefabs")]
+	[SerializeField] private SampleMenuPrefabSet _prefabs;
+	public PaletteConfig PaletteConfig;
+
 	private MenuManager _manager;
 
 	[Tooltip("Container the menu slides on/offscreen. If unset, falls back to the panel container (MenuGenerator.Parent).")]
@@ -43,25 +47,25 @@ public class SampleInGameMenu : MenuGenerator {
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_MAIN)
 			.SetTransition(new StaggeredSlidePanelTransition())
 			.AddPanelObject(
-				new ButtonConfig.Builder("slide", ButtonPrefab)
+				new ButtonConfig.Builder("slide", _prefabs.ButtonPrefab)
 					.SetDisplayText("Slide Panel")
 					.SetButtonPressedHandler(delegate (ButtonManager m) {
 						_manager.PushPanel(MENU_KEY_SLIDE);
 					}), true)
 			.AddPanelObject(
-				new ButtonConfig.Builder("stagger", ButtonPrefab)
+				new ButtonConfig.Builder("stagger", _prefabs.ButtonPrefab)
 					.SetDisplayText("Stagger Panel")
 					.SetButtonPressedHandler(delegate (ButtonManager m) {
 						_manager.PushPanel(MENU_KEY_STAGGER);
 					}))
 			.AddPanelObject(
-				new ButtonConfig.Builder("crossfade", ButtonPrefab)
+				new ButtonConfig.Builder("crossfade", _prefabs.ButtonPrefab)
 					.SetDisplayText("Crossfade Panel")
 					.SetButtonPressedHandler(delegate (ButtonManager m) {
 						_manager.PushPanel(MENU_KEY_CROSSFADE);
 					}))
 			.AddPanelObject(
-				new ButtonConfig.Builder("close", ButtonPrefab)
+				new ButtonConfig.Builder("close", _prefabs.ButtonPrefab)
 					.SetDisplayText("Close")
 					.SetButtonPressedHandler(delegate (ButtonManager m) {
 						_manager.ExitMenu();
@@ -70,22 +74,22 @@ public class SampleInGameMenu : MenuGenerator {
 		// Uses default SlidePanelTransition.
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_SLIDE)
 			.AddPanelObject(BackButton(), true)
-			.AddPanelObject(new ButtonConfig.Builder("a", ButtonPrefab).SetDisplayText("The whole panel"))
-			.AddPanelObject(new ButtonConfig.Builder("b", ButtonPrefab).SetDisplayText("slides as one block")));
+			.AddPanelObject(new ButtonConfig.Builder("a", _prefabs.ButtonPrefab).SetDisplayText("The whole panel"))
+			.AddPanelObject(new ButtonConfig.Builder("b", _prefabs.ButtonPrefab).SetDisplayText("slides as one block")));
 
 		// Per-element stagger.
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_STAGGER)
 			.SetTransition(new StaggeredSlidePanelTransition { FromEdge = TransitionEdge.Right })
 			.AddPanelObject(BackButton(), true)
 			.AddPanelObject(
-				new SliderConfig.Builder("slider", SliderPrefab, 0f, 1f, 0.5f)
+				new SliderConfig.Builder("slider", _prefabs.SliderPrefab, 0f, 1f, 0.5f)
 					.SetDisplayText("Slider"))
 			.AddPanelObject(
-				new ToggleConfig.Builder("toggle", TogglePrefab)
+				new ToggleConfig.Builder("toggle", _prefabs.TogglePrefab)
 					.SetDisplayText("Toggle")
 					.SetIsOn(false))
 			.AddPanelObject(
-				new DropdownConfig.Builder("dropdown", DropdownPrefab)
+				new DropdownConfig.Builder("dropdown", _prefabs.DropdownPrefab)
 					.SetDisplayText("Dropdown")
 					.AddOptionStrings(new[] { "Option A", "Option B", "Option C" })
 					.SetDefaultOptionIndex(0)));
@@ -94,14 +98,14 @@ public class SampleInGameMenu : MenuGenerator {
 		builder.AddPanelConfig(new PanelConfig.Builder(MENU_KEY_CROSSFADE)
 			.SetTransition(new FadePanelTransition())
 			.AddPanelObject(BackButton(), true)
-			.AddPanelObject(new ButtonConfig.Builder("a", ButtonPrefab).SetDisplayText("This panel"))
-			.AddPanelObject(new ButtonConfig.Builder("b", ButtonPrefab).SetDisplayText("crossfades in")));
+			.AddPanelObject(new ButtonConfig.Builder("a", _prefabs.ButtonPrefab).SetDisplayText("This panel"))
+			.AddPanelObject(new ButtonConfig.Builder("b", _prefabs.ButtonPrefab).SetDisplayText("crossfades in")));
 
 		CreateMenu(_manager, builder);
 	}
 
 	private ButtonConfig.Builder BackButton() {
-		return new ButtonConfig.Builder("back", ButtonPrefab)
+		return new ButtonConfig.Builder("back", _prefabs.ButtonPrefab)
 			.SetDisplayText("Back")
 			.SetButtonPressedHandler(delegate (ButtonManager m) {
 				_manager.PopPanel();

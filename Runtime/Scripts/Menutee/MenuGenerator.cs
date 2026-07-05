@@ -9,20 +9,9 @@ namespace Menutee {
 		[Tooltip("Canvas element to be used as the container for panels.")]
 		public GameObject Parent;
 
-		[Header("Prefabs")]
+		[Header("Prefab")]
 		[Tooltip("Panel prefab that menu prefabs are placed in.")]
 		public GameObject PanelPrefab;
-		public GameObject ButtonPrefab;
-		public GameObject SliderPrefab;
-		public GameObject TogglePrefab;
-		public GameObject DropdownPrefab;
-
-		[Header("Appearance")]
-		[Tooltip("Palette to be used for overriding selected, highlighted, etc. elements states.")]
-		public PaletteConfig PaletteConfig;
-
-		public Dictionary<string, GameObject> PanelDictionary = new Dictionary<string, GameObject>();
-		public Dictionary<string, Dictionary<string, GameObject>> PanelObjectDictionary = new Dictionary<string, Dictionary<string, GameObject>>();
 
 		public void CreateMenu(MenuManager helper, MenuConfig.Builder menuConfigBuilder) {
 			if (menuConfigBuilder == null) {
@@ -62,7 +51,6 @@ namespace Menutee {
 			manager.Key = config.Key;
 			manager.Manager = menuManager;
 			manager.Config = config;
-			PanelDictionary[config.Key] = panel;
 
 			if (config.SupplementalObjects != null) {
 				List<GameObject> supplementalObjects = new List<GameObject>();
@@ -73,7 +61,6 @@ namespace Menutee {
 				manager.OtherObjects = supplementalObjects.ToArray();
 			}
 
-			Dictionary<string, GameObject> dict = new Dictionary<string, GameObject>();
 			List<Selectable> selectableObjects = new List<Selectable>();
 			List<UIElementManager> panelElements = new List<UIElementManager>();
 
@@ -97,9 +84,6 @@ namespace Menutee {
 					}
 				}
 				objConfig.CreationCallback?.Invoke(go);
-				if (!string.IsNullOrEmpty(objConfig.Key)) {
-					dict[objConfig.Key] = go;
-				}
 				if (objConfig == config.DefaultSelectable) {
 					if (elementManager != null) {
 						manager.DefaultInput = elementManager.SelectableObject;
@@ -137,7 +121,6 @@ namespace Menutee {
 				MenuGenerator.SetVerticalNavigation(selectableObjects);
 			}
 
-			PanelObjectDictionary[config.Key] = dict;
 			config.CreationCallback?.Invoke(panel, manager);
 			LayoutRebuilder.ForceRebuildLayoutImmediate(panel.GetComponent<RectTransform>());
 			return manager;
