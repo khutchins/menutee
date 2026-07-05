@@ -169,14 +169,13 @@ namespace Menutee {
 		/// </summary>
 		public static void SetHorizontalNavigation(List<Selectable> selectableObjects, bool allowLoop = false) {
 			for (int i = 0; i < selectableObjects.Count; i++) {
-				// Make new one to avoid potential property strangeness.
-				Navigation navigation = new Navigation();
-				navigation.mode = Navigation.Mode.Explicit;
-				navigation.selectOnUp = null;
-				navigation.selectOnDown = null;
-				navigation.selectOnLeft = i > 0 ? selectableObjects[i - 1] : (allowLoop ? selectableObjects[selectableObjects.Count - 1] : null);
-				navigation.selectOnRight = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : (allowLoop ? selectableObjects[0] : null);
-				selectableObjects[i].navigation = navigation;
+                // Make new one to avoid potential property strangeness.
+                Navigation navigation = new Navigation {
+                    mode = Navigation.Mode.Explicit,
+                    selectOnLeft = i > 0 ? selectableObjects[i - 1] : (allowLoop ? selectableObjects[selectableObjects.Count - 1] : null),
+                    selectOnRight = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : (allowLoop ? selectableObjects[0] : null)
+                };
+                selectableObjects[i].navigation = navigation;
 			}
 		}
 
@@ -188,14 +187,13 @@ namespace Menutee {
 		/// </summary>
 		public static void SetVerticalNavigation(List<Selectable> selectableObjects, bool allowLoop = false) {
 			for (int i = 0; i < selectableObjects.Count; i++) {
-				// Make new one to avoid potential property strangeness.
-				Navigation navigation = new Navigation();
-				navigation.mode = Navigation.Mode.Explicit;
-				navigation.selectOnUp = i > 0 ? selectableObjects[i - 1] : (allowLoop ? selectableObjects[selectableObjects.Count - 1] : null);
-				navigation.selectOnDown = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : (allowLoop ? selectableObjects[0] : null);
-				navigation.selectOnLeft = null;
-				navigation.selectOnRight = null;
-				selectableObjects[i].navigation = navigation;
+                // Make new one to avoid potential property strangeness.
+                Navigation navigation = new Navigation {
+                    mode = Navigation.Mode.Explicit,
+                    selectOnUp = i > 0 ? selectableObjects[i - 1] : (allowLoop ? selectableObjects[selectableObjects.Count - 1] : null),
+                    selectOnDown = i < selectableObjects.Count - 1 ? selectableObjects[i + 1] : (allowLoop ? selectableObjects[0] : null),
+                };
+                selectableObjects[i].navigation = navigation;
 			}
 		}
 	}
