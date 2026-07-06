@@ -10,6 +10,10 @@ namespace Menutee {
 		public string uiInputCancel = "Cancel";
 		public string menuToggle = "Jump";
 		public string submit = "Submit";
+		[Tooltip("Hotkey for switching to next tab in menu.")]
+		public string tabNext = "";
+		[Tooltip("Hotkey for switching to previous tab in menu.")]
+		public string tabPrevious = "";
 
 		private float GetAxis(string name) {
 			if (string.IsNullOrEmpty(name)) return 0;
@@ -40,6 +44,14 @@ namespace Menutee {
 
 		public override bool MenuToggleDown() {
 			return GetButtonDown(menuToggle);
+		}
+
+		public override bool TabNextDown() {
+			return GetButtonDown(tabNext);
+		}
+
+		public override bool TabPreviousDown() {
+			return GetButtonDown(tabPrevious);
 		}
 
 		public override InputType LastInputType {

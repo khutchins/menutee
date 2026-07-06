@@ -15,6 +15,21 @@ namespace Menutee {
 		public abstract bool UISubmitDown();
 		public abstract bool UICancelDown();
 		public abstract bool MenuToggleDown();
+
+		/// <summary>
+		/// Switch to next tab button.
+		/// </summary>
+		public virtual bool TabNextDown() {
+			return false;
+		}
+
+		/// <summary>
+		/// Switch to previous tab button.
+		/// </summary>
+		public virtual bool TabPreviousDown() {
+			return false;
+		}
+
 		public virtual InputType LastInputType {
 			get => InputType.Unknown;
 		}
