@@ -127,7 +127,7 @@ namespace Menutee {
 		}
 
 		public void SetMenuUp(bool newUp) {
-			List<string> dynamicToDispose = null;
+			List<PanelManager> dynamicToDispose = null;
 			// Menu is closed.
 			if (!newUp) {
 				_cachedSelection = null;
@@ -135,7 +135,13 @@ namespace Menutee {
 				// Drop any lingering focus so that any shared information clears.
 				ClearFocus();
 				if (_dynamicPanelKeys.Count > 0) {
-					dynamicToDispose = new List<string>(_dynamicPanelKeys);
+					// Unregister so that it's clear if a dynamic panel is regenerated,
+					// but it won't destroy it until the animation is finished.
+					dynamicToDispose = new List<PanelManager>();
+					foreach (string key in new List<string>(_dynamicPanelKeys)) {
+						PanelManager pm = UnregisterPanel(key);
+						if (pm != null) dynamicToDispose.Add(pm);
+					}
 				}
 			}
 			_active = newUp;
@@ -143,16 +149,24 @@ namespace Menutee {
 			if (newUp) {
 				_currentRootKey = panelKey;
 			}
-			SetMenuIsUp(newUp, panelKey);
+			Action disposeDynamic = null;
+			if (dynamicToDispose != null) {
+				List<PanelManager> toDispose = dynamicToDispose;
+				disposeDynamic = () => {
+					foreach (PanelManager pm in toDispose) {
+						DestroyPanel(pm);
+					}
+				};
+			}
+			// True when an animated close took ownership of the teardown.
+			bool disposeDeferred = SetMenuIsUp(newUp, panelKey, disposeDynamic);
 
             if (newUp) {
                 MenuOpened?.Invoke(this);
             } else {
                 MenuClosed?.Invoke(this);
-                if (dynamicToDispose != null) {
-                    foreach (string key in dynamicToDispose) {
-                        DisposePanel(key);
-                    }
+                if (!disposeDeferred) {
+                    disposeDynamic?.Invoke();
                 }
                 _currentRootKey = null;
             }
@@ -174,7 +188,7 @@ namespace Menutee {
             }
         }
 
-		private void SetMenuIsUp(bool isUp, string newKey) {
+		private bool SetMenuIsUp(bool isUp, string newKey, Action onClosed) {
 			IMenuVisibilityTransition transition = isUp ? ResolveMenuInTransition() : ResolveMenuOutTransition();
 
 			// Menu show/hide places panels instantly (only the menu itself animates,
@@ -187,7 +201,7 @@ namespace Menutee {
 				if (isUp) SnapToShownBaseline();
 				InstantActivatePanel(isUp ? newKey : null, true);
 				_menuVisible = isUp;
-				return;
+				return false;
 			}
 
 			if (isUp) {
@@ -207,6 +221,7 @@ namespace Menutee {
 					InstantActivatePanel(newKey, true);
 					RunTransition(transition.AnimateMenu(this, true), null);
 				}
+				return false;
 			} else {
 				_menuVisible = false;
 				PanelManager active = _activeManager;
@@ -214,6 +229,8 @@ namespace Menutee {
 				Action finalize = () => {
 					Canvas.enabled = false;
 					InstantActivatePanel(null, true);
+					// Panels are only destroyed once nothing is animating them.
+					onClosed?.Invoke();
 				};
 				if (MenuConfig.MenuCloseSequence == MenuPanelSequence.Ordered && panelTransition != null && active != null) {
 					// Ordered: the active panel plays its exit first, then the menu
@@ -223,6 +240,7 @@ namespace Menutee {
 					// None: keep the panel visible while the menu animates out.
 					RunTransition(transition.AnimateMenu(this, false), finalize);
 				}
+				return true;
 			}
 		}
 
@@ -380,18 +398,22 @@ namespace Menutee {
 			MenuStack.Shared.ToggleMenu(this);
 		}
 
-		private void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush) {
+		private void ActivatePanel(PanelManager oldPanel, PanelManager newPanel, bool fromPush, Action onComplete = null) {
 			IPanelTransition transition = ResolvePanelTransition(newPanel);
 			if (transition == null) {
 				EnablePanel(newPanel, fromPush);
 				DisableOtherPanels(newPanel);
+				onComplete?.Invoke();
 				return;
 			}
 			// Enable the incoming panel now (both panels are visible during the
 			// animation). Disable the outgoing panel only once it completes.
 			EnablePanel(newPanel, fromPush);
 			RunTransition(transition.AnimatePanel(this, oldPanel, newPanel, fromPush),
-				() => DisableOtherPanels(newPanel));
+				() => {
+					DisableOtherPanels(newPanel);
+					onComplete?.Invoke();
+				});
 		}
 
 		private bool ShouldHaveDefaultSelection {
@@ -538,21 +560,34 @@ namespace Menutee {
 			return manager;
 		}
 
-		private void DisposePanel(string key) {
+		private PanelManager UnregisterPanel(string key) {
 			PanelManager pm = PanelForKey(key);
 			_dynamicPanelKeys.Remove(key);
 			_scopedGenerators.Remove(key);
-			if (pm == null) return;
-
-			if (pm.Config != null && pm.Config.OnDisposeCallback != null) {
-				pm.Config.OnDisposeCallback(pm.gameObject, pm);
-			}
+			if (pm == null) return null;
 
 			List<PanelManager> remaining = new List<PanelManager>(Panels.Length);
 			foreach (PanelManager p in Panels) {
 				if (p != pm) remaining.Add(p);
 			}
 			Panels = remaining.ToArray();
+			return pm;
+		}
+
+		private void DestroyPanel(PanelManager pm) {
+			if (pm == null) return;
+
+			if (pm.Config != null && pm.Config.OnDisposeCallback != null) {
+				pm.Config.OnDisposeCallback(pm.gameObject, pm);
+			}
+
+			// Supplemental objects are instantiated as siblings of the panel
+			// rather than children, so they have to be torn down explicitly.
+			if (pm.OtherObjects != null) {
+				foreach (GameObject obj in pm.OtherObjects) {
+					if (obj != null) Destroy(obj);
+				}
+			}
 
 			if (pm.gameObject != null) {
 				Destroy(pm.gameObject);
@@ -709,14 +744,18 @@ namespace Menutee {
 			if (_panelStack.Count > 0) {
 				poppedKey = _panelStack.Pop();
 			}
-			if (_panelStack.Count == 0) {
-				GoToPanel(_currentRootKey ?? MenuConfig.MainPanelKey, false);
-			} else {
-				GoToPanel(_panelStack.Last(), false);
-			}
+			string targetKey = _panelStack.Count == 0
+				? (_currentRootKey ?? MenuConfig.MainPanelKey)
+				: _panelStack.Last();
+
+			// Popped panel will only be destroyed when the animation finishes.
+			PanelManager outgoing = PanelForKey(_activeKey);
+			PanelManager popped = null;
 			if (poppedKey != null && _dynamicPanelKeys.Contains(poppedKey)) {
-				DisposePanel(poppedKey);
+				popped = UnregisterPanel(poppedKey);
 			}
+			Action onDisposed = popped != null ? (Action)(() => DestroyPanel(popped)) : null;
+			ActivatePanel(outgoing, ResolveOrGeneratePanel(targetKey), false, onDisposed);
 		}
 
 		/// <summary>

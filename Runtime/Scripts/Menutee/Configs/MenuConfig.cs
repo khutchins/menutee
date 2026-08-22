@@ -273,7 +273,8 @@ namespace Menutee {
             /// the first matching generator builds the panel.
             ///
             /// The generated panel is destroyed when popped from the stack or when the
-            /// menu closes — its PanelConfig.OnDisposeCallback fires at that point.
+            /// menu closes. If a transition is animating out, destroy occurs once
+            /// the animation finishes.
             /// </summary>
             public Builder AddPanelGenerator(PanelGenerator generator) {
                 _panelGenerators.Add(generator);
