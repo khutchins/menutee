@@ -14,6 +14,7 @@
 * `MenuGenerator` is now lean: the prefabs slots and the `PaletteConfig` field moved off it (it was making assumptions about the shape you'd want to use), and the public `PanelDictionary`/`PanelObjectDictionary` were removed, as they were vestigial. If your generator subclass referenced those prefab slots, change its base class from `MenuGenerator` to `StarterMenuGenerator` to fix the compile errors. Expectation moving forward is to declare the ones you want.
 * `MenuHook` now manages interactability through a CanvasGroup, defaulting to `InteractabilityMode.Auto`, which grabs or adds a CanvasGroup on the hook's object at runtime and makes the menu non-interactable whenever it isn't the top menu. Previously menus underneath the stack still received input. Set `Interactability Mode` to `None` to restore the old behavior.
 * `MenuHook`'s `CursorLockMode`, `CursorVisible`, `PausesGame`, and `TimeScale` fields were consolidated into a single serialized `MenuAttributes Attributes` field. Existing MenuHooks will reset these values to defaults, so re-check the Menu Attributes on any MenuHook you've customized. Code that read those fields directly should switch to `hook.Attributes.cursorLockMode` (etc.).
+* Menutee now requires Ratferences 1.1.0 or newer. This fixes an issue with menu options with references in dynamic menus.
 
 ### Deprecated
 * `MenuConfig.Builder(bool, bool, PaletteConfig)`. Use `MenuConfig.Builder(bool, bool)` with `SetDefaultPaletteConfig` (or `SetDefaultPaletteReference`) instead.
@@ -24,6 +25,7 @@
 ### Fixed
 * `OptionSelectMappedConfig<T>.Builder.Build()` now returns an actual `OptionSelectMappedConfig<T>` (carrying its `Options` array) instead of a plain `OptionSelectConfig`.
 * `OptionSelectConfig` builders' `SetHidesArrowIfLastOption` is now applied to the generated `OptionSelect` instead of being ignored.
+* If used in generated panels, Reference objects would throw an error at runtime due to how UnityEvents worked on components added with AddComponent, and not respond to updates on the reference. This is fixed.
 
 ### Added
 * `MenuConfig.Builder.SetDefaultPaletteConfig` / `SetDefaultPaletteReference` set a menu-level default palette. A reference re-themes every element that uses the default whenever it changes. Element palette precedence is: object reference > object config > menu default reference > menu default config.

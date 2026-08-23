@@ -15,13 +15,10 @@ namespace Menutee {
 			base.OnCreate(go, manager);
 
 			// Add reference hookups.
-			var receptor = go.AddComponent<IntReceptor>();
-			receptor.Reference = Ref;
-			manager.OptionChanged.AddListener(receptor.UpdateValue);
-
-			var @event = go.AddComponent<IntEvent>();
+			manager.OptionSelected += delegate (OptionSelectManager m, int index, string option) { Ref.Value = index; };
+			IntEvent @event = go.AddComponent<IntEvent>();
 			@event.Reference = Ref;
-			@event.AddListener(manager.SelectOptionWithoutNotify);
+			@event.Changed += manager.SelectOptionWithoutNotify;
 		}
 
 		public class Builder : Builder<OptionSelectRefConfig, Builder> {
@@ -54,13 +51,10 @@ namespace Menutee {
 			base.OnCreate(go, manager);
 
 			// Add reference hookups.
-			var receptor = go.AddComponent<BoolReceptor>();
-			receptor.Reference = Ref;
-			manager.OptionChanged.AddListener(receptor.UpdateValue);
-
-			var @event = go.AddComponent<BoolEvent>();
+			manager.OptionSelected += delegate (OptionSelectManager m, int index, string option) { Ref.Value = index == 1; };
+			BoolEvent @event = go.AddComponent<BoolEvent>();
 			@event.Reference = Ref;
-			@event.AddListener((bool newValue) => { manager.SelectOptionWithoutNotify(newValue ? 1 : 0); });
+			@event.Changed += delegate (bool newValue) { manager.SelectOptionWithoutNotify(newValue ? 1 : 0); };
 		}
 
 		public class Builder : Builder<OptionSelectToggleRefConfig, Builder> {

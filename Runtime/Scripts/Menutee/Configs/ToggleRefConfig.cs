@@ -23,20 +23,16 @@ namespace Menutee {
 			ToggleManager manager = go.GetComponent<ToggleManager>();
 			if (manager == null) {
 				Debug.LogWarning("Toggle prefab does not contain ToggleManager. Menu generation will not proceed normally!");
-			} else {
-				manager.SetToggled(Ref.Value);
-				manager.SetText(DisplayText);
-				manager.TogglePressed += Handler;
+				return go;
 			}
+			manager.SetToggled(Ref.Value);
+			manager.SetText(DisplayText);
+			manager.TogglePressed += Handler;
 
-			// Add reference hookups.
-			var receptor = go.AddComponent<BoolReceptor>();
-			receptor.Reference = Ref;
-			manager.Toggle.onValueChanged.AddListener(receptor.UpdateValue);
-
-			var @event = go.AddComponent<BoolEvent>();
+			manager.TogglePressed += delegate (ToggleManager t, bool on) { Ref.Value = on; };
+			BoolEvent @event = go.AddComponent<BoolEvent>();
 			@event.Reference = Ref;
-			@event.AddListener(manager.Toggle.SetIsOnWithoutNotify);
+			@event.Changed += manager.SetToggled;
 
 			return go;
 		}

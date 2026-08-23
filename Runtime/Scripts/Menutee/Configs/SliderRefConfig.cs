@@ -28,23 +28,19 @@ namespace Menutee {
 			SliderManager manager = go.GetComponent<SliderManager>();
 			if (manager == null) {
 				Debug.LogWarning("Slider prefab does not contain SliderManager. Menu generation will not proceed normally!");
-			} else {
-				manager.SetRange(MinValue, MaxValue);
-				manager.SetValue(Ref.Value);
-				manager.SetText(DisplayText);
-				manager.Slider.wholeNumbers = UseWholeNumbers;
-				manager.SliderUpdated += Handler;
+				return go;
 			}
+			manager.SetRange(MinValue, MaxValue);
+			manager.SetValue(Ref.Value);
+			manager.SetText(DisplayText);
+			manager.Slider.wholeNumbers = UseWholeNumbers;
+			manager.SliderUpdated += Handler;
 
-			// Add reference hookups.
-			var receptor = go.AddComponent<FloatReceptor>();
-			receptor.Reference = Ref;
-			manager.Slider.onValueChanged.AddListener(receptor.UpdateValue);
-
-			var @event = go.AddComponent<FloatEvent>();
+			manager.SliderUpdated += delegate (SliderManager m, float newValue) { Ref.Value = newValue; };
+			FloatEvent @event = go.AddComponent<FloatEvent>();
 			@event.Reference = Ref;
-			@event.AddListener(manager.Slider.SetValueWithoutNotify);
-			
+			@event.Changed += manager.SetValue;
+
 			return go;
 		}
 
